@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "337086432915",
+    "project_id": "dsplus-finance-app",
+    "storage_bucket": "dsplus-finance-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:337086432915:android:6a72141aaf1cfc89442f66",
+        "android_client_info": {
+          "package_name": "com.dsplusfinance.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "337086432915-6u343k622lr81leimf96hm7gb85tarck.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEuqFizObUSpJzesG8AYXVNFig0g2Cck4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "337086432915-6u343k622lr81leimf96hm7gb85tarck.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "337086432915-7mo3oege6dcaa1pqae8morg9q3jtdcrg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.budget.budget.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
