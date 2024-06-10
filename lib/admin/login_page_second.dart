@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../core/app/app_export.dart';
-import '../core/utils/navigator_service.dart';
-import '../routes/app_routes.dart';
+
 
 class LoginPageSecond extends StatefulWidget {
   @override
@@ -26,7 +25,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
         child: Column(
           children: <Widget>[
             Container(
-              color: const Color.fromARGB(255, 7, 50, 94),
+              color: Color.fromARGB(255, 165, 208, 233),
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: Center(
@@ -35,22 +34,27 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                   child: Form(
                     key: _formkey,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const SizedBox(
-                          height: 30,
+                        SizedBox(
+                          height: 100,
                         ),
-                        const Text(
-                          "Login",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 40,
-                          ),
+
+                        Image.asset(
+                          "assets/images/logo.png",
+                          color: Colors.white,
                         ),
+                        // const Text(
+                        //   "Login",
+                        //   style: TextStyle(
+                        //     fontWeight: FontWeight.bold,
+                        //     color: Colors.white,
+                        //     fontSize: 40,
+                        //   ),
+                        // ),
                         const SizedBox(
-                          height: 20,
+                          height: 60,
                         ),
                         TextFormField(
                           controller: emailController,
@@ -118,17 +122,17 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                               borderRadius: new BorderRadius.circular(10),
                             ),
                           ),
-                          // validator: (value) {
-                          //   RegExp regex = new RegExp(r'^.{6,}$');
-                          //   if (value!.isEmpty) {
-                          //     return "Password cannot be empty";
-                          //   }
-                          //   if (!regex.hasMatch(value)) {
-                          //     return ("please enter valid password min. 6 character");
-                          //   } else {
-                          //     return null;
-                          //   }
-                          // },
+                          validator: (value) {
+                            RegExp regex = new RegExp(r'^.{6,}$');
+                            if (value!.isEmpty) {
+                              return "Password cannot be empty";
+                            }
+                            if (!regex.hasMatch(value)) {
+                              return ("please enter valid password min. 6 character");
+                            } else {
+                              return null;
+                            }
+                          },
                           onSaved: (value) {
                             passwordController.text = value!;
                           },
@@ -145,7 +149,11 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                           height: 40,
                           onPressed: () {
                             setState(() {
-                              visible = true;
+                              if (_formkey.currentState!.validate()) {
+                                visible = true;
+                              } else {
+                                visible = false;
+                              }
                             });
                             signIn(
                                 emailController.text, passwordController.text);
@@ -262,6 +270,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
           email: email,
           password: password,
         );
+
         route();
       } on FirebaseAuthException catch (e) {
         String errorMessage;
