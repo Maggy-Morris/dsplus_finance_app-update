@@ -252,19 +252,30 @@ class TransferScreen extends StatelessWidget {
                       selector: (state) => state.startDateController,
                       builder: (context, startDateController) {
                         return TextFormField(
-                          // inputFormatters: [DateInputFormatter()],
-
-                          focusNode: FocusNode(),
                           controller: startDateController,
-                          // onChanged: (value) {
-                          //   transactionsModel.date = value;
-                          // },
                           decoration: const InputDecoration(
                             icon: Icon(Icons.date_range_outlined),
                             labelText: 'Start Date(dd/mm/yyyy)',
                           ),
-                          onSaved: (String? value) {},
                           keyboardType: TextInputType.datetime,
+                          readOnly:
+                              true, // Make the field read-only to prevent keyboard input
+                          onTap: () async {
+                            // Show date picker when the field is tapped
+                            DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101),
+                            );
+
+                            if (pickedDate != null) {
+                              String formattedDate =
+                                  "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                              startDateController?.text =
+                                  formattedDate; // Set the date in the controller
+                            }
+                          },
                         );
                       },
                     ),
@@ -279,12 +290,28 @@ class TransferScreen extends StatelessWidget {
                           // onChanged: (value) {
                           //   transactionsModel.expectedDate = value;
                           // },
+                          readOnly: true,
                           decoration: const InputDecoration(
                             icon: Icon(Icons.date_range_outlined),
                             labelText: 'Expected Date(dd/mm/yyyy)',
                           ),
-                          onSaved: (String? value) {},
                           keyboardType: TextInputType.datetime,
+                          onTap: () async {
+                            // Show date picker when the field is tapped
+                            DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101),
+                            );
+
+                            if (pickedDate != null) {
+                              String formattedDate =
+                                  "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                              extractedtDateController?.text =
+                                  formattedDate; // Set the date in the controller
+                            }
+                          },
                         );
                       },
                     ),
@@ -380,7 +407,7 @@ class TransferScreen extends StatelessWidget {
                                 true) {
                           final name = state.nameController?.text ?? '';
                           final amountString =
-                              double.parse(state.amountController?.text ?? '') ;
+                              double.parse(state.amountController?.text ?? '');
                           final startDate =
                               state.startDateController?.text ?? '';
                           final expectedDate =
@@ -396,7 +423,7 @@ class TransferScreen extends StatelessWidget {
 
                           TransactionsModel transaction = TransactionsModel(
                             name: name,
-                        amount: amount as double?,
+                            amount: amount as double?,
                             type: 'عهدة',
                             status: 'pending',
                             date: startDate,
@@ -405,7 +432,6 @@ class TransferScreen extends StatelessWidget {
                             bankName: bankName,
                             accountNumber: accountNumb,
                           );
-                         
 
                           onTapBtnArrowright(context, transaction);
                         } else {
