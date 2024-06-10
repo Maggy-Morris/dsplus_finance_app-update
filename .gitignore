@@ -7,5 +7,4 @@
 /.flutter-plugins-dependencies
 /.packages
 *.g.dart
-*.config.dart
 
