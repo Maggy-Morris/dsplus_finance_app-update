@@ -1,3 +1,4 @@
+import 'package:dsplus_finance/admin/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,14 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../core/app/app_export.dart';
 import '../core/utils/navigator_service.dart';
 import '../routes/app_routes.dart';
-// import 'add_user/add_user_cubit.dart';
-// import 'add_user/add_users.dart';
-import 'home_page.dart';
-// import 'package:role_base_auth/Admin.dart';
-// import 'package:role_base_auth/register.dart';
-// import 'package:role_base_auth/users.dart';
-
-// import 'register.dart';
 
 class LoginPageSecond extends StatefulWidget {
   @override
@@ -26,7 +19,6 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
 
-  // final _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,17 +118,17 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                               borderRadius: new BorderRadius.circular(10),
                             ),
                           ),
-                          validator: (value) {
-                            RegExp regex = new RegExp(r'^.{6,}$');
-                            if (value!.isEmpty) {
-                              return "Password cannot be empty";
-                            }
-                            if (!regex.hasMatch(value)) {
-                              return ("please enter valid password min. 6 character");
-                            } else {
-                              return null;
-                            }
-                          },
+                          // validator: (value) {
+                          //   RegExp regex = new RegExp(r'^.{6,}$');
+                          //   if (value!.isEmpty) {
+                          //     return "Password cannot be empty";
+                          //   }
+                          //   if (!regex.hasMatch(value)) {
+                          //     return ("please enter valid password min. 6 character");
+                          //   } else {
+                          //     return null;
+                          //   }
+                          // },
                           onSaved: (value) {
                             passwordController.text = value!;
                           },
@@ -188,9 +180,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                               const SizedBox(
                                 height: 20,
                               ),
-
-                              //for registeration  add when you are an admin to register new users
-
+                              //for registration add when you are an admin to register new users
                               // MaterialButton(
                               //   shape: const RoundedRectangleBorder(
                               //     borderRadius: BorderRadius.all(
@@ -215,15 +205,6 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                               //           ),
                               //         ));
                               //   },
-
-                              //   // onPressed: () {
-                              //   //   Navigator.pushReplacement(
-                              //   //     context,
-                              //   //     MaterialPageRoute(
-                              //   //       builder: (context) => Register(),
-                              //   //     ),
-                              //   //   );
-                              //   // },
                               //   color: Colors.white,
                               //   child: const Text(
                               //     "Register Now",
@@ -232,10 +213,6 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                               //     ),
                               //   ),
                               // ),
-                           
-                           
-                           
-                           
                             ],
                           ),
                         ),
@@ -253,7 +230,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
 
   void route() {
     User? user = FirebaseAuth.instance.currentUser;
-    var kk = FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('users')
         .doc(user!.uid)
         .get()
@@ -270,13 +247,6 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
           NavigatorService.pushNamedAndRemoveUntil(
             AppRoutes.homePageContainerScreen,
           );
-
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => const Users(),
-          //   ),
-          // );
         }
       } else {
         print('Document does not exist on the database');
@@ -294,11 +264,25 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
         );
         route();
       } on FirebaseAuthException catch (e) {
+        String errorMessage;
         if (e.code == 'user-not-found') {
-          print('No user found for that email.');
+          errorMessage = 'No user found for that email.';
         } else if (e.code == 'wrong-password') {
-          print('Wrong password provided for that user.');
+          errorMessage = 'Wrong password provided for that user.';
+        } else {
+          print(e.code);
+          errorMessage = 'invalid-credentials Wrong Email or Password';
         }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+        setState(() {
+          visible = false;
+        });
       }
     }
   }
