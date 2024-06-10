@@ -150,7 +150,7 @@ class AdminRequestsView extends StatelessWidget {
           },
           style: ElevatedButton.styleFrom(
             fixedSize: Size(150, 40),
-            primary: Colors.green,
+            backgroundColor: Colors.green,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -166,7 +166,7 @@ class AdminRequestsView extends StatelessWidget {
           },
           style: ElevatedButton.styleFrom(
             fixedSize: Size(150, 40),
-            primary: Colors.red,
+            backgroundColor: Colors.red,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),

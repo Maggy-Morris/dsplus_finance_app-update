@@ -51,36 +51,62 @@ class UserContainer extends StatelessWidget {
               trailing: isAdmin
                   ? null
                   : IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () => bloc.add(DeleteUser(user.id)),
-              ),
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        //show dialog
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Delete User'),
+                              content: Text('Do you want to delete this user?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, false),
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: Text('Delete'),
+                                ),
+                              ],
+                            );
+                          },
+                        ).then((value) {
+                          if (value) {
+                            bloc.add(DeleteUser(user.id));
+                          }
+                        });
+                      },
+                    ),
               onTap: isAdmin
                   ? null
                   : () async {
-                bool isAdmin = await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Change User Role'),
-                      content: Text('Do you want to make this user an admin?'),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          child: Text('Make Admin'),
-                        ),
-                      ],
-                    );
-                  },
-                );
+                      bool isAdmin = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Change User Role'),
+                            content:
+                                Text('Do you want to make this user an admin?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: Text('Make Admin'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
 
-                if (isAdmin) {
-                  bloc.add(MakeAdmin(user.id));
-                }
-              },
+                      if (isAdmin) {
+                        bloc.add(MakeAdmin(user.id));
+                      }
+                    },
             );
           }).toList(),
         ],

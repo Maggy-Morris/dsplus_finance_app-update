@@ -13,48 +13,58 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     _loadInitialData();
   }
 
-  void _loadInitialData() async {
+  void _loadInitialData() {
     add(LoadUsers());
   }
 
   void _onLoadUsers(LoadUsers event, Emitter<UsersState> emit) async {
     try {
-      final QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('users').get();
-      final List<User> admins = [];
-      final List<User> users = [];
+      await emit.forEach<QuerySnapshot>(
+        FirebaseFirestore.instance.collection('users').snapshots(),
+        onData: (snapshot) {
+          final List<User> admins = [];
+          final List<User> users = [];
 
-      snapshot.docs.forEach((doc) {
-        Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;
-        userData['id'] = doc.id;
-        User user = User.fromJson(userData);
+          snapshot.docs.forEach((doc) {
+            Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;
+            userData['id'] = doc.id;
+            User user = User.fromJson(userData);
 
-        if (user.role == 'Admin') {
-          admins.add(user);
-        } else {
-          users.add(user);
-        }
-      });
+            if (user.role == 'Admin') {
+              admins.add(user);
+            } else {
+              users.add(user);
+            }
+          });
 
-      emit(UsersState(admins: admins, users: users));
+          return UsersState(admins: admins, users: users);
+        },
+        onError: (error, stackTrace) {
+          print('Error loading users: $error');
+          return UsersState(admins: [], users: []);
+        },
+      );
     } catch (e) {
       print('Error loading users: $e');
     }
   }
 
-  void _onDeleteUser(DeleteUser event, Emitter<UsersState> emit) async {
+  Future<void> _onDeleteUser(DeleteUser event, Emitter<UsersState> emit) async {
     try {
       await FirebaseFirestore.instance.collection('users').doc(event.userId).delete();
-      emit(state); // Update state to trigger UI refresh
+      // Trigger a state refresh
+      _loadInitialData();
     } catch (e) {
       print('Error deleting user: $e');
     }
   }
 
-  void _onMakeAdmin(MakeAdmin event, Emitter<UsersState> emit) async {
+  Future<void> _onMakeAdmin(MakeAdmin event, Emitter<UsersState> emit) async {
     try {
       await FirebaseFirestore.instance.collection('users').doc(event.userId).update({
         'role': 'Admin',
       });
+      // Trigger a state refresh
       _loadInitialData();
     } catch (e) {
       print('Error making user admin: $e');

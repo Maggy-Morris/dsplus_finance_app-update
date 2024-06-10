@@ -18,7 +18,7 @@ dependencies:
   pin_input_text_field: ^4.5.1
   flutter_svg_provider: ^1.0.6
   google_maps_flutter: ^2.5.0
-  intl: ^0.18.1
+  intl: ^0.19.0
   url_launcher: ^6.1.14
   permission_handler: ^11.0.1
   images_picker: ^1.2.11
