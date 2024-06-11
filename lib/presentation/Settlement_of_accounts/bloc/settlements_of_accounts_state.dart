@@ -1,8 +1,10 @@
 part of 'settlements_of_accounts_bloc.dart';
 
-// ignore: must_be_immutable
+
 class SettlementsOfAccountsState extends Equatable {
   SettlementsOfAccountsState({
+
+    
     this.descriptionController,
     this.amountController,
 
@@ -37,4 +39,3 @@ amountController,
 
 }
 
-final class SettlementsOfAccountsInitial extends SettlementsOfAccountsState {}

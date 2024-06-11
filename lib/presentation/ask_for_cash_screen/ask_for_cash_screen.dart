@@ -447,7 +447,7 @@ class FullScreenImage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         // Customize app bar if needed
-        title: Text('Full Screen'),
+        title: Text(''),
       ),
       body: Center(
         child: Image.network(

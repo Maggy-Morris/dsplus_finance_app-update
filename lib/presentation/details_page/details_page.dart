@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import '../../core/utils/image_constant.dart';
 import '../../core/utils/navigator_service.dart';
 import '../../core/utils/size_utils.dart';
-import '../../routes/app_routes.dart';
 import '../../widgets/app_bar/appbar_iconbutton.dart';
 import '../../widgets/app_bar/appbar_subtitle.dart';
 import '../../widgets/app_bar/custom_app_bar.dart';
@@ -71,9 +70,11 @@ class DetailsPage extends StatelessWidget {
                   title: 'Amount',
                   value: homePageItemModelObj.amount?.toString() ?? ""),
               BuildCard(title: "Date", value: homePageItemModelObj.date ?? ""),
-              BuildCard(
-                  title: 'Expected Date',
-                  value: homePageItemModelObj.expectedDate ?? ""),
+              homePageItemModelObj.expectedDate == ""
+                  ? BuildCard(
+                      title: 'Expected Date',
+                      value: homePageItemModelObj.expectedDate ?? "")
+                  : SizedBox(),
               BuildCard(
                   title: 'status', value: homePageItemModelObj.status ?? ""),
               BuildCard(title: 'type', value: homePageItemModelObj.type ?? ""),
@@ -86,10 +87,10 @@ class DetailsPage extends StatelessWidget {
                   ? SizedBox()
                   : BuildCard(
                       title: 'Account Number',
-                        value: NumberFormat("#,##0").format(homePageItemModelObj.accountNumber),
-),
-              homePageItemModelObj.attachments?.length ==
-                      0
+                      value: NumberFormat("#,##0")
+                          .format(homePageItemModelObj.accountNumber),
+                    ),
+              homePageItemModelObj.attachments?.length == 0
                   ? SizedBox()
                   : BuildCard(
                       title: 'Attachments',
