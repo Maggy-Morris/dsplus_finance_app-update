@@ -11,7 +11,7 @@ class SettlementsOfAccountsBloc
     extends Bloc<SettlementsOfAccountsEvent, SettlementsOfAccountsState> {
   SettlementsOfAccountsBloc(
       SettlementsOfAccountsState settlementsOfAccountsState)
-      : super(SettlementsOfAccountsInitial()) {
+      : super(SettlementsOfAccountsState()) {
     on<SettlementsOfAccountsEvent>(_onInitialize);
   }
 

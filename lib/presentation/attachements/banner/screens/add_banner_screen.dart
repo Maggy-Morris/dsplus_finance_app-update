@@ -103,7 +103,7 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
         );
 
         // Print debug message
-        print(
+        debugPrint(
             "Banner created successfully with transaction ID: ${homePageItemModelObj.id}");
         EasyLoading.dismiss();
 

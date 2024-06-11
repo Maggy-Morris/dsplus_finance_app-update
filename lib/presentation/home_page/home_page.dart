@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // String userName = PostRegisterReq().name ?? "";
-    User? user = FirebaseAuth.instance.currentUser;
+    // User? user = FirebaseAuth.instance.currentUser;
     return SafeArea(
         child: Scaffold(
             backgroundColor: ColorConstant.whiteA700,

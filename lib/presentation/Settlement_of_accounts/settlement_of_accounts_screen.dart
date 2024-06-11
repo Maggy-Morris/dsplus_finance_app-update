@@ -1,12 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../ask_for_cash_screen/ask_for_cash_screen.dart';
-import '../attachements/banner/screens/add_banner_screen.dart';
 import '../attachements/constants/colors.dart';
 import '../attachements/models/banner.dart' as model;
 import 'package:dsplus_finance/presentation/attachements/banner/controllers/banner_controller.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../core/utils/image_constant.dart';
 import '../../core/utils/navigator_service.dart';
@@ -25,10 +22,7 @@ import 'models/settlemetns_of_accounts_model.dart';
 // ignore: must_be_immutable
 class SettlementOfAccountsScreen extends StatelessWidget {
   TransactionsModel? homePageItemModelObj;
-  // FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // final TransactionsModel homePageItemModelObj =
-  //       ModalRoute.of(context)!.settings.arguments as TransactionsModel;
   SettlementOfAccountsScreen();
   static Widget builder(BuildContext context) {
     return BlocProvider<SettlementsOfAccountsBloc>(
@@ -64,11 +58,6 @@ class SettlementOfAccountsScreen extends StatelessWidget {
                 "تصفية"),
       ),
       body: ListView(padding: EdgeInsets.all(16.0), children: [
-        // Center(child: Text(" ${}")),
-        // SizedBox(
-        //   height: 50,
-        // ),
-
         Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -94,48 +83,6 @@ class SettlementOfAccountsScreen extends StatelessWidget {
         ),
 
         ////////////////////////////////////////////////////
-        // BlocSelector<SettlementsOfAccountsBloc, SettlementsOfAccountsState,
-        //     TextEditingController?>(
-        //   selector: (state) => state.descriptionController,
-        //   builder: (context, descriptionController) {
-        //     return TextFormField(
-        //       focusNode: FocusNode(),
-        //       controller: descriptionController,
-        //       // onChanged: (value) {
-        //       //   homePageItemModelObj.name = value;
-        //       // },
-        //       decoration: const InputDecoration(
-        //         icon: Icon(Icons.person),
-        //         labelText: 'Description',
-        //       ),
-        //       onSaved: (String? value) {},
-        //       keyboardType: TextInputType.name,
-        //     );
-        //   },
-        // ),
-        // BlocSelector<SettlementsOfAccountsBloc, SettlementsOfAccountsState,
-        //     TextEditingController?>(
-        //   selector: (state) => state.amountController,
-        //   builder: (context, amountController) {
-        //     return TextFormField(
-        //       focusNode: FocusNode(),
-        //       controller: amountController,
-        //       // onChanged: (value) {
-        //       //   homePageItemModelObj.amount = value as double?;
-        //       //   // double.tryParse(value);
-        //       // },
-        //       decoration: const InputDecoration(
-        //         icon: Icon(Icons.monetization_on_sharp),
-        //         hintText: 'Money',
-        //         labelText: 'Money',
-        //       ),
-
-        //       keyboardType: TextInputType.number,
-        //     );
-        //   },
-        // ),
-
-        ////////////////////////////////////////////////////
         ///Add Attachemnts
         SingleChildScrollView(
           // scrollDirection: Axis.horizontal,
@@ -155,27 +102,10 @@ class SettlementOfAccountsScreen extends StatelessWidget {
                 const SizedBox(height: 30),
                 InkWell(
                   onTap: () {
-                    // Navigator.pushNamed(
-                    //   context, '/add-banner-screen',
-
-                    //   //  transId: homePageItemModelObj.id ?? '',
-
-                    // );
-
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => AddBannerScreen(
-                    //       transId: homePageItemModelObj.id ?? '',
-                    //     ),
-                    //   ),
-                    // );
-
                     NavigatorService.pushNamed(
                       AppRoutes.addBannerScreen,
                       arguments: homePageItemModelObj,
                     );
-                    // Navigator.pushNamed(context, AddBannerScreen.routeName);
                   },
                   splashColor: scheme.primary.withOpacity(1),
                   child: Ink(
@@ -256,7 +186,7 @@ class SettlementOfAccountsScreen extends StatelessWidget {
                                                 image: DecorationImage(
                                                   image: NetworkImage(
                                                     banner.imageUrl,
-                                                  ) as ImageProvider,
+                                                  ),
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -264,6 +194,27 @@ class SettlementOfAccountsScreen extends StatelessWidget {
                                           ),
                                         ),
                                         const SizedBox(width: 15),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Money: ${banner.amount}",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 15),
+                                            Text(
+                                              "Desctription: ${banner.description}",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -289,43 +240,6 @@ class SettlementOfAccountsScreen extends StatelessWidget {
 
           //Check this out cause it ain't working properly
           onTap: () async {
-            // final state = context.read<SettlementsOfAccountsBloc>().state;
-
-            // if (state.descriptionController?.text.isNotEmpty == true &&
-            //     state.amountController?.text.isNotEmpty == true) {
-            //   final name = state.descriptionController?.text ?? '';
-            //   final amount = double.parse(state.amountController?.text ?? '');
-
-            //   if (amount > (homePageItemModelObj.amount ?? 0)) {
-            //     ScaffoldMessenger.of(context).showSnackBar(
-            //       SnackBar(
-            //         backgroundColor: Colors.red,
-            //         content: Text(
-            //             'You cannot ask for more money than your balance.'),
-            //       ),
-            //     );
-            //   } else {
-            //     // addTransactionToFirebase(
-            //     //   name,
-            //     //   amount,
-            //     //   homePageItemModelObj.id ?? '', // Pass the transaction ID
-            //     // );
-
-            //     NavigatorService.pushNamedAndRemoveUntil(
-            //       AppRoutes.homePageContainerScreen,
-            //       arguments:
-            //           homePageItemModelObj, // Pass the transaction object as an argument
-            //     );
-            //   }
-            // } else {
-            //   // Show a snackbar or any other UI feedback indicating that all fields are required
-            //   ScaffoldMessenger.of(context).showSnackBar(
-            //     SnackBar(
-            //       backgroundColor: Colors.red,
-            //       content: Text('Please fill all fields.'),
-            //     ),
-            //   );
-            // }
             NavigatorService.pushNamedAndRemoveUntil(
               AppRoutes.homePageContainerScreen,
               arguments:
@@ -337,41 +251,6 @@ class SettlementOfAccountsScreen extends StatelessWidget {
       ]),
     );
   }
-
-  // void addTransactionToFirebase(
-  //   String description,
-  //   double amount,
-  //   String transactionID, // Pass the transaction ID
-  // ) async {
-  //   try {
-  //     String userID = FirebaseAuth.instance.currentUser?.uid ?? '';
-  //     FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  //     // Get the document reference for the user's transaction with the provided ID
-  //     var transactionRef = firestore
-  //         .collection('users')
-  //         .doc(userID)
-  //         .collection('transactions')
-  //         .doc(transactionID)
-  //         .collection('settlements');
-
-  //     // Create a reference to the settlements subcollection inside the transaction document
-  //     // var settlementsCollectionRef = transactionRef.collection('settlements');
-
-  //     // Add the data to the settlements subcollection
-  //     await transactionRef.add({
-  //       'description': description,
-  //       'amount': amount,
-  //       // Add other fields as needed
-  //     });
-
-  //     print('Settlement added successfully to Firebase!');
-  //   } catch (error, stackTrace) {
-  //     print('Error adding settlement to Firebase: $error');
-  //     print(stackTrace);
-  //     // Handle error
-  //   }
-  // }
 
   onTapArrowleft5(BuildContext context) {
     NavigatorService.goBack();
