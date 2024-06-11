@@ -1,4 +1,4 @@
-import 'package:dsplus_finance/admin/requests/requests_cubit.dart';
+import 'package:dsplus_finance/admin/requests/cubit/requests_cubit.dart';
 import 'package:dsplus_finance/admin/users/presentaion/users.dart';
 import 'package:dsplus_finance/admin/users/user_bloc/users_bloc.dart';
 import 'package:dsplus_finance/admin/users/user_bloc/users_event.dart';
@@ -57,101 +57,131 @@ class AdminHomePage extends StatelessWidget {
           ),
         ],
       ),
-      body :GridView.builder(
-        physics: BouncingScrollPhysics(),
-        padding: EdgeInsets.all(10),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Number of columns in the grid
-          crossAxisSpacing: 10.0,
-          mainAxisSpacing: 10.0,
-          childAspectRatio: 3 / 5, // Adjust the aspect ratio to fit your design
-        ),
-        itemCount: 4, // Total number of items in the grid
-        itemBuilder: (context, index) {
-          return InkWell(
-            hoverDuration: Duration(milliseconds: 100),
-            splashColor: Colors.grey[200],
-            highlightColor: Colors.grey[200],
-            borderRadius: BorderRadius.circular(15),
-            onTap: () {
-              // Define the routes and bloc providers based on the index
-              if (index == 0) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      create: (context) => AdminRequestsCubit()..fetchData(),
-                      child: AdminRequestsView(),
-                    ),
-                  ),
-                );
-              } else if (index == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider(
-                          create: (context) => UsersBloc()..add(LoadUsers()),
-                        ),
-                        BlocProvider(
-                          create: (context) => AddUserCubit(
-                              FirebaseAuth.instance, FirebaseFirestore.instance),
-                        ),
-                      ],
-                      child: UsersPage(addUserCubit:  AddUserCubit(
-                          FirebaseAuth.instance, FirebaseFirestore.instance),
+      body: BlocProvider(
+        create: (context) => AdminRequestsCubit(),
+        child: GridView.builder(
+          physics: BouncingScrollPhysics(),
+          padding: EdgeInsets.all(10),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, // Number of columns in the grid
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 10.0,
+            childAspectRatio:
+                3 / 5, // Adjust the aspect ratio to fit your design
+          ),
+          itemCount: 4,
+          // Total number of items in the grid
+          itemBuilder: (context, index) {
+            return InkWell(
+              hoverDuration: Duration(milliseconds: 100),
+              splashColor: Colors.grey[200],
+              highlightColor: Colors.grey[200],
+              borderRadius: BorderRadius.circular(15),
+              onTap: () {
+                if (index == 0) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => AdminRequestsCubit(),
+                        child: AdminRequestsView(),
                       ),
                     ),
-                  ),
-                );
-              } else if (index == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      create: (context) => OrderHistoryCubit()..fetchData(),
-                      child: OrderHistoryView(),
+                  );
+                } else if (index == 1) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (context) => UsersBloc()..add(LoadUsers()),
+                          ),
+                          BlocProvider(
+                            create: (context) => AddUserCubit(
+                                FirebaseAuth.instance,
+                                FirebaseFirestore.instance),
+                          ),
+                        ],
+                        child: UsersPage(
+                          addUserCubit: AddUserCubit(FirebaseAuth.instance,
+                              FirebaseFirestore.instance),
+                        ),
+                      ),
                     ),
-                  ),
-                );
-              } else if (index == 3) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      create: (context) => AddUserCubit(
-                          FirebaseAuth.instance, FirebaseFirestore.instance),
-                      child: AddUsers(
-                        addUserCubit: AddUserCubit(
+                  );
+                } else if (index == 2) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => OrderHistoryCubit()..fetchData(),
+                        child: OrderHistoryView(),
+                      ),
+                    ),
+                  );
+                } else if (index == 3) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => AddUserCubit(
                             FirebaseAuth.instance, FirebaseFirestore.instance),
+                        child: AddUsers(
+                          addUserCubit: AddUserCubit(FirebaseAuth.instance,
+                              FirebaseFirestore.instance),
+                        ),
                       ),
                     ),
+                  );
+                }
+              },
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                borderOnForeground: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                semanticContainer: true,
+                margin: EdgeInsets.all(10),
+                child: Center(
+                  child: ListTile(
+                    title: Text(_getTitle(index)),
+                    subtitle: Text(_getSubtitle(index)),
+                    trailing: (index == 0)
+                        ? StreamBuilder(
+                            stream: context
+                                .read<AdminRequestsCubit>()
+                                .numberOfRequests(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData && snapshot.data > 0) {
+                                return Badge(
+                                  largeSize: 20,
+                                  alignment: Alignment.topRight,
+                                  label: Text(
+                                    snapshot.data.toString(),
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  ),
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height,
+                                      child: Icon(Icons.arrow_forward_ios)),
+                                );
+                              } else {
+                                return Icon(Icons.arrow_forward_ios);
+                              }
+                            })
+                        : Icon(Icons.arrow_forward_ios),
                   ),
-                );
-              }
-            },
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              borderOnForeground: true,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              semanticContainer: true,
-              margin: EdgeInsets.all(10),
-              child: Center(
-                child: ListTile(
-                  title: Text(_getTitle(index)),
-                  subtitle: Text(_getSubtitle(index)),
-                  trailing: Icon(Icons.arrow_forward_ios),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
+
   String _getTitle(int index) {
     switch (index) {
       case 0:
@@ -182,4 +212,3 @@ class AdminHomePage extends StatelessWidget {
     }
   }
 }
-

@@ -1,29 +1,29 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dsplus_finance/admin/requests/model/request_model.dart';
 import 'package:equatable/equatable.dart';
 
 enum AdminRequestsStatus { initial, loading, loaded, error }
 class AdminRequestsState extends Equatable {
-  final List<DocumentSnapshot> users;
+  final List<RequestModel>? requests;
   final AdminRequestsStatus status;
   final String error;
 
   AdminRequestsState({
-    this.users = const [],
+    this.requests,
     this.status = AdminRequestsStatus.initial,
     this.error = '',
   });
 
   AdminRequestsState copyWith({
-    List<DocumentSnapshot>? users,
+    List<RequestModel>? requests,
     AdminRequestsStatus? status,
     String? error,
   }) {
     return AdminRequestsState(
-      users: users ?? this.users,
       status: status ?? this.status,
       error: error ?? this.error,
+      requests: requests ?? this.requests,
     );
   }
   @override
-  List<Object?> get props => [users, status, error];
+  List<Object?> get props => [requests, status, error];
 }
