@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../core/utils/navigator_service.dart';
 
-// import '../presentation/login_page_tab_container_screen/login_page_tab_container_screen.dart';
 import '../routes/app_routes.dart';
 import 'history/bloc/history_cubit.dart';
 import 'requests/admin.dart';
@@ -26,16 +25,7 @@ class AdminHomePage extends StatelessWidget {
 
       NavigatorService.pushNamedAndRemoveUntil(
           AppRoutes.loginPageTabContainerScreen
-
-          //  MaterialPageRoute(
-          //    builder: (context) => loginPageTabContainerScreen(),
-          //  ),
           );
-      //  Navigator.of(context).pushReplacement(
-      //    MaterialPageRoute(
-      //      builder: (context) => LoginPageTabContainerScreen(),
-      //    ),
-      //  );
     } catch (e) {
       print('Error signing out: $e');
     }
@@ -144,36 +134,78 @@ class AdminHomePage extends StatelessWidget {
                 ),
                 semanticContainer: true,
                 margin: EdgeInsets.all(10),
-                child: Center(
-                  child: ListTile(
-                    title: Text(_getTitle(index)),
-                    subtitle: Text(_getSubtitle(index)),
-                    trailing: (index == 0)
-                        ? StreamBuilder(
-                            stream: context
-                                .read<AdminRequestsCubit>()
-                                .numberOfRequests(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData && snapshot.data > 0) {
-                                return Badge(
-                                  largeSize: 20,
-                                  alignment: Alignment.topRight,
-                                  label: Text(
-                                    snapshot.data.toString(),
-                                    style: const TextStyle(
-                                        color: Colors.white, fontSize: 12),
-                                  ),
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height,
-                                      child: Icon(Icons.arrow_forward_ios)),
-                                );
-                              } else {
-                                return Icon(Icons.arrow_forward_ios);
-                              }
-                            })
-                        : Icon(Icons.arrow_forward_ios),
-                  ),
-                ),
+                child: (index == 0)
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Spacer(
+                            flex: 1,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: StreamBuilder(
+                                  stream: context
+                                      .read<AdminRequestsCubit>()
+                                      .numberOfRequests(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData && snapshot.data > 0) {
+                                      return SizedBox(
+                                        height: 40,
+                                        width: 40,
+                                        child: Badge(
+                                          backgroundColor:
+                                              Colors.red.withOpacity(0.6),
+                                          alignment: Alignment.topRight,
+                                          label: Text(
+                                            snapshot.data.toString(),
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      return SizedBox(
+                                        height: 40,
+                                        width: 40,
+                                        child: Badge(
+                                          backgroundColor:
+                                          Colors.red.withOpacity(0.6),
+                                          alignment: Alignment.topRight,
+                                          label: Text(
+                                            snapshot.data.toString(),
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }),
+                            ),
+                          ),
+                          Spacer(
+                            flex: 2,
+                          ),
+                          ListTile(
+                            title: Text(_getTitle(index)),
+                            subtitle: Text(_getSubtitle(index)),
+                            trailing: Icon(Icons.arrow_forward_ios),
+                          ),
+                          Spacer(
+                            flex: 6,
+                          )
+                        ],
+                      )
+                    : Center(
+                        child: ListTile(
+                          title: Text(_getTitle(index)),
+                          subtitle: Text(_getSubtitle(index)),
+                          trailing: Icon(Icons.arrow_forward_ios),
+                        ),
+                      ),
               ),
             );
           },

@@ -10,9 +10,9 @@ import 'requests_state.dart';
 class AdminRequestsCubit extends Cubit<AdminRequestsState> {
   late StreamSubscription<QuerySnapshot> _subscription;
 
-  AdminRequestsCubit() : super(AdminRequestsState(requests: [] , status: AdminRequestsStatus.initial)) {
-  }
-
+  AdminRequestsCubit()
+      : super(AdminRequestsState(
+            requests: [], status: AdminRequestsStatus.initial)) {}
 
   void fetchData() async {
     try {
@@ -41,13 +41,15 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
         );
       }).toList();
 
-      emit(state.copyWith(requests: orders, status: AdminRequestsStatus.loaded));
+      emit(
+          state.copyWith(requests: orders, status: AdminRequestsStatus.loaded));
     } catch (e) {
       // Handle error
       throw Exception('Failed to fetch data: $e');
     }
   }
-  void approveBudget(String userId, String budgetId) async {
+
+   approveBudget(String budgetId) async {
     try {
       await FirebaseFirestore.instance
           .collection('transactions')
@@ -60,7 +62,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
     }
   }
 
-  void rejectBudget(String userId, String budgetId, String reason) async {
+   rejectBudget(String budgetId, String reason) async {
     try {
       await FirebaseFirestore.instance
           .collection('transactions')
@@ -85,4 +87,31 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
     return controller.stream;
   }
 
+   approveBudget2(String userId, String budgetId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('transactions')
+          .doc(budgetId)
+          .update({'status': 'Approved'});
+      print("Budget approved successfully!");
+    } catch (error) {
+      print("Failed to approve budget: $error");
+    }
+  }
+
+   rejectBudget2(String userId, String budgetId, String reason) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('transactions')
+          .doc(budgetId)
+          .update({'status': 'Rejected', 'reason': reason});
+      print("Budget rejected successfully!");
+    } catch (error) {
+      print("Failed to reject budget: $error");
+    }
+  }
 }
