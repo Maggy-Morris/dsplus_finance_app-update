@@ -61,6 +61,12 @@ class OrderHistoryBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('dd/MM/yyyy');
 
+    // Filter the users based on the selected filter
+    List<RequestModel> filteredUsers = users;
+    if (selectedFilter != 'All') {
+      filteredUsers = users.where((user) => user.status == selectedFilter).toList();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -77,9 +83,7 @@ class OrderHistoryBody extends StatelessWidget {
               DropdownButton<String>(
                 value: selectedFilter,
                 onChanged: (String? newValue) {
-                  context
-                      .read<OrderHistoryCubit>()
-                      .applySelectedFilter(newValue!);
+                  context.read<OrderHistoryCubit>().applySelectedFilter(newValue!);
                 },
                 items: <String>['All', 'Approved', 'pending', 'Rejected']
                     .map<DropdownMenuItem<String>>((String value) {
@@ -93,88 +97,46 @@ class OrderHistoryBody extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: BlocBuilder<OrderHistoryCubit, OrderHistoryState>(
-            builder: (context, state) {
-              return ListView.builder(
-                itemCount: state.orders.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    color: Colors.grey[200],
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      side: BorderSide(color: Colors.grey),
-                    ),
-                    margin: EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        buildListTile(
-                            "User Email", state.orders[index].email ?? ""),
-                        buildListTile(
-                            "Budget Name", state.orders[index].name ?? ''),
-                        buildListTile(
-                            "Amount", "${state.orders[index].amount ?? 0}"),
-                        buildListTile(
-                            "Budget Type", state.orders[index].type ?? ''),
-                        (state.orders[index].cashOrCredit == false)
-                            ? buildListTile("Payment Method", "Credit")
-                            : buildListTile("Payment Method", "Cash"),
-                        (state.orders[index].cashOrCredit == false)
-                            ? buildListTile(
-                                "Bank Name", state.orders[index].bankName ?? '')
-                            : Container(),
-                        (state.orders[index].cashOrCredit == false)
-                            ? buildListTile("Account Number",
-                                "${state.orders[index].accountNumber ?? 0}")
-                            : Container(),
-                        buildListTile(
-                            "Status", state.orders[index].status ?? ''),
-                        buildListTile(
-                            "Start Date", state.orders?[index].date ?? ''),
-                        (state.orders?[index].type == "اذن صرف")
-                            ? buildListTile("End Date",
-                                state.orders?[index].expected_date ?? '')
-                            : Container(),
-                      ],
-                    ),
-                  );
-                },
+          child: ListView.builder(
+            itemCount: filteredUsers.length,
+            itemBuilder: (context, index) {
+              final user = filteredUsers[index];
+              return Card(
+                color: Colors.grey[200],
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  side: BorderSide(color: Colors.grey),
+                ),
+                margin: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildListTile("User Email", user.email ?? ""),
+                    buildListTile("Budget Name", user.name ?? ''),
+                    buildListTile("Amount", "${user.amount ?? 0}"),
+                    buildListTile("Budget Type", user.type ?? ''),
+                    (user.cashOrCredit == false)
+                        ? buildListTile("Payment Method", "Credit")
+                        : buildListTile("Payment Method", "Cash"),
+                    (user.cashOrCredit == false)
+                        ? buildListTile("Bank Name", user.bankName ?? '')
+                        : Container(),
+                    (user.cashOrCredit == false)
+                        ? buildListTile("Account Number", "${user.accountNumber ?? 0}")
+                        : Container(),
+                    buildListTile("Status", user.status ?? ''),
+                    buildListTile("Start Date", user.date ?? ''),
+                    (user.type == "اذن صرف")
+                        ? buildListTile("End Date", user.expected_date ?? '')
+                        : Container(),
+                  ],
+                ),
               );
             },
           ),
         ),
       ],
-    );
-  }
-
-  Widget buildBudgetCard(Map<String, dynamic> userData,
-      Map<String, dynamic> budgetData, DateTime startDate, DateTime endDate) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      margin: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          buildListTile("User Name", userData['name'] ?? ''),
-          buildListTile("Budget Name", budgetData['name'] ?? ''),
-          buildListTile("Amount", budgetData['amount']?.toString() ?? ''),
-          buildListTile("Budget Type", budgetData['type'] ?? ''),
-          buildListTile("Status", budgetData['status'] ?? ''),
-          buildListTile(
-              "Start Date", DateFormat('dd/MM/yyyy').format(startDate)),
-          endDate == startDate
-              ? SizedBox()
-              : buildListTile(
-                  "End Date", DateFormat('dd/MM/yyyy').format(endDate)),
-          if (budgetData['status'] ==
-              'Rejected') // Show reason for rejected orders
-            buildListTile("Reason for Rejection", budgetData['reason'] ?? ''),
-          SizedBox(height: 10),
-        ],
-      ),
     );
   }
 

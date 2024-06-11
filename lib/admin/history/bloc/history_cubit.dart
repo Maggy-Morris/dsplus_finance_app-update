@@ -32,22 +32,22 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
       final orders = snapshot.docs.map((doc) {
         final data = doc.data();
         return RequestModel(
-        docId: doc.id,
-        userId: data['User'] ?? "",
-        amount: data['amount'] ?? 0.0,
-        status: data['status'] ?? "",
-        email: data["email"] ?? "",
-        name: data["name"] ?? "",
-        type: data["type"] ?? "",
-        reason: data["reason"] ?? "",
-        date: data["date"] ?? "",
-        expected_date: data["expected_date"] ?? "",
-        accountNumber: data["accountNumber"] ?? 0.0,
-        attachments: List<String>.from(data["attachments"] ?? []),
-        bankName: data["bankName"] ?? "",
-        cashOrCredit: data["cashOrCredit"] ?? false,
-      );
-    }).toList();
+          docId: doc.id,
+          userId: data['User'] ?? "",
+          amount: data['amount'] ?? 0.0,
+          status: data['status'] ?? "",
+          email: data["email"] ?? "",
+          name: data["name"] ?? "",
+          type: data["type"] ?? "",
+          reason: data["reason"] ?? "",
+          date: data["date"] ?? "",
+          expected_date: data["expected_date"] ?? "",
+          accountNumber: data["accountNumber"] ?? 0.0,
+          attachments: List<String>.from(data["attachments"] ?? []),
+          bankName: data["bankName"] ?? "",
+          cashOrCredit: data["cashOrCredit"] ?? false,
+        );
+      }).toList();
       emit(state.copyWith(
         users: orders,
         selectedFilter: 'All',
