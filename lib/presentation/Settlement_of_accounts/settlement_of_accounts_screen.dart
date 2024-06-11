@@ -1,3 +1,4 @@
+import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../ask_for_cash_screen/ask_for_cash_screen.dart';
@@ -142,82 +143,109 @@ class SettlementOfAccountsScreen extends StatelessWidget {
 
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data!.length,
+                          itemCount: snapshot.data?.length,
                           itemBuilder: (context, index) {
-                            final banner = snapshot.data![index];
+                            final banner = snapshot.data?[index];
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(15),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    border:
-                                        Border.all(color: Colors.grey[200]!),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.1),
-                                        spreadRadius: 1,
-                                        blurRadius: 1,
-                                        offset: const Offset(1, 3),
+                                Stack(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.all(15),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                            color: Colors.grey[200]!),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.1),
+                                            spreadRadius: 1,
+                                            blurRadius: 1,
+                                            offset: const Offset(1, 3),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => FullScreenImage(
-                                              imageUrl: banner.imageUrl),
-                                        ),
-                                      );
-                                    },
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          height: 150,
-                                          child: AspectRatio(
-                                            aspectRatio: 4 / 5,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                    banner.imageUrl,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  FullScreenImage(
+                                                      imageUrl:
+                                                          banner?.imageUrl ??
+                                                              ""),
+                                            ),
+                                          );
+                                        },
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              height: 150,
+                                              child: AspectRatio(
+                                                aspectRatio: 4 / 5,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                        banner?.imageUrl ?? "",
+                                                      ),
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
-                                                  fit: BoxFit.cover,
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Money: ${banner.amount}",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 15),
-                                            Text(
-                                              "Desctription: ${banner.description}",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                              ),
+                                            const SizedBox(width: 15),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Money: ${banner?.amount}",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 15),
+                                                Text(
+                                                  "Desctription: ${banner?.description}",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
+                                    Positioned(
+                                        top: 0,
+                                        right: 0,
+                                        // left: 0,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: CircleAvatar(
+                                            backgroundColor: (banner?.status ==
+                                                    "pending")
+                                                ? Colors.amber
+                                                : (banner?.status == "Approved")
+                                                    ? Colors.green
+                                                    : Colors.red,
+                                            child: Text(
+                                              "${banner?.status}",
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                            radius: 25,
+                                          ),
+                                        )),
+                                  ],
                                 ),
                                 const SizedBox(height: 15),
                               ],

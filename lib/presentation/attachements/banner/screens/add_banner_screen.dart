@@ -100,6 +100,7 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
           description: state.descriptionController!.text,
           transactionID: homePageItemModelObj.id,
           amount: amount,
+          status: "pending"
         );
 
         // Print debug message
