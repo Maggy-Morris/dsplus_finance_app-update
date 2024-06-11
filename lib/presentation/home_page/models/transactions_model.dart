@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class TransactionsModel extends Equatable {
   String? reason;
+  String? userId;
   String? id;
   String? name;
   double? amount;
@@ -11,11 +12,14 @@ class TransactionsModel extends Equatable {
   String? status;
   List<dynamic>? attachments;
   bool? cashOrCredit;
-  num? accountNumber; 
+  int? accountNumber;
+  String? email;
 
   String? bankName;
 
   TransactionsModel({
+    this.userId,
+    this.email,
     this.reason,
     this.id,
     this.name,
@@ -31,9 +35,10 @@ class TransactionsModel extends Equatable {
   });
 
   TransactionsModel.fromJson(Map<String, dynamic> json, this.id) {
+    userId = json['userId'];
     reason = json['reason'];
     id = json['id'];
-
+    email = json['email'];
     name = json['name'];
     amount = json['amount'] ?? ''; // Parse to double
     date = json['date'];
@@ -42,17 +47,17 @@ class TransactionsModel extends Equatable {
     status = json['status'];
     attachments = json['attachments'];
     cashOrCredit = json['cashOrCredit'];
-    accountNumber =
-        num.tryParse(json['accountNumber'] ?? ''); // Parse to double
+    accountNumber = json['accountNumber']; // Parse to double
     bankName = json['bankName'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
 
+    data['userId'] = this.userId;
     data['reason'] = this.reason;
     data['id'] = this.id;
-
+    data['email'] = this.email;
     data['name'] = this.name;
     data['amount'] = this.amount; // Convert double to string
     data['date'] = this.date;
@@ -62,13 +67,15 @@ class TransactionsModel extends Equatable {
     data['attachments'] = this.attachments;
     data['cashOrCredit'] = this.cashOrCredit;
     data['accountNumber'] =
-        this.accountNumber?.toString(); // Convert num to string
+        this.accountNumber; // Convert num to string
     data['bankName'] = this.bankName;
 
     return data;
   }
 
   TransactionsModel copyWith({
+    String? userId,
+    String? email,
     String? reason,
     String? id,
     String? name,
@@ -79,10 +86,12 @@ class TransactionsModel extends Equatable {
     String? status,
     List<dynamic>? attachments,
     bool? cashOrCredit,
-    double? accountNumber,
+    int? accountNumber,
     String? bankName,
   }) {
     return TransactionsModel(
+      userId: userId ?? this.userId,
+      email: email ?? this.email,
       reason: reason ?? this.reason,
       id: id ?? this.id,
       name: name ?? this.name,
@@ -100,7 +109,9 @@ class TransactionsModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    reason,
+        userId,
+        email,
+        reason,
         id,
         name,
         amount,

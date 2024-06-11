@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
 import '../home_page/models/transactions_model.dart';
-import '../radioButton/bloc/radio_button_bloc.dart';
 import 'bloc/transfer_bloc.dart';
 import 'models/transfer_model.dart';
 import 'package:dsplus_finance/core/app/app_export.dart';
@@ -19,7 +18,6 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart' as fs;
 class TransferScreen extends StatelessWidget {
   TransactionsModel transactionsModel = TransactionsModel();
 
-  final RadioButtonBloc radioButtonBloc = RadioButtonBloc();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -27,13 +25,8 @@ class TransferScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<TransferBloc>(
-            create: (context) => TransferBloc(
-                TransferState(transferModelObj: TransferModel(), files: []))
-              ..add(TransferEvent()),
+            create: (context) => TransferBloc()..add(TransferEvent()),
             child: TransferScreen()),
-        BlocProvider<RadioButtonBloc>(
-          create: (BuildContext context) => RadioButtonBloc(),
-        ),
       ],
       child: TransferScreen(),
     );
@@ -131,265 +124,160 @@ class TransferScreen extends StatelessWidget {
                                       textAlign: TextAlign.left,
                                       style: AppStyle.txtPoppinsMedium10))
                             ])),
+                    TextFormField(
+                      focusNode: FocusNode(),
+                      onChanged: (value) {
+                        TransferBloc.get(context).add(EditName(name: value));
+                      },
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.person),
+                        labelText: 'Name',
+                      ),
+                      onSaved: (String? value) {},
+                      keyboardType: TextInputType.name,
+                    ),
+                    TextFormField(
+                      // focusNode: FocusNode(),
 
-                    BlocSelector<TransferBloc, TransferState,
-                        TextEditingController?>(
-                      selector: (state) => state.nameController,
-                      builder: (context, nameController) {
-                        return TextFormField(
-                          focusNode: FocusNode(),
-                          controller: nameController,
-                          // onChanged: (value) {
-                          //   transactionsModel.name = value;
-                          // },
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.person),
-                            labelText: 'Name',
-                          ),
-                          onSaved: (String? value) {},
-                          keyboardType: TextInputType.name,
+                      onChanged: (value) {
+                        TransferBloc.get(context).add(
+                            EditAmount(amount: double.tryParse(value) ?? 0.0));
+                      },
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.monetization_on_sharp),
+                        hintText: 'Money',
+                        labelText: 'Money',
+                      ),
+                      // onSaved: (String? value) {
+                      //   // This optional block of code can be used to run
+                      //   // code when the user saves the form.
+                      // },
+
+                      // inputFormatters: ,
+
+                      keyboardType: TextInputType.number,
+                    ),
+                    TextFormField(
+                      controller:
+                          TextEditingController(text: state.startDateString),
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.date_range_outlined),
+                        labelText: 'Start Date(dd/mm/yyyy)',
+                      ),
+                      keyboardType: TextInputType.datetime,
+                      readOnly:
+                          true, // Make the field read-only to prevent keyboard input
+                      onTap: () async {
+                        // Show date picker when the field is tapped
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2101),
                         );
+
+                        if (pickedDate != null) {
+                          TransferBloc.get(context).add(EditStartDateString(
+                              startDateString:
+                                  "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}"));
+                          // String formattedDate =
+                          //     "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                          TransferBloc.get(context)
+                              .add(EditStartDate(startDate: pickedDate));
+
+                          // startDateController?.text =
+                          //     formattedDate; // Set the date in the controller
+                        }
                       },
                     ),
-                    BlocSelector<TransferBloc, TransferState,
-                        TextEditingController?>(
-                      selector: (state) => state.amountController,
-                      builder: (context, amountController) {
-                        return TextFormField(
-                          focusNode: FocusNode(),
-
-                          controller: amountController,
-                          // onChanged: (value) {
-                          //   transactionsModel.amount = value as double;
-                          //   // double.tryParse(value);
-                          // },
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.monetization_on_sharp),
-                            hintText: 'Money',
-                            labelText: 'Money',
-                          ),
-                          onSaved: (String? value) {
-                            // This optional block of code can be used to run
-                            // code when the user saves the form.
-                          },
-
-                          // inputFormatters: ,
-
-                          keyboardType: TextInputType.number,
+                    TextFormField(
+                      focusNode: FocusNode(),
+                      controller:
+                          TextEditingController(text: state.expectedDateString),
+                      // onChanged: (value) {
+                      //   transactionsModel.expectedDate = value;
+                      // },
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.date_range_outlined),
+                        labelText: 'Expected Date(dd/mm/yyyy)',
+                      ),
+                      keyboardType: TextInputType.datetime,
+                      onTap: () async {
+                        // Show date picker when the field is tapped
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2101),
                         );
+
+                        if (pickedDate != null) {
+                          TransferBloc.get(context).add(ExpectedDateString(
+                              expectedDateString:
+                                  "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}"));
+                          TransferBloc.get(context)
+                              .add(ExpectedDate(expectedDate: pickedDate));
+                          // String formattedDate =
+                          //     "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                          // extractedtDateController?.text =
+                          //     formattedDate; // Set the date in the controller
+                        }
                       },
                     ),
-// onPressed: () {
-//   context.read<TransferBloc>().add(SelectDateEvent());
-// },
-                    // BlocSelector<TransferBloc, TransferState, DateTime?>(
-                    //   selector: (state) => state.startDate,
-                    //   builder: (context, startDate) {
-                    //     return TextFormField(
-                    //       focusNode: FocusNode(),
-                    //       // controller: startDateController,
-                    //       // onChanged: (value) {
-                    //       //   transactionsModel.date = value;
-                    //       // },
-                    //       decoration: const InputDecoration(
-                    //         icon: Icon(Icons.date_range_outlined),
-                    //         labelText: 'Start Date(2000-12-31)',
-                    //       ),
-                    //       onSaved: (String? value) {},
-                    //       keyboardType: TextInputType.datetime,
-                    //       readOnly: true, // Make the text field read-only
-                    //       onTap: () async {
-                    //         final DateTime? pickedDate = await showDatePicker(
-                    //           context: context,
-                    //           initialDate: startDate ?? DateTime.now(),
-                    //           firstDate: DateTime(1900),
-                    //           lastDate: DateTime(2100),
-                    //         );
-                    //         if (pickedDate != null) {
-                    //           context.read<TransferBloc>().add(
-                    //               TransferEvent.startDateChanged(pickedDate));
-                    //         }
-                    //       },
-                    //     );
-                    //   },
-                    // ),
-
-                    // BlocSelector<TransferBloc, TransferState, DateTime?>(
-                    //   selector: (state) => state.expectedDate,
-                    //   builder: (context, expectedDate) {
-                    //     return TextFormField(
-                    //       focusNode: FocusNode(),
-                    //       // controller: extractedtDateController,
-                    //       // onChanged: (value) {
-                    //       //   transactionsModel.expectedDate = value;
-                    //       // },
-                    //       decoration: const InputDecoration(
-                    //         icon: Icon(Icons.date_range_outlined),
-                    //         labelText: 'Expected Date(2000-12-31)',
-                    //       ),
-                    //       onSaved: (String? value) {},
-                    //       keyboardType: TextInputType.datetime,
-                    //       readOnly: true, // Make the text field read-only
-                    //       onTap: () async {
-                    //         final DateTime? pickedDate = await showDatePicker(
-                    //           context: context,
-                    //           initialDate: expectedDate ?? DateTime.now(),
-                    //           firstDate: DateTime(1900),
-                    //           lastDate: DateTime(2100),
-                    //         );
-                    //         if (pickedDate != null) {
-                    //           context.read<TransferBloc>().add(
-                    //               TransferEvent.expectedDateChanged(
-                    //                   pickedDate));
-                    //         }
-                    //       },
-                    //     );
-                    //   },
-                    // ),
-
-                    BlocSelector<TransferBloc, TransferState,
-                        TextEditingController?>(
-                      selector: (state) => state.startDateController,
-                      builder: (context, startDateController) {
-                        return TextFormField(
-                          controller: startDateController,
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.date_range_outlined),
-                            labelText: 'Start Date(dd/mm/yyyy)',
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RadioListTile(
+                            title: const Text('Cash'),
+                            value: 'cash',
+                            groupValue: state.selectedOption,
+                            onChanged: (value) {
+                              context.read<TransferBloc>().add(
+                                  RadioButtonChanged(
+                                      selectedOption: value ?? "",
+                                      showTextField: false));
+                            },
                           ),
-                          keyboardType: TextInputType.datetime,
-                          readOnly:
-                              true, // Make the field read-only to prevent keyboard input
-                          onTap: () async {
-                            // Show date picker when the field is tapped
-                            DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2101),
-                            );
-
-                            if (pickedDate != null) {
-                              String formattedDate =
-                                  "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                              startDateController?.text =
-                                  formattedDate; // Set the date in the controller
-                            }
-                          },
-                        );
-                      },
-                    ),
-
-                    BlocSelector<TransferBloc, TransferState,
-                        TextEditingController?>(
-                      selector: (state) => state.extractedtDateController,
-                      builder: (context, extractedtDateController) {
-                        return TextFormField(
-                          focusNode: FocusNode(),
-                          controller: extractedtDateController,
-                          // onChanged: (value) {
-                          //   transactionsModel.expectedDate = value;
-                          // },
-                          readOnly: true,
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.date_range_outlined),
-                            labelText: 'Expected Date(dd/mm/yyyy)',
+                          RadioListTile(
+                            title: const Text('Credit'),
+                            value: 'credit',
+                            groupValue: state.selectedOption,
+                            onChanged: (value) {
+                              context.read<TransferBloc>().add(
+                                  RadioButtonChanged(
+                                      selectedOption: value ?? "",
+                                      showTextField: true));
+                            },
                           ),
-                          keyboardType: TextInputType.datetime,
-                          onTap: () async {
-                            // Show date picker when the field is tapped
-                            DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2101),
-                            );
-
-                            if (pickedDate != null) {
-                              String formattedDate =
-                                  "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                              extractedtDateController?.text =
-                                  formattedDate; // Set the date in the controller
-                            }
-                          },
-                        );
-                      },
-                    ),
-                    /////////////////////////////////////////////
-                    //RadioButtonBlocProvider
-                    BlocProvider(
-                      create: (context) => radioButtonBloc,
-                      child: BlocBuilder<RadioButtonBloc, RadioButtonState>(
-                        builder: (context, state) {
-                          return Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          if (state.showTextField == true)
+                            Column(
                               children: [
-                                RadioListTile(
-                                  title: const Text('Cash'),
-                                  value: 'cash',
-                                  groupValue: state.selectedOption,
+                                TextFormField(
                                   onChanged: (value) {
-                                    context.read<RadioButtonBloc>().add(
-                                        RadioButtonChanged(
-                                            selectedOption: value ?? "",
-                                            showTextField: false));
+                                    TransferBloc.get(context).add(AccountNumber(
+                                        accountNumber: int.parse(value)));
                                   },
+                                  decoration: const InputDecoration(
+                                      labelText: 'Enter Account Number'),
+                                  keyboardType: TextInputType.number,
                                 ),
-                                RadioListTile(
-                                  title: const Text('Credit'),
-                                  value: 'credit',
-                                  groupValue: state.selectedOption,
+                                TextFormField(
                                   onChanged: (value) {
-                                    context.read<RadioButtonBloc>().add(
-                                        RadioButtonChanged(
-                                            selectedOption: value ?? "",
-                                            showTextField: true));
+                                    TransferBloc.get(context)
+                                        .add(BankName(bankName: value));
                                   },
+                                  decoration: const InputDecoration(
+                                      labelText: 'Enter Bank Name'),
+                                  keyboardType: TextInputType.text,
                                 ),
-                                if (state.showTextField)
-                                  Column(
-                                    children: [
-                                      BlocSelector<TransferBloc, TransferState,
-                                          TextEditingController?>(
-                                        selector: (state) =>
-                                            state.accountNumberController,
-                                        builder:
-                                            (context, accountNumberController) {
-                                          return TextFormField(
-                                            controller: accountNumberController,
-                                            focusNode: FocusNode(),
-                                            decoration: const InputDecoration(
-                                                labelText:
-                                                    'Enter Account Number'),
-                                            keyboardType: TextInputType.number,
-                                          );
-                                        },
-                                      ),
-                                      BlocSelector<TransferBloc, TransferState,
-                                          TextEditingController?>(
-                                        selector: (state) =>
-                                            state.bankNameController,
-                                        builder: (context, bankNameController) {
-                                          return TextFormField(
-                                            controller: bankNameController,
-                                            focusNode: FocusNode(),
-                                            decoration: const InputDecoration(
-                                                labelText: 'Enter Bank Name'),
-                                            keyboardType: TextInputType.text,
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  )
                               ],
-                            ),
-                          );
-                        },
+                            )
+                        ],
                       ),
                     ),
-
                     CustomIconButton(
                       height: 70,
                       width: 70,
@@ -398,39 +286,25 @@ class TransferScreen extends StatelessWidget {
                       shape: IconButtonShape.CircleBorder35,
                       padding: IconButtonPadding.PaddingAll23,
                       onTap: () async {
-                        final state = context.read<TransferBloc>().state;
-                        if (state.nameController?.text.isNotEmpty == true &&
-                            state.amountController?.text.isNotEmpty == true &&
-                            state.startDateController?.text.isNotEmpty ==
-                                true &&
-                            state.extractedtDateController?.text.isNotEmpty ==
-                                true) {
-                          final name = state.nameController?.text ?? '';
-                          final amountString =
-                              double.parse(state.amountController?.text ?? '');
-                          final startDate =
-                              state.startDateController?.text ?? '';
-                          final expectedDate =
-                              state.extractedtDateController?.text ?? '';
-                          final bankName = state.bankNameController?.text ?? '';
-                          final accountNum =
-                              state.accountNumberController?.text ?? '';
-
-                          // Parse the amount string to a double
-                          final amount = amountString ?? 0.0;
-                          final accountNumb =
-                              double.tryParse(accountNum) ?? 0.0;
-
+                        if (
+                          state.name?.isNotEmpty == true &&
+                            state.amount != 0 &&
+                            state.startDateString?.isNotEmpty == true &&
+                            state.expectedDateString?.isNotEmpty == true) {
                           TransactionsModel transaction = TransactionsModel(
-                            name: name,
-                            amount: amount as double?,
+                            email: firebaseAuth.currentUser?.email ?? "",
+                            name: state.name,
+                            amount: state.amount,
+                            userId: firebaseAuth.currentUser?.uid,
                             type: 'عهدة',
                             status: 'pending',
-                            date: startDate,
-                            expectedDate: expectedDate,
+                            date: state.startDateString,
+                            expectedDate: state.expectedDateString,
                             id: "",
-                            bankName: bankName,
-                            accountNumber: accountNumb,
+                            cashOrCredit:
+                                state.selectedOption == "cash" ? true : false,
+                            bankName: state.bankName ,
+                            accountNumber: state.accountNumber,
                           );
 
                           onTapBtnArrowright(context, transaction);

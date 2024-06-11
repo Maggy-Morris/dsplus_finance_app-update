@@ -14,19 +14,21 @@ class HomePageItemWidget extends StatelessWidget {
     bool isEditable = false;
 
     return GestureDetector(
-   
       onTap: () {
-          if (homePageItemModelObj.status == 'pending') {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Request is still pending. Waiting for approval.'),
-      ),
-    );
-  } else {
-    // Execute onTapBtn function
-    onTapBtn(context, homePageItemModelObj);
-  }
-
+        if (homePageItemModelObj.status == 'pending') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.yellow,
+              content: Text(
+                'Request is still pending. Waiting for approval.',
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          );
+        } else {
+          // Execute onTapBtn function
+          onTapBtn(context, homePageItemModelObj);
+        }
 
         // final isditable = homePageItemModelObj.status == 'Approved'
         //     ? !isEditable
@@ -34,7 +36,7 @@ class HomePageItemWidget extends StatelessWidget {
 
         // if (isditable) {
         //   onTapBtn(context, homePageItemModelObj);
-        
+
         // }
       },
 
@@ -51,22 +53,18 @@ class HomePageItemWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CustomIconButton(
-                height: 100,
-                width: 100,
-                variant: IconButtonVariant.FillGray100,
-                shape: IconButtonShape.RoundedBorder13,
-                padding: IconButtonPadding.PaddingAll15,
-                child:homePageItemModelObj.type == 'عهدة' ? 
-
-                
-                Image(image: AssetImage('assets/images/1.png'))
-                : 
-                
-                Image(image: AssetImage('assets/images/2.png'))
-                //  CustomImageView(
-                //   svgPath: ImageConstant.imgFire,
-                // ),
-              ),
+                  height: 100,
+                  width: 100,
+                  variant: IconButtonVariant.FillGray100,
+                  shape: IconButtonShape.RoundedBorder13,
+                  padding: IconButtonPadding.PaddingAll15,
+                  child: homePageItemModelObj.type == 'عهدة'
+                      ? Image(image: AssetImage('assets/images/1.png'))
+                      : Image(image: AssetImage('assets/images/2.png'))
+                  //  CustomImageView(
+                  //   svgPath: ImageConstant.imgFire,
+                  // ),
+                  ),
               SizedBox(width: 14),
               Expanded(
                 child: Column(
@@ -80,14 +78,12 @@ class HomePageItemWidget extends StatelessWidget {
                         color: Colors.black87,
                       ),
                     ),
-                    SizedBox(height:10),
+                    SizedBox(height: 10),
                     Text(
-
                       homePageItemModelObj.amount?.toString() ?? "",
                       style: TextStyle(
                         fontSize: 16,
-                                                color: Colors.black87,
-
+                        color: Colors.black87,
                       ),
                     ),
                   ],
@@ -98,7 +94,7 @@ class HomePageItemWidget extends StatelessWidget {
                 homePageItemModelObj.expectedDate ?? "",
                 style: TextStyle(
                   fontSize: 14,
-                        color: Colors.grey.shade600,
+                  color: Colors.grey.shade600,
                 ),
               ),
             ],

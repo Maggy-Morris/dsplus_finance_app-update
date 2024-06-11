@@ -25,7 +25,7 @@ Future<void> bootstrap() async {
   FlutterError.onError =
       (details) => log(details.exceptionAsString(), stackTrace: details.stack);
 
-  Bloc.observer = AppBlocObserver();
+  // Bloc.observer = AppBlocObserver();
 
   configInjector();
 

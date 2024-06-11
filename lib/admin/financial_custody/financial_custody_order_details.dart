@@ -152,7 +152,7 @@ class OrderDetailsBody extends StatelessWidget {
               StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('users')
-                    .doc(userData['userId'] as String)
+                    .doc(userData['id'] as String)
                     .collection('transactions')
                     .doc(context.read<OrderDetailsCubit>().budgetData['id'])
                     .collection('attachments')

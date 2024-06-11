@@ -19,7 +19,7 @@ class PostLoginRespData with PostLoginRespDataMappable {
   String? email;
   String? name;
   String? profile;
-  int? role;
+  String? role;
   String? createdAt;
   String? updatedAt;
   bool? isDeleted;
