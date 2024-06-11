@@ -101,36 +101,48 @@ class OrderHistoryBody extends StatelessWidget {
             itemCount: filteredUsers.length,
             itemBuilder: (context, index) {
               final user = filteredUsers[index];
-              return Card(
-                color: Colors.grey[200],
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  side: BorderSide(color: Colors.grey),
-                ),
-                margin: EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildListTile("User Email", user.email ?? ""),
-                    buildListTile("Budget Name", user.name ?? ''),
-                    buildListTile("Amount", "${user.amount ?? 0}"),
-                    buildListTile("Budget Type", user.type ?? ''),
-                    (user.cashOrCredit == false)
-                        ? buildListTile("Payment Method", "Credit")
-                        : buildListTile("Payment Method", "Cash"),
-                    (user.cashOrCredit == false)
-                        ? buildListTile("Bank Name", user.bankName ?? '')
-                        : Container(),
-                    (user.cashOrCredit == false)
-                        ? buildListTile("Account Number", "${user.accountNumber ?? 0}")
-                        : Container(),
-                    buildListTile("Status", user.status ?? ''),
-                    buildListTile("Start Date", user.date ?? ''),
-                    (user.type == "اذن صرف")
-                        ? buildListTile("End Date", user.expected_date ?? '')
-                        : Container(),
-                  ],
+              return InkWell(
+                onTap: () {
+                  (user.type == "عهدة")
+                      ? Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => OrderDetailsScreen(
+                       budgetData: {},userData: {},
+                      ),
+                    ),
+                  )
+                      :(){};},
+                child: Card(
+                  color: Colors.grey[200],
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    side: BorderSide(color: Colors.grey),
+                  ),
+                  margin: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      buildListTile("User Email", user.email ?? ""),
+                      buildListTile("Budget Name", user.name ?? ''),
+                      buildListTile("Amount", "${user.amount ?? 0}"),
+                      buildListTile("Budget Type", user.type ?? ''),
+                      (user.cashOrCredit == false)
+                          ? buildListTile("Payment Method", "Credit")
+                          : buildListTile("Payment Method", "Cash"),
+                      (user.cashOrCredit == false)
+                          ? buildListTile("Bank Name", user.bankName ?? '')
+                          : Container(),
+                      (user.cashOrCredit == false)
+                          ? buildListTile("Account Number", "${user.accountNumber ?? 0}")
+                          : Container(),
+                      buildListTile("Status", user.status ?? ''),
+                      buildListTile("Start Date", user.date ?? ''),
+                      (user.type == "اذن صرف")
+                          ? buildListTile("End Date", user.expected_date ?? '')
+                          : Container(),
+                    ],
+                  ),
                 ),
               );
             },
