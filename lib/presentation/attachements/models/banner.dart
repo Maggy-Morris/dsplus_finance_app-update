@@ -6,7 +6,8 @@ class Banner {
   String imageUrl;
   String description;
   double amount;
-  
+  String status;
+
   // String creatorId;
   // List<String> shopListId;
   // bool isApproved;
@@ -16,7 +17,7 @@ class Banner {
     required this.id,
     required this.imageUrl,
     required this.description,
-    // required this.creatorId,
+    required this.status,
     // required this.shopListId,
     // required this.isApproved,
     required this.createdAt,
@@ -28,7 +29,7 @@ class Banner {
       'imageUrl': imageUrl,
       'description': description,
       'amount': amount,
-      // 'creatorId': creatorId,
+      'status': status,
       // 'shopListId': shopListId,
       // 'isApproved': isApproved,
       'createdAt': createdAt,
@@ -41,6 +42,7 @@ class Banner {
       id: map['id'] as String,
       imageUrl: map['imageUrl'] as String,
       description: map['description'] as String,
+      status: map['status'] as String,
       // creatorId: map['creatorId'] as String,
       // shopListId: List<String>.from((map['shopListId'])),
       // isApproved: map['isApproved'] as bool,
