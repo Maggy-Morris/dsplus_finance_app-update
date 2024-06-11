@@ -39,9 +39,10 @@ class AdminRequestsView extends StatelessWidget {
 
                   final budgets = snapshot.data!.docs;
                   if (budgets.isEmpty) {
-                    return SizedBox.shrink();
+                    return Center(
+                      child: Text("No requests found"),
+                    );
                   }
-
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

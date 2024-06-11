@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../core/utils/navigator_service.dart';
+
 // import '../presentation/login_page_tab_container_screen/login_page_tab_container_screen.dart';
 import '../routes/app_routes.dart';
 import 'history/bloc/history_cubit.dart';
@@ -17,12 +18,13 @@ import 'add_user/add_users.dart';
 import 'history/presentation/orders_history.dart';
 
 class AdminHomePage extends StatelessWidget {
-   AdminHomePage({super.key});
-   Future<void> logout(BuildContext context) async {
-     try {
-       await FirebaseAuth.instance.signOut();
+  AdminHomePage({super.key});
 
-        NavigatorService.pushNamedAndRemoveUntil(
+  Future<void> logout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+
+      NavigatorService.pushNamedAndRemoveUntil(
           AppRoutes.loginPageTabContainerScreen
 
           //  MaterialPageRoute(
@@ -34,13 +36,12 @@ class AdminHomePage extends StatelessWidget {
       //      builder: (context) => LoginPageTabContainerScreen(),
       //    ),
       //  );
-     } catch (e) {
-       print('Error signing out: $e');
-     }
-   }
+    } catch (e) {
+      print('Error signing out: $e');
+    }
+  }
 
-
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -56,26 +57,79 @@ class AdminHomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
+      body :GridView.builder(
         physics: BouncingScrollPhysics(),
         padding: EdgeInsets.all(10),
-        primary: true,
-shrinkWrap: true,
-
-        children: [
-          InkWell(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, // Number of columns in the grid
+          crossAxisSpacing: 10.0,
+          mainAxisSpacing: 10.0,
+          childAspectRatio: 3 / 5, // Adjust the aspect ratio to fit your design
+        ),
+        itemCount: 4, // Total number of items in the grid
+        itemBuilder: (context, index) {
+          return InkWell(
             hoverDuration: Duration(milliseconds: 100),
             splashColor: Colors.grey[200],
             highlightColor: Colors.grey[200],
-
             borderRadius: BorderRadius.circular(15),
             onTap: () {
-              Navigator.push (context, MaterialPageRoute(builder: (context) =>
-              BlocProvider(
-                create: (context) => AdminRequestsCubit()..fetchData(),
-                child: AdminRequestsView(),
-              ),
-              ));
+              // Define the routes and bloc providers based on the index
+              if (index == 0) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => AdminRequestsCubit()..fetchData(),
+                      child: AdminRequestsView(),
+                    ),
+                  ),
+                );
+              } else if (index == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => UsersBloc()..add(LoadUsers()),
+                        ),
+                        BlocProvider(
+                          create: (context) => AddUserCubit(
+                              FirebaseAuth.instance, FirebaseFirestore.instance),
+                        ),
+                      ],
+                      child: UsersPage(addUserCubit:  AddUserCubit(
+                          FirebaseAuth.instance, FirebaseFirestore.instance),
+                      ),
+                    ),
+                  ),
+                );
+              } else if (index == 2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => OrderHistoryCubit()..fetchData(),
+                      child: OrderHistoryView(),
+                    ),
+                  ),
+                );
+              } else if (index == 3) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => AddUserCubit(
+                          FirebaseAuth.instance, FirebaseFirestore.instance),
+                      child: AddUsers(
+                        addUserCubit: AddUserCubit(
+                            FirebaseAuth.instance, FirebaseFirestore.instance),
+                      ),
+                    ),
+                  ),
+                );
+              }
             },
             child: Card(
               clipBehavior: Clip.antiAlias,
@@ -85,66 +139,47 @@ shrinkWrap: true,
               ),
               semanticContainer: true,
               margin: EdgeInsets.all(10),
-              child: ListTile(
-                title: Text("Requests"),
-                subtitle: Text("View all requests"),
-                trailing: Icon(Icons.arrow_forward_ios),
+              child: Center(
+                child: ListTile(
+                  title: Text(_getTitle(index)),
+                  subtitle: Text(_getSubtitle(index)),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
               ),
             ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push (context, MaterialPageRoute(builder: (context) => BlocProvider(
-                create: (context) => UsersBloc()..add(LoadUsers()),
-                child: UsersPage(),
-              ),
-              ));
-            },
-            child: Card(
-              margin: EdgeInsets.all(10),
-              child: ListTile(
-                title: Text("Users"),
-                subtitle: Text("View all users"),
-                trailing: Icon(Icons.arrow_forward_ios),
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push (context, MaterialPageRoute(builder: (context) => BlocProvider(
-                create: (context) => OrderHistoryCubit()..fetchData(),
-                child: OrderHistoryView(),
-              ),
-              ));
-            },
-            child: Card(
-              margin: EdgeInsets.all(10),
-              child: ListTile(
-                title: Text("History"),
-                subtitle: Text("View all transactions"),
-                trailing: Icon(Icons.arrow_forward_ios),
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push (context, MaterialPageRoute(builder: (context) => BlocProvider(
-                create: (context) => AddUserCubit(FirebaseAuth.instance, FirebaseFirestore.instance),
-                child: AddUsers(addUserCubit: AddUserCubit(FirebaseAuth.instance, FirebaseFirestore.instance),),
-              ),));
-            },
-            child: Card(
-              margin: EdgeInsets.all(10),
-              child: ListTile(
-                title: Text("Add Users"),
-                subtitle: Text("Add new users"),
-                trailing: Icon(Icons.arrow_forward_ios),
-              ),
-            ),
-          ),
-
-        ],
+          );
+        },
       ),
     );
   }
+  String _getTitle(int index) {
+    switch (index) {
+      case 0:
+        return "Requests";
+      case 1:
+        return "Users";
+      case 2:
+        return "History";
+      case 3:
+        return "Add Users";
+      default:
+        return "";
+    }
+  }
+
+  String _getSubtitle(int index) {
+    switch (index) {
+      case 0:
+        return "View all requests";
+      case 1:
+        return "View all users";
+      case 2:
+        return "View all transactions";
+      case 3:
+        return "Add new users";
+      default:
+        return "";
+    }
+  }
 }
+

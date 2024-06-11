@@ -20,9 +20,20 @@ class UserContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.all(10),
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
+        border: Border.all(color: isAdmin ? Colors.blue : Colors.green),
         borderRadius: BorderRadius.circular(10),
         color: isAdmin ? Colors.blue[100] : Colors.green[100],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 7,
+            offset: Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -44,7 +55,10 @@ class UserContainer extends StatelessWidget {
                 children: [
                   Text(user.name),
                   Text(user.email),
-                  Text(user.role),
+                  Text(
+                    user.role,
+                    style: TextStyle(color: isAdmin ? Colors.red : Colors.red),
+                  )
                 ],
               ),
               dense: true,
@@ -62,7 +76,8 @@ class UserContainer extends StatelessWidget {
                               content: Text('Do you want to delete this user?'),
                               actions: <Widget>[
                                 TextButton(
-                                  onPressed: () => Navigator.pop(context, false),
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
                                   child: Text('Cancel'),
                                 ),
                                 TextButton(

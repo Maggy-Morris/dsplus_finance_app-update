@@ -7,11 +7,11 @@ enum AddUserStatus { initial, loading, success, error }
 
 class AddUserCubit extends Cubit<AddUserStatus> {
   final FirebaseAuth _auth;
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore _fireStore;
 
-  AddUserCubit(this._auth, this._firestore) : super(AddUserStatus.initial);
+  AddUserCubit(this._auth, this._fireStore) : super(AddUserStatus.initial);
 
-  void addUser(String name, String email, String password, String role) async {
+  void addUser(String name, String email, String password, String role , String userName) async {
     emit(AddUserStatus.loading);
     try {
       final userCredential = await _auth.createUserWithEmailAndPassword(
@@ -19,10 +19,13 @@ class AddUserCubit extends Cubit<AddUserStatus> {
         password: password,
       );
 
-      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+      await _fireStore.collection('users').doc(userCredential.user!.uid).set({
         'name': name,
         'email': email,
         'role': role,
+        "password": password,
+        "uid": userCredential.user!.uid,
+        "username": userName,
       });
 
       emit(AddUserStatus.success);
