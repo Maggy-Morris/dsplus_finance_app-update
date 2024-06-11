@@ -21,7 +21,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           .where('status', isEqualTo: "pending")
           .get();
 
-      final orders = querySnapshot.docs.map((doc) {
+      final requests = querySnapshot.docs.map((doc) {
         final data = doc.data();
         return RequestModel(
           docId: doc.id,
@@ -42,7 +42,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
       }).toList();
 
       emit(
-          state.copyWith(requests: orders, status: AdminRequestsStatus.loaded));
+          state.copyWith(requests: requests, status: AdminRequestsStatus.loaded));
     } catch (e) {
       // Handle error
       throw Exception('Failed to fetch data: $e');

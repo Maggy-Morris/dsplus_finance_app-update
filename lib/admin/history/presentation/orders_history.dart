@@ -1,3 +1,4 @@
+import 'package:dsplus_finance/admin/requests/model/request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,17 +28,16 @@ class OrderHistoryView extends StatelessWidget {
       ),
       body: BlocBuilder<OrderHistoryCubit, OrderHistoryState>(
         builder: (context, state) {
-          if (state is OrderHistoryLoading) {
+          if (state.status == OrderHistoryStatus.loading) {
             return Center(child: CircularProgressIndicator());
-          } else if (state is OrderHistoryLoaded) {
+          } else if (state.status == OrderHistoryStatus.loaded) {
             return OrderHistoryBody(
-              users: state.users,
+              users: state.orders,
               selectedFilter: state.selectedFilter,
               filter: state.filter,
-              searchController: state.searchController,
             );
-          } else if (state is OrderHistoryError) {
-            return Center(child: Text(state.errorMessage));
+          } else if (state.status == OrderHistoryStatus.error) {
+            return Center(child: Text(state.error));
           }
           return Container();
         },
@@ -47,16 +47,14 @@ class OrderHistoryView extends StatelessWidget {
 }
 
 class OrderHistoryBody extends StatelessWidget {
-  final List<DocumentSnapshot> users;
+  final List<RequestModel> users;
   final String selectedFilter;
   final String filter;
-  final TextEditingController searchController;
 
   OrderHistoryBody({
     required this.users,
     required this.selectedFilter,
     required this.filter,
-    required this.searchController,
   });
 
   @override
@@ -94,109 +92,52 @@ class OrderHistoryBody extends StatelessWidget {
             ],
           ),
         ),
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        //   child: TextField(
-        //     keyboardType: TextInputType.text,
-        //     controller: searchController,
-        //     decoration: InputDecoration(
-        //       labelText: 'Search',
-        //       suffixIcon: IconButton(
-        //         onPressed: () {
-        //           context.read<OrderHistoryCubit>().clearSearch();
-        //         },
-        //         icon: Icon(Icons.clear),
-        //       ),
-        //     ),
-        //     onChanged: (query) {
-        //       context.read<OrderHistoryCubit>().applyFilter(query);
-        //     },
-        //   ),
-        // ),
         Expanded(
-          child: ListView.builder(
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              final userData = users[index].data() as Map<String, dynamic>;
-              return FutureBuilder<QuerySnapshot>(
-                future: FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(users[index].id)
-                    .collection('transactions')
-                    .get(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  final budgets = snapshot.data!.docs;
-
-                  final filteredBudgets = budgets.where((budget) {
-                    final budgetData = budget.data() as Map<String, dynamic>;
-
-                    if (selectedFilter != 'All' &&
-                        budgetData['status'] != selectedFilter) {
-                      return false;
-                    }
-
-                    if (filter.isNotEmpty &&
-                        budgetData.values.any((value) => value
-                            .toString()
-                            .toLowerCase()
-                            .contains(filter.toLowerCase()))) {
-                      return true;
-                    }
-
-                    return true;
-                  }).toList();
-
-                  // formatDate(
-                  //                 Timestamp.fromDate(
-                  //                     DateTime.parse(budgetData['date'])),
-                  //               ),
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ...filteredBudgets.map((budget) {
-                        final budgetData =
-                            budget.data() as Map<String, dynamic>;
-                        final startDate = dateFormat.parse(budgetData['date']);
-
-                        // final expectedDateData =
-                        //     budgetData['expected_date'] ?? '';
-                        // final endDate = expectedDateData != null &&
-                        //         DateTime.tryParse(expectedDateData) != null
-                        //     ? dateFormat.parse(expectedDateData)
-                        //     : null;
-                        final endDate = dateFormat.parse(
-                            budgetData['expected_date'] == null
-                                ? budgetData['date']
-                                : budgetData['expected_date']);
-                        // ? dateFormat.parse(budgetData['date'])
-                        // : dateFormat.parse(budgetData['expected_date']);
-
-                        // final startDate = (budgetData['date'] ).toDate();
-                        // final endDate = (budgetData['expected_date'] ).toDate();
-
-                        return GestureDetector(
-                          onTap: () {
-                            if (budgetData['status'] == 'Approved' &&
-                                budgetData['type'] == 'عهدة') {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => OrderDetailsScreen(
-                                      userData: userData,
-                                      budgetData: budgetData),
-                                ),
-                              );
-                            }
-                          },
-                          child: buildBudgetCard(
-                              userData, budgetData, startDate, endDate),
-                        );
-                      }).toList(),
-                    ],
+          child: BlocBuilder<OrderHistoryCubit, OrderHistoryState>(
+            builder: (context, state) {
+              return ListView.builder(
+                itemCount: state.orders.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    color: Colors.grey[200],
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      side: BorderSide(color: Colors.grey),
+                    ),
+                    margin: EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildListTile(
+                            "User Email", state.orders[index].email ?? ""),
+                        buildListTile(
+                            "Budget Name", state.orders[index].name ?? ''),
+                        buildListTile(
+                            "Amount", "${state.orders[index].amount ?? 0}"),
+                        buildListTile(
+                            "Budget Type", state.orders[index].type ?? ''),
+                        (state.orders[index].cashOrCredit == false)
+                            ? buildListTile("Payment Method", "Credit")
+                            : buildListTile("Payment Method", "Cash"),
+                        (state.orders[index].cashOrCredit == false)
+                            ? buildListTile(
+                                "Bank Name", state.orders[index].bankName ?? '')
+                            : Container(),
+                        (state.orders[index].cashOrCredit == false)
+                            ? buildListTile("Account Number",
+                                "${state.orders[index].accountNumber ?? 0}")
+                            : Container(),
+                        buildListTile(
+                            "Status", state.orders[index].status ?? ''),
+                        buildListTile(
+                            "Start Date", state.orders?[index].date ?? ''),
+                        (state.orders?[index].type == "اذن صرف")
+                            ? buildListTile("End Date",
+                                state.orders?[index].expected_date ?? '')
+                            : Container(),
+                      ],
+                    ),
                   );
                 },
               );
