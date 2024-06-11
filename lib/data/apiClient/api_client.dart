@@ -9,6 +9,7 @@ import 'package:dsplus_finance/firebase_options.dart';
 import 'package:dsplus_finance/presentation/home_page/models/transactions_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
@@ -90,13 +91,14 @@ class ApiClient {
 
       PostRegisterResp postRegisterResp = PostRegisterResp(
           data: Data(
-              name: user.name,
-              email: user.email,
-              password: user.password,
-              id: userCredential.user!.uid,
-              role: user.role,
-              username: user.username,
-              profile: user.profile));
+        name: user.name,
+        email: user.email,
+        // password: user.password,
+        // id: userCredential.user!.uid,
+        role: user.role,
+        // username: user.username,
+        // profile: user.profile
+      ));
       return postRegisterResp;
     } catch (error, stackTrace) {
       ProgressDialogUtils.hideProgressDialog();
@@ -152,19 +154,31 @@ class ApiClient {
       String userID = FirebaseAuth.instance.currentUser?.uid ?? '';
 
       var transactionsRef = _firestore
-        .collection('users')
-        .doc(userID)
-        .collection('transactions')
-        .doc(); // Get a reference to a new document
-    String transactionID = transactionsRef.id; // Get the generated ID
+          .collection('users')
+          .doc(userID)
+          .collection('transactions')
+          .doc(); // Get a reference to a new document
+      String transactionID = transactionsRef.id; // Get the generated ID
 
-    // Set the transaction ID in the transaction model
-    transaction = transaction.copyWith(id: transactionID);
+      // Set the transaction ID in the transaction model
+      transaction = transaction.copyWith(id: transactionID);
 
-    // Set the transaction data in Firestore along with the generated ID
-    await transactionsRef.set(transaction.toJson());
+      // Set the transaction data in Firestore along with the generated ID
+      await transactionsRef.set(transaction.toJson());
 
-    print("Transaction added to Firestore successfully with ID: $transactionID");
+      var transactionsRef2 = _firestore
+          .collection('transactions')
+          .doc(); // Get a reference to a new document
+      String transactionID2 = transactionsRef2.id; // Get the generated ID
+
+      // Set the transaction ID in the transaction model
+      transaction = transaction.copyWith(id: transactionID2);
+
+      // Set the transaction data in Firestore along with the generated ID
+      await transactionsRef2.set(transaction.toJson());
+
+      debugPrint(
+          "Transaction added to Firestore successfully with ID: $transactionID");
 
       return transaction;
     } catch (error, stackTrace) {

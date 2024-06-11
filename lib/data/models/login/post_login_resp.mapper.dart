@@ -165,7 +165,7 @@ class PostLoginRespDataMapper extends ClassMapperBase<PostLoginRespData> {
   static String? _$profile(PostLoginRespData v) => v.profile;
   static const Field<PostLoginRespData, String> _f$profile =
       Field('profile', _$profile, opt: true);
-  static int? _$role(PostLoginRespData v) => v.role;
+  static String? _$role(PostLoginRespData v) => v.role;
   static const Field<PostLoginRespData, int> _f$role =
       Field('role', _$role, opt: true);
   static String? _$createdAt(PostLoginRespData v) => v.createdAt;

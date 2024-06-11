@@ -2,7 +2,6 @@ import 'package:dsplus_finance/presentation/home_page/models/transactions_model.
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../home_page/widgets/homepage_item_widget.dart';
-import '../login_page_tab_container_screen/login_page_tab_container_screen.dart';
 import 'bloc/home_bloc.dart';
 import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:dsplus_finance/widgets/custom_button.dart';
@@ -31,6 +30,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // String userName = PostRegisterReq().name ?? "";
     User? user = FirebaseAuth.instance.currentUser;
     return SafeArea(
         child: Scaffold(
@@ -48,13 +48,12 @@ class HomePage extends StatelessWidget {
                         width: 0,
                       ),
                       title: Container(
-                          width: getHorizontalSize(111),
+                          width: getHorizontalSize(200),
                           margin: getMargin(left: 24),
                           child: RichText(
                               text: TextSpan(children: [
                                 TextSpan(
-                                    text:
-                                        "Hello ${user?.displayName ?? "DS"}".tr,
+                                    text: "Welcome To DS Finanace".tr,
                                     style: TextStyle(
                                         color: ColorConstant.black900,
                                         fontSize: getFontSize(20),
@@ -199,25 +198,38 @@ class HomePage extends StatelessWidget {
                                   List<TransactionsModel>?>(
                               selector: (state) => state.allTransactions,
                               builder: (context, transactions) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 36),
-                                  child: ListView.separated(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      separatorBuilder: (context, index) {
-                                        return SizedBox(
-                                            height: getVerticalSize(15));
-                                      },
-                                      itemCount: transactions?.length ?? 0,
-                                      itemBuilder: (context, index) {
-                                        // HomePageItemModel model = homeModelObj
-                                        //         ?.homePageItemList[index] ??
-                                        //     HomePageItemModel();
-                                        return HomePageItemWidget(
-                                            transactions?[index] ??
-                                                TransactionsModel());
-                                      }),
-                                );
+                                return transactions?.length != 0
+                                    ? Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 36),
+                                        child: ListView.separated(
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            separatorBuilder: (context, index) {
+                                              return SizedBox(
+                                                  height: getVerticalSize(15));
+                                            },
+                                            itemCount:
+                                                transactions?.length ?? 0,
+                                            itemBuilder: (context, index) {
+                                              // HomePageItemModel model = homeModelObj
+                                              //         ?.homePageItemList[index] ??
+                                              //     HomePageItemModel();
+                                              return HomePageItemWidget(
+                                                  transactions?[index] ??
+                                                      TransactionsModel());
+                                            }),
+                                      )
+                                    : Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 50,
+                                          ),
+                                          Image.asset(
+                                              "assets/images/money.png"),
+                                        ],
+                                      );
                               })
                         ],
                       ),

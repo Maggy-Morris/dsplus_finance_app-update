@@ -15,12 +15,29 @@ part 'transfer_event.dart';
 part 'transfer_state.dart';
 
 class TransferBloc extends Bloc<TransferEvent, TransferState> {
+  static TransferBloc get(context) => BlocProvider.of<TransferBloc>(context);
+
   ApiClient _apiClient = getIt<ApiClient>();
 
-  TransferBloc(TransferState initialState) : super(initialState) {
+  TransferBloc() : super(TransferState(files: [])) {
     on<TransferEvent>(_onInitialize);
     on<AddTransactionEvent>(_onAddTransactionEvent);
     on<AddFilesEvent>(_onAddFilesEvent);
+    on<EditName>(_onEditName);
+    on<EditAmount>(_onEditAmount);
+
+
+    on<EditStartDate>(_onEditStartDate);
+        on<EditStartDateString>(_onEditStartDateString);
+
+    on<ExpectedDate>(_onExpectedDate);
+    on<ExpectedDateString>(_onExpectedDateString);
+    on<AccountNumber>(_onAccountNumber);
+    on<BankName>(_onBankName);
+
+    
+
+    on<RadioButtonChanged>(_onRadioButtonChanged);
   }
 
   _onInitialize(
@@ -28,12 +45,12 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     Emitter<TransferState> emit,
   ) async {
     emit(state.copyWith(
-      accountNumberController: TextEditingController(),
-      bankNameController: TextEditingController(),
-      nameController: TextEditingController(),
-      amountController: TextEditingController(),
-      startDateController: TextEditingController(),
-      extractedtDateController: TextEditingController(),
+      // accountNumberController: TextEditingController(),
+      // bankNameController: TextEditingController(),
+      // nameController: TextEditingController(),
+      // amountController: TextEditingController(),
+      // startDateController: TextEditingController(),
+      // extractedtDateController: TextEditingController(),
       files: [], // Initialize files
     ));
   }
@@ -50,12 +67,22 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
 //   return event.transaction.copyWith(id: ref.id);
 // }
 
-  _onAddFilesEvent(
-    AddFilesEvent event,
-    Emitter<TransferState> emit,
-  ) {
+  // _onAddFilesEvent(
+  //   AddFilesEvent event,
+  //   Emitter<TransferState> emit,
+  // ) {
+  //   emit(state.copyWith(
+  //       files: event.files)); // Update files with the selected files
+  // }
+
+  _onAddFilesEvent(AddFilesEvent event, Emitter<TransferState> emit) {
     emit(state.copyWith(
-        files: event.files)); // Update files with the selected files
+      files: event.files,
+      // accountNumberController: TextEditingController(),
+      // bankNameController: TextEditingController(),
+      selectedOption: state.selectedOption,
+      showTextField: state.showTextField,
+    ));
   }
 
   _onAddTransactionEvent(
@@ -71,6 +98,96 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
           addedTransaction: TransactionsModel(), error: error.toString()));
     }
   }
+
+  _onRadioButtonChanged(
+      RadioButtonChanged event, Emitter<TransferState> emit) async {
+    emit(
+      state.copyWith(
+        // accountNumberController: state.accountNumberController,
+        // bankNameController: state.bankNameController,
+        // nameController: state.nameController,
+        // amountController: state.amountController,
+        // startDateController: state.startDateController,
+        // extractedtDateController: state.extractedtDateController,
+        selectedOption: event.selectedOption,
+        showTextField: event.showTextField,
+      ),
+    );
+  }
+
+  _onEditName(EditName event, Emitter<TransferState> emit) async {
+    emit(
+      state.copyWith(
+        name: event.name,
+      ),
+    );
+  }
+
+
+
+  _onEditAmount(EditAmount event, Emitter<TransferState> emit) async {
+    emit(
+      state.copyWith(
+        amount: event.amount,
+      ),
+    );
+  }
+
+
+
+_onEditStartDate(EditStartDate event, Emitter<TransferState> emit) async {
+    emit(
+      state.copyWith(
+        startDate: event.startDate,
+      ),
+    );
+  }
+
+
+_onExpectedDate(ExpectedDate event, Emitter<TransferState> emit) async {
+    emit(
+      state.copyWith(
+        expectedDate: event.expectedDate,
+      ),
+    );
+  }
+
+_onEditStartDateString(EditStartDateString event, Emitter<TransferState> emit) async {
+    emit(
+      state.copyWith(
+      startDateString: event.startDateString,
+      ),
+    );
+  }
+
+
+_onExpectedDateString(ExpectedDateString event, Emitter<TransferState> emit) async {
+    emit(
+      state.copyWith(
+        expectedDateString: event.expectedDateString,
+      ),
+    );
+  }
+
+
+
+_onBankName(BankName event, Emitter<TransferState> emit) async {
+    emit(
+      state.copyWith(
+        bankName: event.bankName,
+      ),
+    );
+  }
+
+  
+_onAccountNumber(AccountNumber event, Emitter<TransferState> emit) async {
+    emit(
+      state.copyWith(
+        accountNumber: event.accountNumber,
+      ),
+    );
+  }
+
   
 
   // void pickAndAddFiles(BuildContext context) async {
@@ -88,33 +205,30 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
   //   }
   // }
 
-
-
-
-  void captureAndAddImage(BuildContext context) async {
-  try {
-    XFile? image = await ImagePicker().pickImage(
-      source: ImageSource.camera, // Specify the image source as camera
-    );
-
-    if (image != null) {
-      int size = await File(image.path).length();
-      PlatformFile pickedFile = PlatformFile(
-        name: image.name,
-        path: image.path,
-        size: size,
-        bytes: await File(image.path).readAsBytes(),
+  void captureAndAddImage() async {
+    try {
+      XFile? image = await ImagePicker().pickImage(
+        source: ImageSource.camera, // Specify the image source as camera
       );
 
-      add(AddFilesEvent([pickedFile]));
-    }
-  } catch (error) {
-    // Handle error
-    print("Error picking image from camera: $error");
-  }
-}
+      if (image != null) {
+        int size = await File(image.path).length();
+        PlatformFile pickedFile = PlatformFile(
+          name: image.name,
+          path: image.path,
+          size: size,
+          bytes: await File(image.path).readAsBytes(),
+        );
 
-  void pickAndAddFiles(BuildContext context) async {
+        add(AddFilesEvent([pickedFile]));
+      }
+    } catch (error) {
+      // Handle error
+      print("Error picking image from camera: $error");
+    }
+  }
+
+  void pickAndAddFiles() async {
     try {
       List<XFile>? result = await ImagePicker().pickMultiImage();
 

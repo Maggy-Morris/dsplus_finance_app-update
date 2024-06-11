@@ -2,29 +2,18 @@ import 'package:dsplus_finance/presentation/transfer_screen/bloc/transfer_bloc.d
 
 import '../../widgets/custom_cardItem.dart';
 import '../home_page/models/transactions_model.dart';
-// import '../home_page_container_screen/home_page_container_screen.dart';
-// import '../send_money_screen/widgets/listellipse311_item_widget.dart';
-// import '../send_money_screen/widgets/listone_item_widget.dart';
-import '../transfer_screen/models/transfer_model.dart';
-import 'bloc/send_money_bloc.dart';
-// import 'models/listellipse311_item_model.dart';
-// import 'models/listone_item_model.dart';
-import 'models/send_money_model.dart';
+
 import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:dsplus_finance/widgets/app_bar/appbar_iconbutton.dart';
-// import 'package:dsplus_finance/widgets/app_bar/appbar_iconbutton_1.dart';
 import 'package:dsplus_finance/widgets/app_bar/appbar_subtitle.dart';
 import 'package:dsplus_finance/widgets/app_bar/custom_app_bar.dart';
 import 'package:dsplus_finance/widgets/custom_button.dart';
-// import 'package:dsplus_finance/widgets/custom_drop_down.dart';
 import 'package:flutter/material.dart';
 
 class SendMoneyScreen extends StatelessWidget {
   static Widget builder(BuildContext context) {
     return BlocProvider<TransferBloc>(
-        create: (context) => TransferBloc(
-            TransferState(transferModelObj: TransferModel(), files: []))
-          ..add(TransferEvent()),
+        create: (context) => TransferBloc()..add(TransferEvent()),
         child: SendMoneyScreen());
   }
 
@@ -60,14 +49,14 @@ class SendMoneyScreen extends StatelessWidget {
                   title: 'Name',
                   value: transaction.name ?? "",
                 ),
-                transaction.accountNumber == null
+                transaction.accountNumber == 0
                     ? SizedBox()
                     : BuildCard(title: 'Date', value: transaction.date ?? ""),
                 BuildCard(
                   title: 'Amount',
-                  value: transaction.amount?.toString() ?? '',
+                  value: "${transaction.amount}",
                 ),
-                transaction.accountNumber == null
+                transaction.accountNumber == 0
                     ? SizedBox()
                     : BuildCard(
                         title: 'Expected Date',
@@ -83,7 +72,7 @@ class SendMoneyScreen extends StatelessWidget {
                     ? SizedBox()
                     : BuildCard(
                         title: 'Account Number',
-                        value: transaction.accountNumber?.toString() ?? ''),
+                        value: "${transaction.accountNumber}"),
                 transaction.attachments?.length == 0 ||
                         transaction.attachments?.length.toString() == null
                     ? SizedBox()
