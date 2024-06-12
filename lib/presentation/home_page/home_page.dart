@@ -16,6 +16,7 @@ class HomePage extends StatelessWidget {
   Future<void> logout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
+      PrefUtils().clearPreferencesData();
       NavigatorService.pushNamedAndRemoveUntil(
           AppRoutes.loginPageTabContainerScreen
 

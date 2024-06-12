@@ -2,9 +2,9 @@ import 'package:dsplus_finance/admin/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/app/app_export.dart';
-
 
 class LoginPageSecond extends StatefulWidget {
   @override
@@ -271,6 +271,24 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
           password: password,
         );
 
+// addUserSharedPrefs({String? email, String? password}) async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('email', email);
+        prefs.setString('password', password);
+
+        User? user = FirebaseAuth.instance.currentUser;
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(user!.uid)
+            .get()
+            .then((DocumentSnapshot documentSnapshot) {
+          if (documentSnapshot.exists) {
+            prefs.setString('role', documentSnapshot.get('role'));
+          }
+        });
+        // String semail = prefs.getString('email') ?? "";
+        // print(semail);
+        // }
         route();
       } on FirebaseAuthException catch (e) {
         String errorMessage;

@@ -1,6 +1,5 @@
 export 'view/app.dart';
 export 'package:dsplus_finance/localization/app_localization.dart';
-// export 'package:dsplus_finance/core/constants/constants.dart';
 export 'package:dsplus_finance/core/utils/image_constant.dart';
 export 'package:dsplus_finance/core/utils/color_constant.dart';
 export 'package:dsplus_finance/core/utils/size_utils.dart';

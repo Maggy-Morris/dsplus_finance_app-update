@@ -3,6 +3,7 @@ import 'package:dsplus_finance/admin/users/presentaion/users.dart';
 import 'package:dsplus_finance/admin/users/user_bloc/users_bloc.dart';
 import 'package:dsplus_finance/admin/users/user_bloc/users_event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,12 +18,17 @@ import 'add_user/add_users.dart';
 import 'history/presentation/orders_history.dart';
 
 class AdminHomePage extends StatelessWidget {
-   AdminHomePage({super.key});
-   Future<void> logout(BuildContext context) async {
-     try {
-       await FirebaseAuth.instance.signOut();
+  static Widget builder(BuildContext context) {
+    return AdminHomePage();
+  }
 
-        NavigatorService.pushNamedAndRemoveUntil(
+  AdminHomePage({super.key});
+  Future<void> logout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      PrefUtils().clearPreferencesData();
+
+      NavigatorService.pushNamedAndRemoveUntil(
           AppRoutes.loginPageTabContainerScreen
 
           //  MaterialPageRoute(
@@ -34,13 +40,12 @@ class AdminHomePage extends StatelessWidget {
       //      builder: (context) => LoginPageTabContainerScreen(),
       //    ),
       //  );
-     } catch (e) {
-       print('Error signing out: $e');
-     }
-   }
+    } catch (e) {
+      print('Error signing out: $e');
+    }
+  }
 
-
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -60,22 +65,22 @@ class AdminHomePage extends StatelessWidget {
         physics: BouncingScrollPhysics(),
         padding: EdgeInsets.all(10),
         primary: true,
-shrinkWrap: true,
-
+        shrinkWrap: true,
         children: [
           InkWell(
             hoverDuration: Duration(milliseconds: 100),
             splashColor: Colors.grey[200],
             highlightColor: Colors.grey[200],
-
             borderRadius: BorderRadius.circular(15),
             onTap: () {
-              Navigator.push (context, MaterialPageRoute(builder: (context) =>
-              BlocProvider(
-                create: (context) => AdminRequestsCubit()..fetchData(),
-                child: AdminRequestsView(),
-              ),
-              ));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => AdminRequestsCubit()..fetchData(),
+                      child: AdminRequestsView(),
+                    ),
+                  ));
             },
             child: Card(
               clipBehavior: Clip.antiAlias,
@@ -94,11 +99,14 @@ shrinkWrap: true,
           ),
           InkWell(
             onTap: () {
-              Navigator.push (context, MaterialPageRoute(builder: (context) => BlocProvider(
-                create: (context) => UsersBloc()..add(LoadUsers()),
-                child: UsersPage(),
-              ),
-              ));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => UsersBloc()..add(LoadUsers()),
+                      child: UsersPage(),
+                    ),
+                  ));
             },
             child: Card(
               margin: EdgeInsets.all(10),
@@ -111,11 +119,14 @@ shrinkWrap: true,
           ),
           InkWell(
             onTap: () {
-              Navigator.push (context, MaterialPageRoute(builder: (context) => BlocProvider(
-                create: (context) => OrderHistoryCubit()..fetchData(),
-                child: OrderHistoryView(),
-              ),
-              ));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => OrderHistoryCubit()..fetchData(),
+                      child: OrderHistoryView(),
+                    ),
+                  ));
             },
             child: Card(
               margin: EdgeInsets.all(10),
@@ -128,10 +139,18 @@ shrinkWrap: true,
           ),
           InkWell(
             onTap: () {
-              Navigator.push (context, MaterialPageRoute(builder: (context) => BlocProvider(
-                create: (context) => AddUserCubit(FirebaseAuth.instance, FirebaseFirestore.instance),
-                child: AddUsers(addUserCubit: AddUserCubit(FirebaseAuth.instance, FirebaseFirestore.instance),),
-              ),));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => AddUserCubit(
+                          FirebaseAuth.instance, FirebaseFirestore.instance),
+                      child: AddUsers(
+                        addUserCubit: AddUserCubit(
+                            FirebaseAuth.instance, FirebaseFirestore.instance),
+                      ),
+                    ),
+                  ));
             },
             child: Card(
               margin: EdgeInsets.all(10),
@@ -142,7 +161,6 @@ shrinkWrap: true,
               ),
             ),
           ),
-
         ],
       ),
     );
