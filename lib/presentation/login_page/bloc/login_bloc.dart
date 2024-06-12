@@ -60,9 +60,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   void _onCreateLoginSuccess(
     PostLoginResp resp,
+    // PostLoginRespData data,
     Emitter<LoginState> emit,
   ) {
     PrefUtils().setId(resp.data?.id ?? '');
+    // PrefUtils().setId(data.email?? '');
+
+
     emit(
       state.copyWith(
         loginModelObj: state.loginModelObj?.copyWith(),

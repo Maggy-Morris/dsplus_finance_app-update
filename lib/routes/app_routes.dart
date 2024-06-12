@@ -13,6 +13,7 @@ import 'package:dsplus_finance/presentation/settings_screen/settings_screen.dart
 import 'package:dsplus_finance/presentation/app_navigation_screen/app_navigation_screen.dart';
 
 // import '../admin/login_page_second.dart';
+import '../admin/home_page.dart';
 import '../presentation/ask_for_cash_screen/ask_for_cash_screen.dart';
 import '../presentation/attachements/banner/screens/add_banner_screen.dart';
 import '../presentation/details_page/details_page.dart';
@@ -23,6 +24,9 @@ class AppRoutes {
 
   static const String loginPageTabContainerScreen =
       '/login_page_tab_container_screen';
+
+  static const String adminHomePage = '/admin-home-page';
+
 
   static const String addBannerScreen = '/add-banner-screen';
 
@@ -77,6 +81,7 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> get routes => {
         // loginPageSecond:LoginPageSecond.builder,
+        adminHomePage : AdminHomePage.builder,
         addBannerScreen: AddBannerScreen.builder,
         splashScreen: SplashScreen.builder,
         detailsPage: DetailsPage.builder,

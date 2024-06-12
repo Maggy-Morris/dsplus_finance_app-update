@@ -1,5 +1,7 @@
+import 'package:dsplus_finance/admin/home_page.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/app/app_export.dart';
 import 'package:dsplus_finance/presentation/splash_screen/models/splash_model.dart';
 part 'splash_event.dart';
@@ -14,11 +16,27 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     SplashInitialEvent event,
     Emitter<SplashState> emit,
   ) async {
+    // addUserSharedPrefs({String? email, String? password}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // prefs.setString('email', email);
+    // prefs.setString('password', password);
+
+    String emailSaved = prefs.getString('email') ?? "";
+    String roleSaved = prefs.getString('role') ?? "";
+
+    // print(semail);
+    // }
     final String? loggedInUserId = PrefUtils().getId();
     Future.delayed(const Duration(seconds: 3), () {
-      if (loggedInUserId?.isNotEmpty ?? false) {
+      if (
+          // loggedInUserId?.isNotEmpty ?? false ||
+          emailSaved.isNotEmpty) {
         debugPrint('id:$loggedInUserId');
-        NavigatorService.popAndPushNamed(AppRoutes.homePageContainerScreen);
+        if (roleSaved == "Admin") {
+          NavigatorService.popAndPushNamed(AppRoutes.adminHomePage);
+        } else {
+          NavigatorService.popAndPushNamed(AppRoutes.homePageContainerScreen);
+        }
       } else {
         NavigatorService.popAndPushNamed(AppRoutes.loginPageTabContainerScreen);
       }
