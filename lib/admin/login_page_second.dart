@@ -25,7 +25,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
         child: Column(
           children: <Widget>[
             Container(
-              color: Color.fromARGB(255, 165, 208, 233),
+              color: Color.fromARGB(255, 165, 233, 224),
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: Center(

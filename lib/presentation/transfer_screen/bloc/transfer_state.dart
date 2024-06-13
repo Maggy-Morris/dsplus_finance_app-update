@@ -24,10 +24,10 @@ class TransferState extends Equatable {
     this.error,
     // this.accountNumberController,
     // this.bankNameController,
-    required this.files,
+    this.files = const [],
   });
 
-  List<PlatformFile> files = const [];
+  final List<PlatformFile> files;
   TransactionsModel? transaction; // Include transaction in copyWith
   final DateTime? startDate;
   final DateTime? expectedDate;

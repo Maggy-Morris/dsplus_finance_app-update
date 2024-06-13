@@ -6,9 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../core/utils/navigator_service.dart';
 // import '../presentation/login_page_tab_container_screen/login_page_tab_container_screen.dart';
 import '../routes/app_routes.dart';
 import 'history/bloc/history_cubit.dart';
