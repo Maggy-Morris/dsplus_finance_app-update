@@ -112,29 +112,18 @@ class ApiClient {
 
   Stream<List<TransactionsModel>> getAllTransactions() {
     try {
-      // ProgressDialogUtils.showProgressDialog();
-      // await isNetworkConnected();
-      // List<TransactionsModel> firebaseModelList = [];
       String userID = FirebaseAuth.instance.currentUser?.uid ?? '';
 
-      var transactions =
-          _firestore.collection('users').doc(userID).collection('transactions');
+      var transactionsRef = _firestore
+          .collection('transactions')
+          .where('userId', isEqualTo: userID);
 
-      return transactions.snapshots().map(
-        (event) {
-          return event.docs.map((e) {
-            var data = e.data();
-            return TransactionsModel.fromJson(data, e.id);
-          }).toList();
-
-          // for (var docSnapshot in event.docs) {
-          //   firebaseModelList.add(TransactionsModel.fromJson(
-          //       docSnapshot.data()));
-          // }
-          // return firebaseModelList;
-        },
-      );
-      // ProgressDialogUtils.hideProgressDialog();
+      return transactionsRef.snapshots().map((snapshot) {
+        return snapshot.docs.map((doc) {
+          var data = doc.data();
+          return TransactionsModel.fromJson(data, doc.id);
+        }).toList();
+      });
     } catch (error, stackTrace) {
       ProgressDialogUtils.hideProgressDialog();
       Logger.log(
@@ -153,18 +142,18 @@ class ApiClient {
     try {
       String userID = FirebaseAuth.instance.currentUser?.uid ?? '';
 
-      var transactionsRef = _firestore
-          .collection('users')
-          .doc(userID)
-          .collection('transactions')
-          .doc(); // Get a reference to a new document
-      String transactionID = transactionsRef.id; // Get the generated ID
+      // var transactionsRef = _firestore
+      //     // .collection('users')
+      //     // .doc(userID)
+      //     .collection('transactions')
+      //     .doc(); // Get a reference to a new document
+      // String transactionID = transactionsRef.id; // Get the generated ID
 
       // Set the transaction ID in the transaction model
-      transaction = transaction.copyWith(id: transactionID);
+      // transaction = transaction.copyWith(id: transactionID);
 
       // Set the transaction data in Firestore along with the generated ID
-      await transactionsRef.set(transaction.toJson());
+      // await transactionsRef.set(transaction.toJson());
 
       var transactionsRef2 = _firestore
           .collection('transactions')
@@ -178,7 +167,7 @@ class ApiClient {
       await transactionsRef2.set(transaction.toJson());
 
       debugPrint(
-          "Transaction added to Firestore successfully with ID: $transactionID");
+          "Transaction added to Firestore successfully with ID: $transactionID2");
 
       return transaction;
     } catch (error, stackTrace) {

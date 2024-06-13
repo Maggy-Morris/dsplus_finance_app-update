@@ -26,16 +26,13 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     on<EditName>(_onEditName);
     on<EditAmount>(_onEditAmount);
 
-
     on<EditStartDate>(_onEditStartDate);
-        on<EditStartDateString>(_onEditStartDateString);
+    on<EditStartDateString>(_onEditStartDateString);
 
     on<ExpectedDate>(_onExpectedDate);
     on<ExpectedDateString>(_onExpectedDateString);
     on<AccountNumber>(_onAccountNumber);
     on<BankName>(_onBankName);
-
-    
 
     on<RadioButtonChanged>(_onRadioButtonChanged);
   }
@@ -45,51 +42,31 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     Emitter<TransferState> emit,
   ) async {
     emit(state.copyWith(
-      // accountNumberController: TextEditingController(),
-      // bankNameController: TextEditingController(),
-      // nameController: TextEditingController(),
-      // amountController: TextEditingController(),
-      // startDateController: TextEditingController(),
-      // extractedtDateController: TextEditingController(),
       files: [], // Initialize files
     ));
   }
 
-//   Future<TransactionsModel> add(AddTransactionEvent event) async {
-//   final ref = firestore
-//       .collection('users')
-//       .doc(firebaseAuth.currentUser!.uid)
-//       .collection('transactions')
-//       .doc();
-
-//   await ref.set(event.transaction.toJson());
-
-//   return event.transaction.copyWith(id: ref.id);
-// }
-
-  // _onAddFilesEvent(
-  //   AddFilesEvent event,
-  //   Emitter<TransferState> emit,
-  // ) {
-  //   emit(state.copyWith(
-  //       files: event.files)); // Update files with the selected files
-  // }
-
   _onAddFilesEvent(AddFilesEvent event, Emitter<TransferState> emit) {
-    emit(state.copyWith(
-      files: event.files,
-      // accountNumberController: TextEditingController(),
-      // bankNameController: TextEditingController(),
-      selectedOption: state.selectedOption,
-      showTextField: state.showTextField,
-    ));
+    List<PlatformFile> newFiles = List.from(state.files);
+
+    if (event.files != null && event.files.isNotEmpty) {
+      newFiles.addAll(event.files);
+
+      emit(state.copyWith(
+        files: newFiles,
+      ));
+    } else if (event.index != null) {
+      newFiles.removeAt(event.index ?? 0);
+      emit(state.copyWith(
+        files: newFiles,
+      ));
+    }
   }
 
   _onAddTransactionEvent(
     AddTransactionEvent event,
     Emitter<TransferState> emit,
   ) async {
-    // mapEventToState(event);
     try {
       await _apiClient.addTransactions(event.transaction);
       emit(state.copyWith(addedTransaction: event.transaction));
@@ -103,12 +80,6 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       RadioButtonChanged event, Emitter<TransferState> emit) async {
     emit(
       state.copyWith(
-        // accountNumberController: state.accountNumberController,
-        // bankNameController: state.bankNameController,
-        // nameController: state.nameController,
-        // amountController: state.amountController,
-        // startDateController: state.startDateController,
-        // extractedtDateController: state.extractedtDateController,
         selectedOption: event.selectedOption,
         showTextField: event.showTextField,
       ),
@@ -123,8 +94,6 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     );
   }
 
-
-
   _onEditAmount(EditAmount event, Emitter<TransferState> emit) async {
     emit(
       state.copyWith(
@@ -133,9 +102,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     );
   }
 
-
-
-_onEditStartDate(EditStartDate event, Emitter<TransferState> emit) async {
+  _onEditStartDate(EditStartDate event, Emitter<TransferState> emit) async {
     emit(
       state.copyWith(
         startDate: event.startDate,
@@ -143,8 +110,7 @@ _onEditStartDate(EditStartDate event, Emitter<TransferState> emit) async {
     );
   }
 
-
-_onExpectedDate(ExpectedDate event, Emitter<TransferState> emit) async {
+  _onExpectedDate(ExpectedDate event, Emitter<TransferState> emit) async {
     emit(
       state.copyWith(
         expectedDate: event.expectedDate,
@@ -152,16 +118,17 @@ _onExpectedDate(ExpectedDate event, Emitter<TransferState> emit) async {
     );
   }
 
-_onEditStartDateString(EditStartDateString event, Emitter<TransferState> emit) async {
+  _onEditStartDateString(
+      EditStartDateString event, Emitter<TransferState> emit) async {
     emit(
       state.copyWith(
-      startDateString: event.startDateString,
+        startDateString: event.startDateString,
       ),
     );
   }
 
-
-_onExpectedDateString(ExpectedDateString event, Emitter<TransferState> emit) async {
+  _onExpectedDateString(
+      ExpectedDateString event, Emitter<TransferState> emit) async {
     emit(
       state.copyWith(
         expectedDateString: event.expectedDateString,
@@ -169,9 +136,7 @@ _onExpectedDateString(ExpectedDateString event, Emitter<TransferState> emit) asy
     );
   }
 
-
-
-_onBankName(BankName event, Emitter<TransferState> emit) async {
+  _onBankName(BankName event, Emitter<TransferState> emit) async {
     emit(
       state.copyWith(
         bankName: event.bankName,
@@ -179,31 +144,13 @@ _onBankName(BankName event, Emitter<TransferState> emit) async {
     );
   }
 
-  
-_onAccountNumber(AccountNumber event, Emitter<TransferState> emit) async {
+  _onAccountNumber(AccountNumber event, Emitter<TransferState> emit) async {
     emit(
       state.copyWith(
         accountNumber: event.accountNumber,
       ),
     );
   }
-
-  
-
-  // void pickAndAddFiles(BuildContext context) async {
-  //   try {
-  //     FilePickerResult? result = await FilePicker.platform.pickFiles(
-  //       allowMultiple: true,
-  //     );
-
-  //     if (result != null) {
-  //       List<PlatformFile> pickedFiles = result.files;
-  //       add(AddFilesEvent(pickedFiles));
-  //     }
-  //   } catch (error) {
-  //     // Handle error
-  //   }
-  // }
 
   void captureAndAddImage() async {
     try {
@@ -220,7 +167,10 @@ _onAccountNumber(AccountNumber event, Emitter<TransferState> emit) async {
           bytes: await File(image.path).readAsBytes(),
         );
 
-        add(AddFilesEvent([pickedFile]));
+        List<PlatformFile> updatedFiles = List.from(state.files);
+        updatedFiles.add(pickedFile);
+
+        add(AddFilesEvent(files: updatedFiles));
       }
     } catch (error) {
       // Handle error
@@ -232,7 +182,7 @@ _onAccountNumber(AccountNumber event, Emitter<TransferState> emit) async {
     try {
       List<XFile>? result = await ImagePicker().pickMultiImage();
 
-      if (result != null) {
+      if (result.isNotEmpty) {
         List<Future<PlatformFile>> pickedFilesFutures =
             result.map((file) async {
           int size = await File(file.path).length();
@@ -245,9 +195,16 @@ _onAccountNumber(AccountNumber event, Emitter<TransferState> emit) async {
         }).toList();
 
         List<PlatformFile> pickedFiles = await Future.wait(pickedFilesFutures);
-        add(AddFilesEvent(pickedFiles));
+
+        List<PlatformFile> updatedFiles = List.from(state.files);
+        updatedFiles.addAll(pickedFiles);
+
+        add(AddFilesEvent(files: updatedFiles));
       }
-    } catch (error) {}
+    } catch (error) {
+      // Handle error
+      print("Error picking images: $error");
+    }
   }
 
   void removeFileAtIndex(int index) {
@@ -271,10 +228,7 @@ _onAccountNumber(AccountNumber event, Emitter<TransferState> emit) async {
       }
 
       // Update the transaction model with the file URLs
-      // TransactionsModel transaction = state.transaction ?? TransactionsModel();
       transaction.attachments = fileUrls;
-
-      // .copyWith(attachments: fileUrls, cashOrCredit: false);
 
       add(AddTransactionEvent(transaction));
     } catch (error) {
@@ -283,12 +237,8 @@ _onAccountNumber(AccountNumber event, Emitter<TransferState> emit) async {
   }
 
   Stream<TransferState> mapEventToState(AddTransactionEvent event) async* {
-    // Add your logic here to add the transaction and upload it to Firebase
     try {
-      // Add the transaction to your database
-      // Example:
       await _apiClient.addTransactions(event.transaction);
-      // await myFirebaseService.addTransaction(event.transaction);
       yield state.copyWith(addedTransaction: event.transaction);
     } catch (error) {
       yield state.copyWith(error: error.toString());

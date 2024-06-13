@@ -67,18 +67,18 @@ class TransferScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Padding(
-                        padding: getPadding(top: 12),
-                        child: Text("lbl_alex_dordan".tr,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.left,
-                            style: AppStyle.txtPoppinsMedium18)),
-                    Padding(
-                        padding: getPadding(top: 1),
-                        child: Text("lbl_web_developer".tr,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.left,
-                            style: AppStyle.txtPoppinsMedium10Gray500)),
+                    // Padding(
+                    //     padding: getPadding(top: 12),
+                    //     child: Text("lbl_alex_dordan".tr,
+                    //         overflow: TextOverflow.ellipsis,
+                    //         textAlign: TextAlign.left,
+                    //         style: AppStyle.txtPoppinsMedium18)),
+                    // Padding(
+                    //     padding: getPadding(top: 1),
+                    //     child: Text("lbl_web_developer".tr,
+                    //         overflow: TextOverflow.ellipsis,
+                    //         textAlign: TextAlign.left,
+                    //         style: AppStyle.txtPoppinsMedium10Gray500)),
                     Container(
                         width: getHorizontalSize(325),
                         margin: getMargin(left: 25, top: 28, right: 25),
@@ -286,8 +286,7 @@ class TransferScreen extends StatelessWidget {
                       shape: IconButtonShape.CircleBorder35,
                       padding: IconButtonPadding.PaddingAll23,
                       onTap: () async {
-                        if (
-                          state.name?.isNotEmpty == true &&
+                        if (state.name?.isNotEmpty == true &&
                             state.amount != 0 &&
                             state.startDateString?.isNotEmpty == true &&
                             state.expectedDateString?.isNotEmpty == true) {
@@ -303,7 +302,7 @@ class TransferScreen extends StatelessWidget {
                             id: "",
                             cashOrCredit:
                                 state.selectedOption == "cash" ? true : false,
-                            bankName: state.bankName ,
+                            bankName: state.bankName,
                             accountNumber: state.accountNumber,
                           );
 

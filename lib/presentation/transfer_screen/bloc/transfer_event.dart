@@ -94,7 +94,11 @@ class ExpectedDateString extends TransferEvent {
 
 class AddFilesEvent extends TransferEvent {
   final List<PlatformFile> files;
-  AddFilesEvent(this.files);
+  final int? index;
+
+  AddFilesEvent({ required this.files, this.index });
+  @override
+  List<Object?> get props => [files, index];
 }
 
 class RemoveFile extends TransferEvent {

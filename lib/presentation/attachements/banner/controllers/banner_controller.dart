@@ -19,17 +19,17 @@ class BannerController {
     required String status,
     required transactionID,
   }) async {
-    final DocumentReference ref;
+    // final DocumentReference ref;
 
     final DocumentReference ref2;
 
-    ref = firestore
-        .collection('users')
-        .doc(firebaseAuth.currentUser!.uid)
-        .collection('transactions')
-        .doc(transactionID)
-        .collection('attachments')
-        .doc();
+    // ref = firestore
+    //     .collection('users')
+    //     .doc(firebaseAuth.currentUser!.uid)
+    //     .collection('transactions')
+    //     .doc(transactionID)
+    //     .collection('attachments')
+    //     .doc();
 
     ref2 = firestore
         // .collection('users')
@@ -40,12 +40,12 @@ class BannerController {
         .doc();
 
     String imageUrl = await storeFileToFirebase(
-      'attachments/${ref.id}',
+      'attachments/${ref2.id}',
       File(image.path),
     );
 
     model.Banner banner = model.Banner(
-      id: ref.id,
+      id: ref2.id,
       imageUrl: imageUrl,
       description: description,
       amount: amount,
@@ -57,13 +57,13 @@ class BannerController {
       createdAt: DateTime.now().millisecondsSinceEpoch,
     );
 
-    await ref.set(banner.toMap()).catchError((error) {
-      debugPrint(error);
-    });
-
     await ref2.set(banner.toMap()).catchError((error) {
       debugPrint(error);
     });
+
+    // await ref2.set(banner.toMap()).catchError((error) {
+    //   debugPrint(error);
+    // });
   }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,8 +71,8 @@ class BannerController {
     required String transactionID,
   }) {
     return firestore
-        .collection('users')
-        .doc(firebaseAuth.currentUser!.uid)
+        // .collection('users')
+        // .doc(firebaseAuth.currentUser!.uid)
         .collection('transactions')
         .doc(transactionID.isNotEmpty
             ? transactionID
@@ -97,8 +97,8 @@ class BannerController {
   }) async {
     final DocumentReference ref;
     ref = firestore
-        .collection('users')
-        .doc(firebaseAuth.currentUser!.uid)
+        // .collection('users')
+        // .doc(firebaseAuth.currentUser!.uid)
         .collection('transactions')
         .doc(transactionID)
         .collection('attachments')

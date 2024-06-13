@@ -236,69 +236,7 @@ class _AskForCashScreenState extends State<AskForCashScreen> {
                         ),
                       ),
 
-                      //   BlocSelector<TransferBloc, TransferState, List<PlatformFile>>(
-                      //   selector: (state) => state.files,
-                      //   builder: (context, files) {
-                      //     return SingleChildScrollView(
-                      //       child: Column(
-                      //         children: [
-                      //           Row(
-                      //             mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      //             children: [
-                      //               ElevatedButton(
-                      //                 onPressed: () {
-                      //                   context
-                      //                       .read<TransferBloc>()
-                      //                       .pickAndAddFiles(context);
-                      //                 },
-                      //                 child: Text(' Pick Images '),
-                      //               ),
-                      //               ElevatedButton(
-                      //                 onPressed: () {
-                      //                   context
-                      //                       .read<TransferBloc>()
-                      //                       .captureAndAddImage(context);
-                      //                 },
-                      //                 child: Text(' Capture Images '),
-                      //               ),
-                      //             ],
-                      //           ),
-                      //           SizedBox(height: 20),
-                      //           ListView.builder(
-                      //             shrinkWrap: true,
-                      //             physics: const NeverScrollableScrollPhysics(),
-                      //             itemCount: files.length,
-                      //             itemBuilder: (context, index) {
-                      //               PlatformFile file = files[index];
-
-                      //               return ListTile(
-                      //                 title: Text(file.name),
-                      //                 leading: Image.file(
-                      //                   File(file.path!),
-                      //                   width: 50,
-                      //                   height: 50,
-                      //                   fit: BoxFit.cover,
-                      //                 ),
-                      //                 trailing: IconButton(
-                      //                   icon: Icon(Icons.close),
-                      //                   onPressed: () {
-                      //                     // Add your logic here to remove the file from the state
-                      //                     context
-                      //                         .read<TransferBloc>()
-                      //                         .removeFileAtIndex(index);
-                      //                   },
-                      //                 ),
-                      //               );
-                      //             },
-                      //           ),
-                      //         ],
-                      //       ),
-                      //     );
-                      //   },
-                      // ),
-                      // BlocBuilder<TransferBloc, TransferState>(
-                      //   builder: (context, state) {
-                      //     return
+                    
 
                       SingleChildScrollView(
                         child: Column(
