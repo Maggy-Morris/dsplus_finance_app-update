@@ -38,7 +38,9 @@ class AdminRequestsView extends StatelessWidget {
                       buildListTile(
                           "User Email", state.requests?[index].email ?? ""),
                       buildListTile(
-                          "Budget Name", state.requests?[index].name ?? ''),
+                          "User Name", state.requests?[index].userName ?? ""),
+                      buildListTile(
+                          "Budget Name", state.requests?[index].budgetName ?? ''),
                       buildListTile(
                           "Amount", "${state.requests?[index].amount ?? 0}"),
                       buildListTile(
@@ -87,7 +89,7 @@ buildListTile(String title, String subtitle) {
       title,
       style: TextStyle(fontWeight: FontWeight.bold),
     ),
-    subtitle: Text(
+    subtitle: SelectableText(
       subtitle,
       style: TextStyle(fontSize: 17),
     ),
@@ -103,7 +105,6 @@ Widget buildButtons(BuildContext context, String budgetId, String userId) {
       ElevatedButton(
         onPressed: () {
           cubit.approveBudget(budgetId);
-          cubit.approveBudget2(userId, budgetId);
         },
         style: ElevatedButton.styleFrom(
           fixedSize: Size(150, 40),
@@ -177,7 +178,7 @@ Future<void> showRejectDialog(BuildContext context, String budgetId,
               String reason = reasonController.text;
               if (reason.isNotEmpty) {
                 await cubit.rejectBudget(budgetId, reason);
-                cubit.rejectBudget2(userId, budgetId, reason);
+                // cubit.rejectBudget2(userId, budgetId, reason);
                 Navigator.pop(context);
               }
             },

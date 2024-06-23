@@ -105,7 +105,7 @@ class AdminHomePage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => BlocProvider(
-                        create: (context) => OrderHistoryCubit()..fetchData(),
+                        create: (context) => OrderHistoryCubit(),
                         child: OrderHistoryView(),
                       ),
                     ),
@@ -158,8 +158,13 @@ class AdminHomePage extends StatelessWidget {
                                           backgroundColor:
                                               Colors.red.withOpacity(0.6),
                                           alignment: Alignment.topRight,
-                                          label: Text(
+                                          label: (snapshot.data <= 99)? Text(
                                             snapshot.data.toString(),
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16),
+                                          ): Text(
+                                            "99",
                                             style: const TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 16),

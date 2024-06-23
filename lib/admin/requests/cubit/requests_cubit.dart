@@ -29,7 +29,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           amount: data['amount'] ?? 0.0,
           status: data['status'] ?? "",
           email: data["email"] ?? "",
-          name: data["name"] ?? "",
+          budgetName: data["name"] ?? "",
           type: data["type"] ?? "",
           reason: data["reason"] ?? "",
           date: data["date"] ?? "",
@@ -38,6 +38,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           attachments: List<String>.from(data["attachments"] ?? []),
           bankName: data["bankName"] ?? "",
           cashOrCredit: data["cashOrCredit"] ?? false,
+          userName: data["userName"] ?? "",
         );
       }).toList();
 
@@ -55,10 +56,13 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           .collection('transactions')
           .doc(budgetId)
           .update({'status': 'Approved'});
-      fetchData(); // Refresh data after approval
-      print("Budget approved successfully!");
+      // fetchData(); // Refresh data after approval
+      emit(state.copyWith(status: AdminRequestsStatus.loaded));
     } catch (error) {
-      print("Failed to approve budget: $error");
+      emit(state.copyWith(
+        status: AdminRequestsStatus.error,
+        error: 'Failed to approve budget: $error',
+      ));
     }
   }
 
@@ -69,14 +73,18 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           .doc(budgetId)
           .update({'status': 'Rejected', 'reason': reason});
       fetchData(); // Refresh data after rejection
-      print("Budget rejected successfully!");
+      emit(state.copyWith(status: AdminRequestsStatus.loaded));
     } catch (error) {
-      print("Failed to reject budget: $error");
+      emit(state.copyWith(
+        status: AdminRequestsStatus.error,
+        error: 'Failed to reject budget: $error',
+      ));
     }
   }
 
   Stream numberOfRequests() {
     StreamController<int> controller = StreamController<int>();
+    StreamSubscription<QuerySnapshot> _subscription =
     FirebaseFirestore.instance
         .collection('transactions')
         .where('status', isEqualTo: "pending")
@@ -87,31 +95,10 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
     return controller.stream;
   }
 
-   approveBudget2(String userId, String budgetId) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .collection('transactions')
-          .doc(budgetId)
-          .update({'status': 'Approved'});
-      print("Budget approved successfully!");
-    } catch (error) {
-      print("Failed to approve budget: $error");
-    }
-  }
 
-   rejectBudget2(String userId, String budgetId, String reason) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .collection('transactions')
-          .doc(budgetId)
-          .update({'status': 'Rejected', 'reason': reason});
-      print("Budget rejected successfully!");
-    } catch (error) {
-      print("Failed to reject budget: $error");
-    }
+  @override
+  Future<void> close() {
+    _subscription.cancel();
+    return super.close();
   }
 }

@@ -21,6 +21,7 @@ class OrderHistoryPage extends StatelessWidget {
 class OrderHistoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    context.read<OrderHistoryCubit>().fetchData();
     return Scaffold(
       appBar: AppBar(
         title: Text("Transactions History"),
@@ -64,7 +65,8 @@ class OrderHistoryBody extends StatelessWidget {
     // Filter the users based on the selected filter
     List<RequestModel> filteredUsers = users;
     if (selectedFilter != 'All') {
-      filteredUsers = users.where((user) => user.status == selectedFilter).toList();
+      filteredUsers =
+          users.where((user) => user.status == selectedFilter).toList();
     }
 
     return Column(
@@ -83,7 +85,9 @@ class OrderHistoryBody extends StatelessWidget {
               DropdownButton<String>(
                 value: selectedFilter,
                 onChanged: (String? newValue) {
-                  context.read<OrderHistoryCubit>().applySelectedFilter(newValue!);
+                  context
+                      .read<OrderHistoryCubit>()
+                      .applySelectedFilter(newValue!);
                 },
                 items: <String>['All', 'Approved', 'pending', 'Rejected']
                     .map<DropdownMenuItem<String>>((String value) {
@@ -105,13 +109,14 @@ class OrderHistoryBody extends StatelessWidget {
                 onTap: () {
                   (user.type == "عهدة")
                       ? Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => OrderDetailsScreen(
-                       budgetData: {},userData: {},
-                      ),
-                    ),
-                  )
-                      :(){};},
+                          MaterialPageRoute(
+                            builder: (context) => OrderDetailsScreen(
+                              userData: user,
+                            ),
+                          ),
+                        )
+                      : () {};
+                },
                 child: Card(
                   color: Colors.grey[200],
                   elevation: 5,
@@ -124,7 +129,8 @@ class OrderHistoryBody extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       buildListTile("User Email", user.email ?? ""),
-                      buildListTile("Budget Name", user.name ?? ''),
+                      buildListTile("User Name", user.userName ?? ""),
+                      buildListTile("Budget Name", user.budgetName ?? ''),
                       buildListTile("Amount", "${user.amount ?? 0}"),
                       buildListTile("Budget Type", user.type ?? ''),
                       (user.cashOrCredit == false)
@@ -134,7 +140,8 @@ class OrderHistoryBody extends StatelessWidget {
                           ? buildListTile("Bank Name", user.bankName ?? '')
                           : Container(),
                       (user.cashOrCredit == false)
-                          ? buildListTile("Account Number", "${user.accountNumber ?? 0}")
+                          ? buildListTile(
+                              "Account Number", "${user.accountNumber ?? 0}")
                           : Container(),
                       buildListTile("Status", user.status ?? ''),
                       buildListTile("Start Date", user.date ?? ''),
@@ -151,35 +158,7 @@ class OrderHistoryBody extends StatelessWidget {
       ],
     );
   }
-  Widget buildBudgetCard(Map<String, dynamic> userData,
-      Map<String, dynamic> budgetData, DateTime startDate, DateTime endDate) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      margin: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          buildListTile("User Name", userData['name'] ?? ''),
-          buildListTile("Budget Name", budgetData['name'] ?? ''),
-          buildListTile("Amount", budgetData['amount']?.toString() ?? ''),
-          buildListTile("Budget Type", budgetData['type'] ?? ''),
-          buildListTile("Status", budgetData['status'] ?? ''),
-          buildListTile(
-              "Start Date", DateFormat('dd/MM/yyyy').format(startDate)),
-          endDate == startDate
-              ? SizedBox()
-              : buildListTile(
-              "End Date", DateFormat('dd/MM/yyyy').format(endDate)),
-          if (budgetData['status'] ==
-              'Rejected') // Show reason for rejected orders
-            buildListTile("Reason for Rejection", budgetData['reason'] ?? ''),
-          SizedBox(height: 10),
-        ],
-      ),
-    );
-  }
+
 
   ListTile buildListTile(String title, String subtitle) {
     return ListTile(
@@ -187,7 +166,7 @@ class OrderHistoryBody extends StatelessWidget {
         title,
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      subtitle: Text(
+      subtitle: SelectableText(
         subtitle,
         style: TextStyle(fontSize: 17),
       ),

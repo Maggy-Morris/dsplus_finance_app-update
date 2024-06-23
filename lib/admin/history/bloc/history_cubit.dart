@@ -37,7 +37,7 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
           amount: data['amount'] ?? 0.0,
           status: data['status'] ?? "",
           email: data["email"] ?? "",
-          name: data["name"] ?? "",
+          budgetName: data["name"] ?? "",
           type: data["type"] ?? "",
           reason: data["reason"] ?? "",
           date: data["date"] ?? "",
@@ -46,6 +46,7 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
           attachments: List<String>.from(data["attachments"] ?? []),
           bankName: data["bankName"] ?? "",
           cashOrCredit: data["cashOrCredit"] ?? false,
+          userName: data["userName"] ?? "",
         );
       }).toList();
       emit(state.copyWith(
