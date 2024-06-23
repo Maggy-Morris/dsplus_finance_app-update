@@ -45,7 +45,7 @@ class HomePageItemWidget extends StatelessWidget {
         elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
-          side: BorderSide(color: Colors.grey.shade300, width: 1),
+          side: BorderSide(color: Colors.black, width: 1),
         ),
         child: Container(
           padding: EdgeInsets.all(16),

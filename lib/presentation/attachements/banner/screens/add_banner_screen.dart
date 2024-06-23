@@ -78,12 +78,12 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
         ModalRoute.of(context)!.settings.arguments as TransactionsModel;
     final state = context.read<SettlementsOfAccountsBloc>().state;
 
-    if (state.descriptionController?.text.isNotEmpty == true &&
-        state.amountController?.text.isNotEmpty == true) {
-      final name = state.descriptionController?.text ?? '';
-      final amount = double.parse(state.amountController?.text ?? '');
+    if (state.descriptionController.isNotEmpty == true &&
+        state.amountController != 0) {
+      // final name = state.descriptionController?.text ?? '';
+      // final amount = double.parse(state.amountController?.text ?? '');
 
-      if (amount > (homePageItemModelObj.amount ?? 0)) {
+      if (state.amountController > (homePageItemModelObj.amount ?? 0)) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
@@ -96,12 +96,11 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
 
         BannerController bannerController = BannerController();
         await bannerController.createBanner(
-          image: imageXFile!,
-          description: state.descriptionController!.text,
-          transactionID: homePageItemModelObj.id,
-          amount: amount,
-          status: "pending"
-        );
+            image: imageXFile!,
+            description: state.descriptionController,
+            transactionID: homePageItemModelObj.id,
+            amount: state.amountController,
+            status: "pending");
 
         // Print debug message
         debugPrint(
@@ -126,218 +125,212 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: const Text(
-          'Add Attachments',
-          style: TextStyle(
-            fontSize: 16,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: imageXFile == null ||
-                    context
-                        .read<SettlementsOfAccountsBloc>()
-                        .state
-                        .descriptionController!
-                        .text
-                        .isEmpty ||
-                    context
-                        .read<SettlementsOfAccountsBloc>()
-                        .state
-                        .amountController!
-                        .text
-                        .isEmpty
-                ? () {}
-                : handleConfirm,
-            icon: Icon(
-              Icons.add,
-              color: imageXFile == null ||
-                      context
-                          .read<SettlementsOfAccountsBloc>()
-                          .state
-                          .descriptionController!
-                          .text
-                          .isEmpty ||
-                      context
-                          .read<SettlementsOfAccountsBloc>()
-                          .state
-                          .amountController!
-                          .text
-                          .isEmpty
-                  ? Colors.grey[400]
-                  : Colors.white,
+    return BlocBuilder<SettlementsOfAccountsBloc, SettlementsOfAccountsState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            foregroundColor: Colors.white,
+            title: const Text(
+              'Add Attachments',
+              style: TextStyle(
+                fontSize: 16,
+              ),
             ),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                onPressed: imageXFile == null ||
+                        context
+                            .read<SettlementsOfAccountsBloc>()
+                            .state
+                            .descriptionController
+                            .isEmpty ||
+                        context
+                                .read<SettlementsOfAccountsBloc>()
+                                .state
+                                .amountController !=
+                            0
+                    ? () {}
+                    : handleConfirm,
+                icon: Icon(
+                  Icons.add,
+                  color: imageXFile == null ||
+                          context
+                              .read<SettlementsOfAccountsBloc>()
+                              .state
+                              .descriptionController
+                              .isEmpty ||
+                          context
+                                  .read<SettlementsOfAccountsBloc>()
+                                  .state
+                                  .amountController !=
+                              0
+                      ? Colors.grey[400]
+                      : Colors.white,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                physics: NeverScrollableScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    imageXFile == null
-                        // && imageUrl.isEmpty
-                        ? DottedBorder(
-                            color: Colors.grey[500]!,
-                            strokeWidth: 1,
-                            dashPattern: const [10, 6],
-                            child: SizedBox(
-                              height: 180,
-                              width: double.infinity,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.camera_alt_outlined,
-                                    size: 70,
-                                  ),
-                                  Row(
+          body: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        imageXFile == null
+                            // && imageUrl.isEmpty
+                            ? DottedBorder(
+                                color: Colors.grey[500]!,
+                                strokeWidth: 1,
+                                dashPattern: const [10, 6],
+                                child: SizedBox(
+                                  height: 180,
+                                  width: double.infinity,
+                                  child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
-                                      SizedBox(
-                                        width: 150,
-                                        child: CustomTextButton(
-                                          text: 'Take a photo',
-                                          onPressed: takePhoto,
-                                          isDisabled: false,
-                                        ),
+                                      const Icon(
+                                        Icons.camera_alt_outlined,
+                                        size: 70,
                                       ),
-                                      SizedBox(
-                                        width: 150,
-                                        child: CustomTextButton(
-                                          text: 'Upload a photo',
-                                          onPressed: uploadPhoto,
-                                          isDisabled: false,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
-                        : DottedBorder(
-                            color: Colors.grey[500]!,
-                            strokeWidth: 1,
-                            dashPattern: const [10, 6],
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 180,
-                                    // width: MediaQuery.of(context).size.width,
-                                    child: Center(
-                                      child: Stack(
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
-                                          AspectRatio(
-                                            aspectRatio: 4 / 5,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image:
-                                                      //  imageUrl == '' ?
-                                                      FileImage(
-                                                    File(imageXFile!.path),
-                                                  )
-                                                  // : NetworkImage(imageUrl)
-                                                  //     as ImageProvider
-                                                  ,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
+                                          SizedBox(
+                                            width: 150,
+                                            child: CustomTextButton(
+                                              text: 'Take a photo',
+                                              onPressed: takePhoto,
+                                              isDisabled: false,
                                             ),
                                           ),
-                                          Positioned(
-                                            top: 0,
-                                            right: 0,
-                                            child: FIconButton(
-                                              icon: const Icon(Icons.close),
-                                              backgroundColor: Colors.white,
-                                              onPressed: () {
-                                                setState(() {
-                                                  // imageUrl = '';
-                                                  imageXFile = null;
-                                                });
-                                              },
+                                          SizedBox(
+                                            width: 150,
+                                            child: CustomTextButton(
+                                              text: 'Upload a photo',
+                                              onPressed: uploadPhoto,
+                                              isDisabled: false,
                                             ),
                                           ),
                                         ],
-                                      ),
-                                    ),
+                                      )
+                                    ],
                                   ),
-                                ],
+                                ),
+                              )
+                            : DottedBorder(
+                                color: Colors.grey[500]!,
+                                strokeWidth: 1,
+                                dashPattern: const [10, 6],
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        height: 180,
+                                        // width: MediaQuery.of(context).size.width,
+                                        child: Center(
+                                          child: Stack(
+                                            children: [
+                                              AspectRatio(
+                                                aspectRatio: 4 / 5,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image:
+                                                          FileImage(
+                                                        File(imageXFile!.path),
+                                                      )
+                                                     ,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                top: 0,
+                                                right: 0,
+                                                child: FIconButton(
+                                                  icon: const Icon(Icons.close),
+                                                  backgroundColor: Colors.white,
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      // imageUrl = '';
+                                                      imageXFile = null;
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                    const SizedBox(height: 20),
-                    BlocSelector<SettlementsOfAccountsBloc,
-                        SettlementsOfAccountsState, TextEditingController?>(
-                      selector: (state) => state.descriptionController,
-                      builder: (context, descriptionController) {
-                        return TextFormField(
-                          focusNode: FocusNode(),
-                          controller: descriptionController,
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          // focusNode: FocusNode(),
+                          onChanged: (value) {
+                            context
+                                .read<SettlementsOfAccountsBloc>()
+                                .add(EditDescrition(description: value));
+                          },
                           decoration: const InputDecoration(
                             icon: Icon(Icons.person),
                             labelText: 'Description',
                           ),
                           keyboardType: TextInputType.name,
-                        );
-                      },
-                    ),
-                    BlocSelector<SettlementsOfAccountsBloc,
-                        SettlementsOfAccountsState, TextEditingController?>(
-                      selector: (state) => state.amountController,
-                      builder: (context, amountController) {
-                        return TextFormField(
-                          focusNode: FocusNode(),
-                          controller: amountController,
+                        ),
+                        TextFormField(
+                          // focusNode: FocusNode(),
+
+                          onChanged: (value) {
+                            context
+                                .read<SettlementsOfAccountsBloc>()
+                                .add(EditAmount(amount: double.parse(value)));
+                          },
                           decoration: InputDecoration(
                             icon: Icon(Icons.monetization_on_sharp),
                             hintText: 'Money',
                             labelText: 'Money',
                           ),
                           keyboardType: TextInputType.number,
-                        );
-                      },
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                CustomTextButton(
+                  text: 'Confirm',
+                  onPressed: handleConfirm,
+                  isDisabled: imageXFile == null ||
+                      context
+                          .read<SettlementsOfAccountsBloc>()
+                          .state
+                          .descriptionController
+                          .isEmpty ||
+                      context
+                              .read<SettlementsOfAccountsBloc>()
+                              .state
+                              .amountController ==
+                          0,
+                ),
+              ],
             ),
-            CustomTextButton(
-              text: 'Confirm',
-              onPressed: handleConfirm,
-              isDisabled: imageXFile == null ||
-                  context
-                      .read<SettlementsOfAccountsBloc>()
-                      .state
-                      .descriptionController!
-                      .text
-                      .isEmpty ||
-                  context
-                      .read<SettlementsOfAccountsBloc>()
-                      .state
-                      .amountController!
-                      .text
-                      .isEmpty,
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

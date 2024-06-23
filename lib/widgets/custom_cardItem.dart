@@ -1,8 +1,9 @@
+import 'package:dsplus_finance/widgets/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class BuildCard extends StatelessWidget {
   final String title;
-  final String value ;
+  final String value;
   const BuildCard({
     required this.title,
     required this.value,
@@ -12,6 +13,7 @@ class BuildCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
+      shadowColor: AppColors.purple,
       margin: EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -36,7 +38,6 @@ class BuildCard extends StatelessWidget {
         ),
       ),
     );
-    
   }
 }
 

@@ -35,7 +35,7 @@ class SendMoneyScreen extends StatelessWidget {
                     onTapArrowleft1(context);
                   }),
               centerTitle: true,
-              title: AppbarSubtitle(text: "تأكيد البيانات".tr),
+              title: AppbarSubtitle(text: "Confirm Data".tr),
               // actions: [
               // AppbarIconbutton1(
               //     svgPath: ImageConstant.imgGlobe,
@@ -64,15 +64,13 @@ class SendMoneyScreen extends StatelessWidget {
                 BuildCard(title: 'Status', value: transaction.status ?? ""),
                 BuildCard(title: 'Type', value: transaction.type ?? ""),
                 transaction.bankName?.isEmpty == true
-                    ? BuildCard(
-                        title: 'Cash', value: 'You will recieve money in cash')
-                    : BuildCard(
-                        title: 'Bank Name', value: transaction.bankName ?? ""),
-                transaction.accountNumber == 0
-                    ? SizedBox()
-                    : BuildCard(
-                        title: 'Account Number',
-                        value: "${transaction.accountNumber}"),
+                    ? BuildCard(title: 'Receiving Money By', value: 'Cash')
+                    : BuildCard(title: 'Receiving Money By', value: "Credit"),
+                // transaction.accountNumber == 0
+                //     ? SizedBox()
+                //     : BuildCard(
+                //         title: 'Account Number',
+                //         value: "${transaction.accountNumber}"),
                 transaction.attachments?.length == 0 ||
                         transaction.attachments?.length.toString() == null
                     ? SizedBox()
@@ -94,7 +92,7 @@ class SendMoneyScreen extends StatelessWidget {
                   );
                 },
                 height: getVerticalSize(50),
-                text: "قدم الطلب".tr,
+                text: "Send Request".tr,
                 margin: getMargin(left: 24, right: 24, bottom: 36))));
   }
 

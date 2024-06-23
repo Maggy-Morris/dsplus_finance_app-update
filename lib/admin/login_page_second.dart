@@ -1,4 +1,5 @@
 import 'package:dsplus_finance/admin/home_page.dart';
+import 'package:dsplus_finance/widgets/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,7 +26,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
         child: Column(
           children: <Widget>[
             Container(
-              color: Color.fromARGB(255, 165, 233, 224),
+              color: AppColors.backgroundColor,
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: Center(
@@ -43,7 +44,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
 
                         Image.asset(
                           "assets/images/logo.png",
-                          color: Colors.white,
+                          color: AppColors.logoColor,
                         ),
                         // const Text(
                         //   "Login",
@@ -158,9 +159,10 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                             signIn(
                                 emailController.text, passwordController.text);
                           },
-                          child: const Text(
+                          child: Text(
                             "Login",
                             style: TextStyle(
+                              color: AppColors.logoColor,
                               fontSize: 20,
                             ),
                           ),
@@ -284,6 +286,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
             .then((DocumentSnapshot documentSnapshot) {
           if (documentSnapshot.exists) {
             prefs.setString('role', documentSnapshot.get('role'));
+            prefs.setString('userName', documentSnapshot.get('name'));
           }
         });
         // String semail = prefs.getString('email') ?? "";
