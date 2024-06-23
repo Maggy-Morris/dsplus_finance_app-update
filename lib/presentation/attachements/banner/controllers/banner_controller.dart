@@ -7,6 +7,7 @@ import 'package:dsplus_finance/presentation/attachements/common/firebare_storage
 import 'package:dsplus_finance/presentation/attachements/models/banner.dart'
     as model;
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BannerController {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -17,6 +18,8 @@ class BannerController {
     required String description,
     required double amount,
     required String status,
+    // required String userName,
+
     required transactionID,
   }) async {
     // final DocumentReference ref;
@@ -30,7 +33,8 @@ class BannerController {
     //     .doc(transactionID)
     //     .collection('attachments')
     //     .doc();
-
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String userName = prefs.getString('userName') ?? "";
     ref2 = firestore
         // .collection('users')
         // .doc(firebaseAuth.currentUser!.uid)
@@ -50,11 +54,11 @@ class BannerController {
       description: description,
       amount: amount,
       status: status,
-
+      userName: userName,
       // creatorId: firebaseAuth.currentUser!.uid,
       // shopListId: [firebaseAuth.currentUser!.uid],
       // isApproved: false,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
+      createdAt: DateTime.now(),
     );
 
     await ref2.set(banner.toMap()).catchError((error) {

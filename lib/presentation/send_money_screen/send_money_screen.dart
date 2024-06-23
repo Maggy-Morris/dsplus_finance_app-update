@@ -56,7 +56,7 @@ class SendMoneyScreen extends StatelessWidget {
                   title: 'Amount',
                   value: "${transaction.amount}",
                 ),
-                transaction.accountNumber == 0
+                transaction.expectedDate != ""
                     ? SizedBox()
                     : BuildCard(
                         title: 'Expected Date',
