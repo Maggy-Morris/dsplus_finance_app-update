@@ -79,17 +79,16 @@ class DetailsPage extends StatelessWidget {
                   title: 'status', value: homePageItemModelObj.status ?? ""),
               BuildCard(title: 'type', value: homePageItemModelObj.type ?? ""),
               homePageItemModelObj.bankName?.isEmpty == true
-                  ? BuildCard(title: 'Cash', value: 'You Have The Money')
+                  ? BuildCard(
+                      title: 'Receiving Money By', value: 'Cash')
                   : BuildCard(
-                      title: 'Bank Name',
-                      value: homePageItemModelObj.bankName ?? ""),
-              homePageItemModelObj.accountNumber == 0
-                  ? SizedBox()
-                  : BuildCard(
-                      title: 'Account Number',
-                      value: NumberFormat("#,##0")
-                          .format(homePageItemModelObj.accountNumber),
-                    ),
+                      title: 'Receiving Money By', value: "Credit"),
+              // homePageItemModelObj.accountNumber == 0
+              //     ? SizedBox()
+              //     : BuildCard(
+              //         title: 'Account Number',
+              //         value: homePageItemModelObj.accountNumber.toString(),
+              //       ),
               homePageItemModelObj.attachments?.length == 0
                   ? SizedBox()
                   : BuildCard(

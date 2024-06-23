@@ -1,19 +1,10 @@
-import 'package:dsplus_finance/admin/requests/cubit/requests_cubit.dart';
+import 'package:dsplus_finance/admin/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/app/app_export.dart';
-import '../core/utils/navigator_service.dart';
-import '../routes/app_routes.dart';
-// import 'add_user/add_user_cubit.dart';
-// import 'add_user/add_users.dart';
-import 'home_page.dart';
-// import 'package:role_base_auth/Admin.dart';
-// import 'package:role_base_auth/register.dart';
-// import 'package:role_base_auth/users.dart';
-
-// import 'register.dart';
 
 class LoginPageSecond extends StatefulWidget {
   @override
@@ -27,7 +18,6 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
 
-  // final _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +25,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
         child: Column(
           children: <Widget>[
             Container(
-              color: const Color.fromARGB(255, 7, 50, 94),
+              color: Color.fromARGB(255, 165, 233, 224),
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: Center(
@@ -44,22 +34,27 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                   child: Form(
                     key: _formkey,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const SizedBox(
-                          height: 30,
+                        SizedBox(
+                          height: 100,
                         ),
-                        const Text(
-                          "Login",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 40,
-                          ),
+
+                        Image.asset(
+                          "assets/images/logo.png",
+                          color: Colors.white,
                         ),
+                        // const Text(
+                        //   "Login",
+                        //   style: TextStyle(
+                        //     fontWeight: FontWeight.bold,
+                        //     color: Colors.white,
+                        //     fontSize: 40,
+                        //   ),
+                        // ),
                         const SizedBox(
-                          height: 20,
+                          height: 60,
                         ),
                         TextFormField(
                           controller: emailController,
@@ -154,7 +149,11 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                           height: 40,
                           onPressed: () {
                             setState(() {
-                              visible = true;
+                              if (_formkey.currentState!.validate()) {
+                                visible = true;
+                              } else {
+                                visible = false;
+                              }
                             });
                             signIn(
                                 emailController.text, passwordController.text);
@@ -189,9 +188,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                               const SizedBox(
                                 height: 20,
                               ),
-
-                              //for registeration  add when you are an admin to register new users
-
+                              //for registration add when you are an admin to register new users
                               // MaterialButton(
                               //   shape: const RoundedRectangleBorder(
                               //     borderRadius: BorderRadius.all(
@@ -216,15 +213,6 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                               //           ),
                               //         ));
                               //   },
-
-                              //   // onPressed: () {
-                              //   //   Navigator.pushReplacement(
-                              //   //     context,
-                              //   //     MaterialPageRoute(
-                              //   //       builder: (context) => Register(),
-                              //   //     ),
-                              //   //   );
-                              //   // },
                               //   color: Colors.white,
                               //   child: const Text(
                               //     "Register Now",
@@ -233,10 +221,6 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                               //     ),
                               //   ),
                               // ),
-                           
-                           
-                           
-                           
                             ],
                           ),
                         ),
@@ -254,33 +238,23 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
 
   void route() {
     User? user = FirebaseAuth.instance.currentUser;
-    var kk = FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('users')
         .doc(user!.uid)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        if (documentSnapshot.get('role') == "Admin"||documentSnapshot.get('role') == "SuperAdmin"){
+        if (documentSnapshot.get('role') == "Admin") {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                create: (context) => AdminRequestsCubit(),
-  child: AdminHomePage(),
-),
+              builder: (context) => AdminHomePage(),
             ),
           );
         } else {
           NavigatorService.pushNamedAndRemoveUntil(
             AppRoutes.homePageContainerScreen,
           );
-
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => const Users(),
-          //   ),
-          // );
         }
       } else {
         print('Document does not exist on the database');
@@ -296,13 +270,46 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
           email: email,
           password: password,
         );
+
+// addUserSharedPrefs({String? email, String? password}) async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('email', email);
+        prefs.setString('password', password);
+
+        User? user = FirebaseAuth.instance.currentUser;
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(user!.uid)
+            .get()
+            .then((DocumentSnapshot documentSnapshot) {
+          if (documentSnapshot.exists) {
+            prefs.setString('role', documentSnapshot.get('role'));
+          }
+        });
+        // String semail = prefs.getString('email') ?? "";
+        // print(semail);
+        // }
         route();
       } on FirebaseAuthException catch (e) {
+        String errorMessage;
         if (e.code == 'user-not-found') {
-          print('No user found for that email.');
+          errorMessage = 'No user found for that email.';
         } else if (e.code == 'wrong-password') {
-          print('Wrong password provided for that user.');
+          errorMessage = 'Wrong password provided for that user.';
+        } else {
+          print(e.code);
+          errorMessage = 'invalid-credentials Wrong Email or Password';
         }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+        setState(() {
+          visible = false;
+        });
       }
     }
   }

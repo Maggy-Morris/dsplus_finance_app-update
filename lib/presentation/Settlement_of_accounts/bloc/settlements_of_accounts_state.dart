@@ -1,41 +1,32 @@
 part of 'settlements_of_accounts_bloc.dart';
 
-
 class SettlementsOfAccountsState extends Equatable {
-  SettlementsOfAccountsState({
-
-    
-    this.descriptionController,
-    this.amountController,
-
-    this.settlementsOfAccountsModelObj});
+  SettlementsOfAccountsState(
+      {this.descriptionController = "",
+      this.amountController = 0,
+      this.settlementsOfAccountsModelObj});
 
   SettlementsOfAccountsModel? settlementsOfAccountsModelObj;
-    TextEditingController? descriptionController;
-    TextEditingController? amountController;
+  final String descriptionController;
+  final double amountController;
 
   @override
   List<Object?> get props => [
-       descriptionController,
-amountController,
+        descriptionController,
+        amountController,
         settlementsOfAccountsModelObj,
       ];
 
-
-      
-  SettlementsOfAccountsState copyWith({
-        TextEditingController? amountController,
-
-    TextEditingController? descriptionController,
-    SettlementsOfAccountsModel? settlementsOfAccountsModelObj}) {
+  SettlementsOfAccountsState copyWith(
+      {double? amountController,
+      String? descriptionController,
+      SettlementsOfAccountsModel? settlementsOfAccountsModelObj}) {
     return SettlementsOfAccountsState(
-      amountController:amountController ?? this.amountController,
-     descriptionController:descriptionController ?? this.descriptionController,
-      settlementsOfAccountsModelObj: settlementsOfAccountsModelObj ?? this.settlementsOfAccountsModelObj,
+      amountController: amountController ?? this.amountController,
+      descriptionController:
+          descriptionController ?? this.descriptionController,
+      settlementsOfAccountsModelObj:
+          settlementsOfAccountsModelObj ?? this.settlementsOfAccountsModelObj,
     );
   }
-
-
-
 }
-

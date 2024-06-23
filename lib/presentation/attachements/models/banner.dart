@@ -2,11 +2,11 @@
 import 'dart:convert';
 
 class Banner {
-  String id;
-  String imageUrl;
-  String description;
-  double amount;
-  String status;
+  final String id;
+  final String imageUrl;
+  final String description;
+  final double amount;
+  final String status;
 
   // String creatorId;
   // List<String> shopListId;

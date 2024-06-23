@@ -1,4 +1,5 @@
 import 'package:dsplus_finance/core/app/app_export.dart';
+import 'package:dsplus_finance/widgets/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../ask_for_cash_screen/ask_for_cash_screen.dart';
@@ -43,6 +44,7 @@ class SettlementOfAccountsScreen extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as TransactionsModel;
     ////////////////////////////////////////////
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       appBar: CustomAppBar(
         height: getVerticalSize(49),
         leadingWidth: 59,
@@ -53,21 +55,33 @@ class SettlementOfAccountsScreen extends StatelessWidget {
               onTapArrowleft5(context);
             }),
         centerTitle: true,
-        title: AppbarSubtitle(
+        title: Padding(
+          padding: const EdgeInsets.only(top: 15.0),
+          child: AppbarSubtitle(
             text:
                 //  homePageItemModelObj?.type ??
-                "تصفية"),
+                "تصفية",
+          ),
+        ),
       ),
       body: ListView(padding: EdgeInsets.all(16.0), children: [
-        Center(
+        SizedBox(
+          height: 30,
+        ),
+        Card(
+          color: Colors.white,
+          elevation: 3,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                'Your Balance',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Your Balance',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               SizedBox(height: 20),
@@ -82,7 +96,12 @@ class SettlementOfAccountsScreen extends StatelessWidget {
             ],
           ),
         ),
+        SizedBox(height: 10),
 
+        Divider(
+          color: Colors.grey.withOpacity(0.5), // Adjust color as needed
+          height: 20,
+        ),
         ////////////////////////////////////////////////////
         ///Add Attachemnts
         SingleChildScrollView(
@@ -156,12 +175,14 @@ class SettlementOfAccountsScreen extends StatelessWidget {
                                       padding: const EdgeInsets.all(15),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
+                                        borderRadius: BorderRadius.circular(15),
                                         border: Border.all(
-                                            color: Colors.grey[200]!),
+                                          color:
+                                              scheme.primary.withOpacity(0.5),
+                                        ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.grey.withOpacity(0.1),
+                                            // color: Colors.grey.withOpacity(0.1),
                                             spreadRadius: 1,
                                             blurRadius: 1,
                                             offset: const Offset(1, 3),

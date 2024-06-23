@@ -6,3 +6,19 @@ class SettlementsOfAccountsEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class EditDescrition extends SettlementsOfAccountsEvent {
+  final String description;
+  const EditDescrition({required this.description});
+
+  @override
+  List<Object> get props => [description];
+}
+
+class EditAmount extends SettlementsOfAccountsEvent {
+  final double amount;
+  const EditAmount({required this.amount});
+
+  @override
+  List<Object> get props => [amount];
+}
