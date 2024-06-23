@@ -1,19 +1,23 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Banner {
   final String id;
   final String imageUrl;
   final String description;
   final double amount;
   final String status;
+  final String userName;
 
   // String creatorId;
   // List<String> shopListId;
   // bool isApproved;
-  int createdAt;
+  DateTime createdAt;
   Banner({
     required this.amount,
+    required this.userName,
     required this.id,
     required this.imageUrl,
     required this.description,
@@ -30,23 +34,28 @@ class Banner {
       'description': description,
       'amount': amount,
       'status': status,
+      'userName': userName,
       // 'shopListId': shopListId,
       // 'isApproved': isApproved,
-      'createdAt': createdAt,
+      'createdAt':
+          Timestamp.fromDate(createdAt), // Convert DateTime to Timestamp
     };
   }
 
   factory Banner.fromMap(Map<String, dynamic> map) {
     return Banner(
+      userName: map['userName'] as String,
       amount: map['amount'] as double,
       id: map['id'] as String,
       imageUrl: map['imageUrl'] as String,
       description: map['description'] as String,
       status: map['status'] as String,
+
       // creatorId: map['creatorId'] as String,
       // shopListId: List<String>.from((map['shopListId'])),
       // isApproved: map['isApproved'] as bool,
-      createdAt: map['createdAt'] as int,
+      createdAt: (map['createdAt'] as Timestamp)
+          .toDate(), // Convert Timestamp to DateTime
     );
   }
 

@@ -43,8 +43,7 @@ class HomePage extends StatelessWidget {
           child: IconButton(
             icon: Icon(Icons.menu),
             onPressed: () {
-              _scaffoldKey.currentState
-                  ?.openDrawer(); // Use the key to open the drawer
+              _scaffoldKey.currentState?.openDrawer();
             },
           ),
         ),
