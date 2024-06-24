@@ -154,74 +154,70 @@ class SettlementOfAccountsScreen extends StatelessWidget {
                     ),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Text('loading');
+                        return Center(child: const CircularProgressIndicator());
                       }
 
                       return ListView.builder(
-                          // scrollDirection: Axis.horizontal,
-
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data?.length,
-                          itemBuilder: (context, index) {
-                            final banner = snapshot.data?[index];
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Stack(
-                                  children: [
-                                    Container(
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.all(15),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(15),
-                                        border: Border.all(
-                                          color:
-                                              scheme.primary.withOpacity(0.5),
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            // color: Colors.grey.withOpacity(0.1),
-                                            spreadRadius: 1,
-                                            blurRadius: 1,
-                                            offset: const Offset(1, 3),
-                                          ),
-                                        ],
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data?.length,
+                        itemBuilder: (context, index) {
+                          final banner = snapshot.data?[index];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Stack(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                        color: scheme.primary.withOpacity(0.5),
                                       ),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  FullScreenImage(
-                                                      imageUrl:
-                                                          banner?.imageUrl ??
-                                                              ""),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          spreadRadius: 1,
+                                          blurRadius: 1,
+                                          offset: const Offset(1, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                FullScreenImage(
+                                              imageUrl: banner?.imageUrl ?? "",
                                             ),
-                                          );
-                                        },
-                                        child: Row(
-                                          children: [
-                                            SizedBox(
-                                              height: 150,
-                                              child: AspectRatio(
-                                                aspectRatio: 4 / 5,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(
-                                                        banner?.imageUrl ?? "",
-                                                      ),
-                                                      fit: BoxFit.cover,
-                                                    ),
+                                          ),
+                                        );
+                                      },
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            height: 150,
+                                            child: AspectRatio(
+                                              aspectRatio: 4 / 5,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        banner?.imageUrl ?? ""),
+                                                    fit: BoxFit.cover,
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(width: 15),
-                                            (banner?.status != "Rejected")
+                                          ),
+                                          const SizedBox(width: 15),
+                                          Expanded(
+                                            child: (banner?.status !=
+                                                    "Rejected")
                                                 ? Column(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.start,
@@ -239,7 +235,7 @@ class SettlementOfAccountsScreen extends StatelessWidget {
                                                       const SizedBox(
                                                           height: 15),
                                                       Text(
-                                                        "Desctription: ${banner?.description}",
+                                                        "Description: ${banner?.description}",
                                                         style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.w600,
@@ -248,50 +244,49 @@ class SettlementOfAccountsScreen extends StatelessWidget {
                                                     ],
                                                   )
                                                 : Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width /
-                                                            4,
                                                     child: Text(
                                                       "Rejection Reason: ${banner?.reason}",
                                                       maxLines: 4,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.w600,
                                                       ),
                                                     ),
                                                   ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Positioned(
-                                        top: 0,
-                                        right: 0,
-                                        // left: 0,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: CircleAvatar(
-                                            backgroundColor: (banner?.status ==
-                                                    "pending")
+                                  ),
+                                  Positioned(
+                                    top: 0,
+                                    right: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: CircleAvatar(
+                                        backgroundColor:
+                                            (banner?.status == "pending")
                                                 ? Colors.amber
                                                 : (banner?.status == "Approved")
                                                     ? Colors.green
                                                     : Colors.red,
-                                            child: Text(
-                                              "${banner?.status}",
-                                              style: TextStyle(fontSize: 12),
-                                            ),
-                                            radius: 30,
-                                          ),
-                                        )),
-                                  ],
-                                ),
-                                const SizedBox(height: 15),
-                              ],
-                            );
-                          });
+                                        child: Text(
+                                          "${banner?.status}",
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                        radius: 30,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 15),
+                            ],
+                          );
+                        },
+                      );
                     }),
               ],
             ),
