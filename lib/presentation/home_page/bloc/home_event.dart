@@ -7,6 +7,9 @@ class HomeEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+
+
+
 class AllTransactionsEvent extends HomeEvent {
   final List<TransactionsModel> allTransactions;
 
@@ -14,4 +17,16 @@ class AllTransactionsEvent extends HomeEvent {
 
   @override
   List<Object?> get props => [allTransactions,];
+}
+
+
+
+
+class GetUserData extends HomeEvent {
+  // final List<TransactionsModel> allTransactions;
+
+  GetUserData();
+
+  @override
+  List<Object?> get props => [];
 }

@@ -221,27 +221,47 @@ class SettlementOfAccountsScreen extends StatelessWidget {
                                               ),
                                             ),
                                             const SizedBox(width: 15),
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Money: ${banner?.amount}",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
+                                            (banner?.status != "Rejected")
+                                                ? Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "Money: ${banner?.amount}",
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 15),
+                                                      Text(
+                                                        "Desctription: ${banner?.description}",
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            4,
+                                                    child: Text(
+                                                      "Rejection Reason: ${banner?.reason}",
+                                                      maxLines: 4,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                                const SizedBox(height: 15),
-                                                Text(
-                                                  "Desctription: ${banner?.description}",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
                                           ],
                                         ),
                                       ),
@@ -263,7 +283,7 @@ class SettlementOfAccountsScreen extends StatelessWidget {
                                               "${banner?.status}",
                                               style: TextStyle(fontSize: 12),
                                             ),
-                                            radius: 25,
+                                            radius: 30,
                                           ),
                                         )),
                                   ],

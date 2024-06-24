@@ -10,12 +10,14 @@ class Banner {
   final double amount;
   final String status;
   final String userName;
+  final String? reason;
 
   // String creatorId;
   // List<String> shopListId;
   // bool isApproved;
   DateTime createdAt;
   Banner({
+    this.reason,
     required this.amount,
     required this.userName,
     required this.id,
@@ -35,6 +37,7 @@ class Banner {
       'amount': amount,
       'status': status,
       'userName': userName,
+      'reason': reason,
       // 'shopListId': shopListId,
       // 'isApproved': isApproved,
       'createdAt':
@@ -50,6 +53,7 @@ class Banner {
       imageUrl: map['imageUrl'] as String,
       description: map['description'] as String,
       status: map['status'] as String,
+      reason: map['reason'] as String,
 
       // creatorId: map['creatorId'] as String,
       // shopListId: List<String>.from((map['shopListId'])),

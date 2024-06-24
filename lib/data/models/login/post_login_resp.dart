@@ -26,6 +26,8 @@ class PostLoginRespData with PostLoginRespDataMappable {
   bool? isActive;
 
   String? id;
+  String? imageUrl;
+  String? jobTitle;
 
   PostLoginRespData(
       {this.loginRetryLimit,
@@ -38,5 +40,9 @@ class PostLoginRespData with PostLoginRespDataMappable {
       this.updatedAt,
       this.isDeleted,
       this.isActive,
-      this.id});
+      this.id,
+      this.imageUrl,
+      this.jobTitle,
+      
+      });
 }
