@@ -6,6 +6,7 @@ class TransferState extends Equatable {
   TransferState({
     this.amount = 0,
     this.name = "",
+    this.userName = "",
     this.accountNumber = 0,
     this.bankName = "",
     this.selectedOption = '',
@@ -27,6 +28,7 @@ class TransferState extends Equatable {
     this.files = const [],
   });
 
+  final String userName;
   final List<PlatformFile> files;
   TransactionsModel? transaction; // Include transaction in copyWith
   final DateTime? startDate;
@@ -53,6 +55,7 @@ class TransferState extends Equatable {
 
   @override
   List<Object?> get props => [
+        userName,
         accountNumber,
         bankName,
         startDateString,
@@ -77,6 +80,7 @@ class TransferState extends Equatable {
       ];
   TransferState copyWith(
       {String? bankName,
+      String? userName,
       int? accountNumber,
       String? startDateString,
       String? expectedDateString,
@@ -98,6 +102,7 @@ class TransferState extends Equatable {
       // TextEditingController? extractedtDateController,
       TransferModel? transferModelObj}) {
     return TransferState(
+      userName: userName ?? this.userName,
       bankName: bankName ?? this.bankName,
       accountNumber: accountNumber ?? this.accountNumber,
       startDateString: startDateString ?? this.startDateString,

@@ -29,6 +29,17 @@ class EditName extends TransferEvent {
   List<Object?> get props => [name];
 }
 
+
+
+class EditUserName extends TransferEvent {
+  final String userName;
+
+  EditUserName({required this.userName});
+
+  @override
+  List<Object?> get props => [userName];
+}
+
 class EditAmount extends TransferEvent {
   final double amount;
 

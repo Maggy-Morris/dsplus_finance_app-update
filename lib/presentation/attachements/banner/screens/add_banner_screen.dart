@@ -92,6 +92,12 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
         );
       } else {
         // Proceed with creating the banner
+        EasyLoading.instance
+          ..displayDuration = const Duration(milliseconds: 2000)
+          //  ..backgroundColor = Colors.blue
+          ..indicatorColor = Colors.blue
+          //  ..maskColor = Colors.red
+          ..userInteractions = false;
         EasyLoading.show(); // Show loading animation
 
         BannerController bannerController = BannerController();
@@ -100,7 +106,9 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
             description: state.descriptionController,
             transactionID: homePageItemModelObj.id,
             amount: state.amountController,
-            status: "pending");
+            status: "pending",
+            reason:""
+            );
 
         // Print debug message
         debugPrint(
@@ -246,11 +254,9 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
                                                 child: Container(
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
-                                                      image:
-                                                          FileImage(
+                                                      image: FileImage(
                                                         File(imageXFile!.path),
-                                                      )
-                                                     ,
+                                                      ),
                                                       fit: BoxFit.cover,
                                                     ),
                                                   ),

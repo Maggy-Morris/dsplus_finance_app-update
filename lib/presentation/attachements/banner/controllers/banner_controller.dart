@@ -18,8 +18,7 @@ class BannerController {
     required String description,
     required double amount,
     required String status,
-    // required String userName,
-
+    String? reason,
     required transactionID,
   }) async {
     // final DocumentReference ref;
@@ -55,6 +54,7 @@ class BannerController {
       amount: amount,
       status: status,
       userName: userName,
+      reason: reason,
       // creatorId: firebaseAuth.currentUser!.uid,
       // shopListId: [firebaseAuth.currentUser!.uid],
       // isApproved: false,
@@ -70,7 +70,7 @@ class BannerController {
     // });
   }
 
-////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////  
   Stream<List<model.Banner>> fetchBanner({
     required String transactionID,
   }) {

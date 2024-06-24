@@ -19,14 +19,15 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
   void _onLoadUsers(LoadUsers event, Emitter<UsersState> emit) async {
     try {
-      final QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('users').get();
-      final List<User> admins = [];
-      final List<User> users = [];
+      final QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('users').get();
+      final List<UserModel> admins = [];
+      final List<UserModel> users = [];
 
       snapshot.docs.forEach((doc) {
         Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;
         userData['id'] = doc.id;
-        User user = User.fromJson(userData);
+        UserModel user = UserModel.fromJson(userData);
 
         if (user.role == 'Admin') {
           admins.add(user);
@@ -43,7 +44,10 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
   void _onDeleteUser(DeleteUser event, Emitter<UsersState> emit) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(event.userId).delete();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(event.userId)
+          .delete();
       emit(state); // Update state to trigger UI refresh
     } catch (e) {
       print('Error deleting user: $e');
@@ -52,7 +56,10 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
   void _onMakeAdmin(MakeAdmin event, Emitter<UsersState> emit) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(event.userId).update({
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(event.userId)
+          .update({
         'role': 'Admin',
       });
       _loadInitialData();

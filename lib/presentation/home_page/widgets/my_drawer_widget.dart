@@ -1,8 +1,8 @@
+import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:dsplus_finance/presentation/attachements/widgets/my_alert_dialog.dart';
+import 'package:dsplus_finance/presentation/profile_screen/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import 'package:provider/provider.dart';
 
 import '../../../core/utils/navigator_service.dart';
 import '../../../core/utils/pref_utils.dart';
@@ -11,7 +11,13 @@ import '../../attachements/constants/colors.dart';
 
 class MyDrawer extends StatelessWidget {
   final BuildContext parentContext;
-  const MyDrawer({super.key, required this.parentContext});
+  final String imageUrl;
+  final String name;
+  const MyDrawer(
+      {super.key,
+      required this.parentContext,
+      required this.imageUrl,
+      required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +38,17 @@ class MyDrawer extends StatelessWidget {
                     Container(
                       width: 100,
                       height: 100,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          image: AssetImage('assets/images/logo.png'),
+                          image: NetworkImage(imageUrl),
                           fit: BoxFit.fill,
                         ),
                         color: Colors.white,
                       ),
                       child: Center(
                         child: Text(
-                          "",
-                          // ap.name!.isNotEmpty ? ap.name!.substring(0, 1) : 'F',
+                          name.isNotEmpty ? name.substring(0, 1) : 'F',
                           style: TextStyle(
                             color: scheme.primary,
                             fontSize: 30,
@@ -54,12 +59,12 @@ class MyDrawer extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigator.pushNamed(
-                        //     context, RegisterShopScreen.routeName);
+                        // NavigatorService.pushNamed(
+                        //   AppRoutes.userProfileScreen,
+                        // );
                       },
                       child: Text(
-                        // ap.name!.isNotEmpty ? ap.name! :
-                        '',
+                        name.isNotEmpty ? name : '',
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
@@ -90,7 +95,9 @@ class MyDrawer extends StatelessWidget {
             'User Data',
             Icons.person,
             () {
-              Navigator.pop(context);
+              NavigatorService.pushNamed(
+                AppRoutes.userProfileScreen,
+              );
             },
           ),
           Container(
@@ -123,10 +130,10 @@ class MyDrawer extends StatelessWidget {
                 showDialog(
                   context: c,
                   builder: (ctx) => MyAlertDialog(
-                    title: 'Logging out?',
-                    subtitle: 'Thanks for stopping by. See you again soon!',
-                    action1Name: 'Cancel',
-                    action2Name: 'Log out',
+                    title: 'Logging out?'.tr,
+                    subtitle: 'Thanks for stopping by. See you again soon!'.tr,
+                    action1Name: 'Cancel'.tr,
+                    action2Name: 'Log out'.tr,
                     action1Func: () {
                       Navigator.pop(ctx);
                     },

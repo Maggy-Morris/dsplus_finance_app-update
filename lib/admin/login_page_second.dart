@@ -287,6 +287,9 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
           if (documentSnapshot.exists) {
             prefs.setString('role', documentSnapshot.get('role'));
             prefs.setString('userName', documentSnapshot.get('name'));
+            prefs.setString('jobTitle', documentSnapshot.get('jobTitle'));
+            prefs.setString('imageUrl', documentSnapshot.get('imageUrl'));
+
           }
         });
         // String semail = prefs.getString('email') ?? "";
@@ -300,7 +303,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
         } else if (e.code == 'wrong-password') {
           errorMessage = 'Wrong password provided for that user.';
         } else {
-          print(e.code);
+          debugPrint(e.code);
           errorMessage = 'invalid-credentials Wrong Email or Password';
         }
 

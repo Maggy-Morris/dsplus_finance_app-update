@@ -17,6 +17,7 @@ import '../admin/home_page.dart';
 import '../presentation/ask_for_cash_screen/ask_for_cash_screen.dart';
 import '../presentation/attachements/banner/screens/add_banner_screen.dart';
 import '../presentation/details_page/details_page.dart';
+import '../presentation/home_page/user_profile_screen.dart';
 
 class AppRoutes {
   static const String splashScreen = '/splash_screen';
@@ -50,6 +51,10 @@ class AppRoutes {
   static const String settlementPage = '/settlementPage';
 
   static const String sendMoneyScreen = '/send_money_screen';
+
+
+  static const String userProfileScreen = '/user_profile_screen';
+
 
   // static const String statisticsPage = '/statistics_page';
 
@@ -95,6 +100,7 @@ class AppRoutes {
         transferRequestScreen: TransferRequestScreen.builder,
         historyScreen: HistoryScreen.builder,
         profileScreen: ProfileScreen.builder,
+        userProfileScreen:UserProfileScreen.builder,
         settingsScreen: SettingsScreen.builder,
         appNavigationScreen: AppNavigationScreen.builder,
         initialRoute: SplashScreen.builder

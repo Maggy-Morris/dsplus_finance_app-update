@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/app/app_export.dart';
 import 'package:dsplus_finance/presentation/transfer_screen/models/transfer_model.dart';
 
@@ -24,6 +25,8 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     on<AddTransactionEvent>(_onAddTransactionEvent);
     on<AddFilesEvent>(_onAddFilesEvent);
     on<EditName>(_onEditName);
+    on<EditUserName>(_onEditUserName);
+
     on<EditAmount>(_onEditAmount);
 
     on<EditStartDate>(_onEditStartDate);
@@ -76,6 +79,21 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     }
   }
 
+  _onEditUserName(
+    EditUserName event,
+    Emitter<TransferState> emit,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String userName = prefs.getString('userName') ?? "";
+
+    try {
+      emit(state.copyWith(userName: userName));
+    } catch (error) {
+      // emit(state.copyWith(
+      //     addedTransaction: TransactionsModel(), error: error.toString()));
+    }
+  }
+
   _onRadioButtonChanged(
       RadioButtonChanged event, Emitter<TransferState> emit) async {
     emit(
@@ -90,7 +108,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     emit(
       state.copyWith(
         name: event.name,
-      ),
+      )
     );
   }
 

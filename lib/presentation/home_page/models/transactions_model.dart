@@ -5,6 +5,7 @@ class TransactionsModel extends Equatable {
   String? userId;
   String? id;
   String? name;
+
   double? amount;
   String? date;
   String? expectedDate;
@@ -16,7 +17,7 @@ class TransactionsModel extends Equatable {
   String? email;
 
   String? bankName;
-
+  String? userName;
   TransactionsModel({
     this.userId,
     this.email,
@@ -32,6 +33,7 @@ class TransactionsModel extends Equatable {
     this.cashOrCredit,
     this.accountNumber,
     this.bankName,
+    this.userName,
   });
 
   TransactionsModel.fromJson(Map<String, dynamic> json, this.id) {
@@ -49,6 +51,7 @@ class TransactionsModel extends Equatable {
     cashOrCredit = json['cashOrCredit'];
     accountNumber = json['accountNumber']; // Parse to double
     bankName = json['bankName'];
+    userName = json['userName'];
   }
 
   Map<String, dynamic> toJson() {
@@ -66,9 +69,9 @@ class TransactionsModel extends Equatable {
     data['status'] = this.status;
     data['attachments'] = this.attachments;
     data['cashOrCredit'] = this.cashOrCredit;
-    data['accountNumber'] =
-        this.accountNumber; // Convert num to string
+    data['accountNumber'] = this.accountNumber; // Convert num to string
     data['bankName'] = this.bankName;
+    data['userName'] = this.userName;
 
     return data;
   }
@@ -88,6 +91,7 @@ class TransactionsModel extends Equatable {
     bool? cashOrCredit,
     int? accountNumber,
     String? bankName,
+    String? userName,
   }) {
     return TransactionsModel(
       userId: userId ?? this.userId,
@@ -104,6 +108,7 @@ class TransactionsModel extends Equatable {
       cashOrCredit: cashOrCredit ?? this.cashOrCredit,
       accountNumber: accountNumber ?? this.accountNumber,
       bankName: bankName ?? this.bankName,
+      userName: userName ?? this.userName,
     );
   }
 
@@ -123,5 +128,6 @@ class TransactionsModel extends Equatable {
         cashOrCredit,
         accountNumber,
         bankName,
+        userName,
       ];
 }
