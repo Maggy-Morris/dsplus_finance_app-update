@@ -24,7 +24,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     String emailSaved = prefs.getString('email') ?? "";
     String roleSaved = prefs.getString('role') ?? "";
 
-    // print(semail);
+    // debugPrint(semail);
     // }
     final String? loggedInUserId = PrefUtils().getId();
     Future.delayed(const Duration(seconds: 3), () {

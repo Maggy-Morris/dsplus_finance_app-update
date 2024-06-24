@@ -107,11 +107,10 @@ class _AddBannerScreenState extends State<AddBannerScreen> {
             transactionID: homePageItemModelObj.id,
             amount: state.amountController,
             status: "pending",
-            reason:""
-            );
+            reason: "");
 
         // Print debug message
-        debugPrint(
+       debugPrint(
             "Banner created successfully with transaction ID: ${homePageItemModelObj.id}");
         EasyLoading.dismiss();
 

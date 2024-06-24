@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../presentaion/widgets/user_model.dart';
@@ -38,7 +39,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
       emit(UsersState(admins: admins, users: users));
     } catch (e) {
-      print('Error loading users: $e');
+      debugPrint('Error loading users: $e');
     }
   }
 
@@ -50,7 +51,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           .delete();
       emit(state); // Update state to trigger UI refresh
     } catch (e) {
-      print('Error deleting user: $e');
+      debugPrint('Error deleting user: $e');
     }
   }
 
@@ -64,7 +65,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       });
       _loadInitialData();
     } catch (e) {
-      print('Error making user admin: $e');
+      debugPrint('Error making user admin: $e');
     }
   }
 }

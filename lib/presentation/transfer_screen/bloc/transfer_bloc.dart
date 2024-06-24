@@ -105,11 +105,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
   }
 
   _onEditName(EditName event, Emitter<TransferState> emit) async {
-    emit(
-      state.copyWith(
-        name: event.name,
-      )
-    );
+    emit(state.copyWith(
+      name: event.name,
+    ));
   }
 
   _onEditAmount(EditAmount event, Emitter<TransferState> emit) async {
@@ -192,7 +190,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       }
     } catch (error) {
       // Handle error
-      print("Error picking image from camera: $error");
+      debugPrint("Error picking image from camera: $error");
     }
   }
 
@@ -221,7 +219,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       }
     } catch (error) {
       // Handle error
-      print("Error picking images: $error");
+      debugPrint("Error picking images: $error");
     }
   }
 
@@ -235,7 +233,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
   uploadFilesAndUpdateTransaction(TransactionsModel transaction) async {
     try {
       List<String> fileUrls = [];
-      for (final file in state.files) {
+      for (final file in transaction.attachments ?? []) {
         String filePath = 'attachments/${file.name}';
 
         Reference ref = FirebaseStorage.instance.ref().child(filePath);
@@ -247,10 +245,11 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
 
       // Update the transaction model with the file URLs
       transaction.attachments = fileUrls;
+      // debugPrint(fileUrls);
 
       add(AddTransactionEvent(transaction));
     } catch (error) {
-      print("Error uploading files: $error");
+      debugPrint("Error uploading files: $error");
     }
   }
 

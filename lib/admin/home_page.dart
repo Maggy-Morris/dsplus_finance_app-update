@@ -39,7 +39,7 @@ class AdminHomePage extends StatelessWidget {
       //    ),
       //  );
     } catch (e) {
-      print('Error signing out: $e');
+      debugPrint('Error signing out: $e');
     }
   }
 

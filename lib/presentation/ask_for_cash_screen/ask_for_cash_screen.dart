@@ -106,7 +106,9 @@ class _AskForCashScreenState extends State<AskForCashScreen> {
                             final dateFormat = DateFormat('dd/MM/yyyy');
                             final formattedDate = dateFormat.format(now);
                             TransactionsModel transaction = TransactionsModel(
+                              
                               email: firebaseAuth.currentUser?.email ?? "",
+                              attachments: state.files,
                               name: state.name,
                               userName: state.userName,
                               amount: state.amount,
@@ -124,6 +126,7 @@ class _AskForCashScreenState extends State<AskForCashScreen> {
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
+                                  backgroundColor: Colors.red,
                                   content: Text(
                                       'Please fill all fields and add attachments.')),
                             );
