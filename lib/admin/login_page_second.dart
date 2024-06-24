@@ -259,7 +259,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
           );
         }
       } else {
-        print('Document does not exist on the database');
+        debugPrint('Document does not exist on the database');
       }
     });
   }
@@ -289,11 +289,10 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
             prefs.setString('userName', documentSnapshot.get('name'));
             prefs.setString('jobTitle', documentSnapshot.get('jobTitle'));
             prefs.setString('imageUrl', documentSnapshot.get('imageUrl'));
-
           }
         });
         // String semail = prefs.getString('email') ?? "";
-        // print(semail);
+        // debugPrint(semail);
         // }
         route();
       } on FirebaseAuthException catch (e) {

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'admin.dart';
@@ -22,10 +23,8 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           .listen((snapshot) {
         final List<DocumentSnapshot> users = snapshot.docs;
         emit(AdminRequestsState(users: users));
-      }, onError: (error) {
-      });
-    } catch (e) {
-    }
+      }, onError: (error) {});
+    } catch (e) {}
   }
 
   void approveBudget(String userId, String budgetId) async {
@@ -37,9 +36,9 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           .doc(budgetId)
           .update({'status': 'Approved'});
       fetchData(); // Refresh data after approval
-      print("Budget approved successfully!");
+      debugPrint("Budget approved successfully!");
     } catch (error) {
-      print("Failed to approve budget: $error");
+      debugPrint("Failed to approve budget: $error");
     }
   }
 
@@ -52,9 +51,9 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           .doc(budgetId)
           .update({'status': 'Rejected', 'reason': reason});
       fetchData(); // Refresh data after rejection
-      print("Budget rejected successfully!");
+      debugPrint("Budget rejected successfully!");
     } catch (error) {
-      print("Failed to reject budget: $error");
+      debugPrint("Failed to reject budget: $error");
     }
   }
 

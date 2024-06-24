@@ -1,4 +1,6 @@
+import 'package:dsplus_finance/presentation/ask_for_cash_screen/ask_for_cash_screen.dart';
 import 'package:dsplus_finance/widgets/custom_cardItem.dart';
+import 'package:dsplus_finance/widgets/fullscreenImage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -79,10 +81,8 @@ class DetailsPage extends StatelessWidget {
                   title: 'status', value: homePageItemModelObj.status ?? ""),
               BuildCard(title: 'type', value: homePageItemModelObj.type ?? ""),
               homePageItemModelObj.bankName?.isEmpty == true
-                  ? BuildCard(
-                      title: 'Receiving Money By', value: 'Cash')
-                  : BuildCard(
-                      title: 'Receiving Money By', value: "Credit"),
+                  ? BuildCard(title: 'Receiving Money By', value: 'Cash')
+                  : BuildCard(title: 'Receiving Money By', value: "Credit"),
               // homePageItemModelObj.accountNumber == 0
               //     ? SizedBox()
               //     : BuildCard(
@@ -91,11 +91,24 @@ class DetailsPage extends StatelessWidget {
               //       ),
               homePageItemModelObj.attachments?.length == 0
                   ? SizedBox()
-                  : BuildCard(
-                      title: 'Attachments',
-                      value:
-                          homePageItemModelObj.attachments?.length.toString() ??
+                  : GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FullScreenImageList(
+                                      imageUrlList:
+                                          (homePageItemModelObj.attachments ??
+                                                  [])
+                                              .cast<String>(),
+                                    )));
+                      },
+                      child: BuildCard(
+                          title: 'Attachments',
+                          value: homePageItemModelObj.attachments?.length
+                                  .toString() ??
                               ''),
+                    ),
             ])
           : ListView(padding: EdgeInsets.all(16.0), children: [
               BuildCard(

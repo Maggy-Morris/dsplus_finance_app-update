@@ -62,15 +62,15 @@ class BannerController {
     );
 
     await ref2.set(banner.toMap()).catchError((error) {
-      debugPrint(error);
+     debugPrint(error);
     });
 
     // await ref2.set(banner.toMap()).catchError((error) {
-    //   debugPrint(error);
+    //   debugdebugPrint(error);
     // });
   }
 
-////////////////////////////////////////////////////////////////////////////////////////////////  
+////////////////////////////////////////////////////////////////////////////////////////////////
   Stream<List<model.Banner>> fetchBanner({
     required String transactionID,
   }) {
@@ -113,7 +113,7 @@ class BannerController {
     // 'seller/${firebaseAuth.currentUser!.uid}/banner/$attachmentId');
 
     await ref.delete().catchError((error) {
-      debugPrint(error);
+     debugPrint(error);
     });
   }
 }
