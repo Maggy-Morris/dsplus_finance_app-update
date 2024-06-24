@@ -101,4 +101,5 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
     _subscription.cancel();
     return super.close();
   }
+
 }

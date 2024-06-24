@@ -6,6 +6,7 @@ class AdminRequestsState extends Equatable {
   final List<RequestModel>? requests;
   final AdminRequestsStatus status;
   final String error;
+  
 
   AdminRequestsState({
     this.requests,

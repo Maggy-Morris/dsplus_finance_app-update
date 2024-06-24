@@ -24,31 +24,15 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
     }
   }
 
-  void fetchData() async {
+  void fetchData(int batchSize) async {
     emit(state.copyWith(status: OrderHistoryStatus.loading));
 
     try {
-      final snapshot = await FirebaseFirestore.instance.collection('transactions').get();
-      final orders = snapshot.docs.map((doc) {
-        final data = doc.data();
-        return RequestModel(
-          docId: doc.id,
-          userId: data['User'] ?? "",
-          amount: data['amount'] ?? 0.0,
-          status: data['status'] ?? "",
-          email: data["email"] ?? "",
-          budgetName: data["name"] ?? "",
-          type: data["type"] ?? "",
-          reason: data["reason"] ?? "",
-          date: data["date"] ?? "",
-          expected_date: data["expected_date"] ?? "",
-          accountNumber: data["accountNumber"] ?? 0.0,
-          attachments: List<String>.from(data["attachments"] ?? []),
-          bankName: data["bankName"] ?? "",
-          cashOrCredit: data["cashOrCredit"] ?? false,
-          userName: data["userName"] ?? "",
-        );
-      }).toList();
+      final snapshot = await FirebaseFirestore.instance.collection('transactions')                       .orderBy('date', descending: true) // Assuming 'date' is the field to order by
+          .orderBy('date', descending: true)
+          .limit(batchSize).get();
+
+      final orders = snapshot.docs.map((doc) => RequestModel.toMap(doc)).toList();
       emit(state.copyWith(
         users: orders,
         selectedFilter: 'All',

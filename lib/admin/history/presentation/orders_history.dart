@@ -12,7 +12,7 @@ class OrderHistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => OrderHistoryCubit()..fetchData(),
+      create: (context) => OrderHistoryCubit()..fetchData(3),
       child: OrderHistoryView(),
     );
   }
@@ -21,7 +21,7 @@ class OrderHistoryPage extends StatelessWidget {
 class OrderHistoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    context.read<OrderHistoryCubit>().fetchData();
+    context.read<OrderHistoryCubit>().fetchData(10);
     return Scaffold(
       appBar: AppBar(
         title: Text("Transactions History"),

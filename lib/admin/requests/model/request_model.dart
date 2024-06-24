@@ -37,7 +37,7 @@ final class RequestModel extends Equatable {
   });
 
 
-  factory RequestModel.toMap(Map<String, dynamic> map) {
+  factory RequestModel.toMap(QueryDocumentSnapshot<Map<String, dynamic>> map) {
     return RequestModel(
       expected_date: map['expected_date'],
       date: map['date'],
@@ -57,6 +57,25 @@ final class RequestModel extends Equatable {
     );
   }
 
+  toMap() {
+    return {
+      'expected_date': expected_date,
+      'date': date,
+      'id': userId,
+      'name': budgetName,
+      'email': email,
+      'amount': amount,
+      'type': type,
+      'status': status,
+      'accountNumber': accountNumber,
+      'attachments': attachments,
+      'bankName': bankName,
+      'cashOrCredit': cashOrCredit,
+      'reason': reason,
+      'docId': docId,
+      'userName': userName,
+    };
+  }
   @override
   // TODO: implement props
   List<Object?> get props => [

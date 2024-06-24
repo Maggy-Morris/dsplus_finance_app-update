@@ -77,6 +77,14 @@ class UsersPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               UserContainer(
+                title: 'Super Admins',
+                users: state.superAdmins,
+                isAdmin: false,
+                isSuperAdmin: true,
+                bloc: context.read<UsersBloc>(),
+              ),
+              UserContainer(
+                isSuperAdmin: false,
                 title: 'Admins',
                 users: state.admins,
                 isAdmin: true,
@@ -84,6 +92,7 @@ class UsersPage extends StatelessWidget {
               ),
               SizedBox(height: 10),
               UserContainer(
+                isSuperAdmin: false,
                 title: 'Users',
                 users: state.users,
                 isAdmin: false,

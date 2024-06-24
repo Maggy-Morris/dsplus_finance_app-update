@@ -259,7 +259,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        if (documentSnapshot.get('role') == "Admin") {
+        if (documentSnapshot.get('role') == "Admin"||documentSnapshot.get('role') == "SuperAdmin"){
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(

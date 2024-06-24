@@ -9,6 +9,8 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     on<LoadUsers>(_onLoadUsers);
     on<DeleteUser>(_onDeleteUser);
     on<MakeAdmin>(_onMakeAdmin);
+    on<DemoteAdmin>(_onDemoteAdmin);
+    on<MakeSuperAdmin>(_onMakeSuperAdmin);
 
     _loadInitialData();
   }
@@ -24,6 +26,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         onData: (snapshot) {
           final List<User> admins = [];
           final List<User> users = [];
+          final List<User> superAdmins = [];
 
           snapshot.docs.forEach((doc) {
             Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;
@@ -32,37 +35,57 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
             if (user.role == 'Admin') {
               admins.add(user);
-            } else {
+            } else if (user.role == 'SuperAdmin') {
+              superAdmins.add(user);
+            }else {
               users.add(user);
             }
           });
 
-          return UsersState(admins: admins, users: users);
+          return UsersState(admins: admins, users: users , superAdmins: superAdmins);
         },
         onError: (error, stackTrace) {
-          print('Error loading users: $error');
-          return UsersState(admins: [], users: []);
+          return UsersState(admins: [], users: [] , superAdmins: [] );
         },
       );
     } catch (e) {
-      print('Error loading users: $e');
+      emit(UsersState(admins: [], users: [] , superAdmins: [] ));
     }
   }
 
   Future<void> _onDeleteUser(DeleteUser event, Emitter<UsersState> emit) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(event.userId).delete();
+      await FirebaseFirestore.instance.collection('users')
+          .doc(event.userId)
+          .delete();
       // Trigger a state refresh
       _loadInitialData();
     } catch (e) {
-      print('Error deleting user: $e');
+      emit(UsersState(admins: [], users: [] , superAdmins: [] ));
     }
   }
 
   Future<void> _onMakeAdmin(MakeAdmin event, Emitter<UsersState> emit) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(event.userId).update({
+      await FirebaseFirestore.instance.collection('users')
+          .doc(event.userId)
+          .update({
         'role': 'Admin',
+      });
+      // Trigger a state refresh
+      _loadInitialData();
+    } catch (e) {
+      emit(UsersState(admins: [], users: [] , superAdmins: [] ));
+    }
+  }
+
+  Future<void> _onDemoteAdmin(DemoteAdmin event,
+      Emitter<UsersState> emit) async {
+    try {
+      await FirebaseFirestore.instance.collection('users')
+          .doc(event.userId)
+          .update({
+        'role': 'User',
       });
       // Trigger a state refresh
       _loadInitialData();
@@ -70,4 +93,19 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       print('Error making user admin: $e');
     }
   }
+  Future<void> _onMakeSuperAdmin(MakeSuperAdmin event,
+      Emitter<UsersState> emit) async {
+    try {
+      await FirebaseFirestore.instance.collection('users')
+          .doc(event.userId)
+          .update({
+        'role': 'SuperAdmin',
+      });
+      // Trigger a state refresh
+      _loadInitialData();
+    } catch (e) {
+      print('Error making user SuperAdmin: $e');
+    }
+  }
+
 }
