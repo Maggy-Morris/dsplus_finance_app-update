@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../presentaion/widgets/user_model.dart';
@@ -24,14 +25,14 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       await emit.forEach<QuerySnapshot>(
         FirebaseFirestore.instance.collection('users').snapshots(),
         onData: (snapshot) {
-          final List<User> admins = [];
-          final List<User> users = [];
-          final List<User> superAdmins = [];
+          final List<UserModel> admins = [];
+          final List<UserModel> users = [];
+          final List<UserModel> superAdmins = [];
 
           snapshot.docs.forEach((doc) {
             Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;
             userData['id'] = doc.id;
-            User user = User.fromJson(userData);
+            UserModel user = UserModel.fromJson(userData);
 
             if (user.role == 'Admin') {
               admins.add(user);
@@ -108,4 +109,12 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     }
   }
 
+  currentUserRole() {
+   final userId = FirebaseAuth.instance.currentUser?.uid;
+    FirebaseFirestore.instance.collection('users').doc(userId).get().then((doc) {
+      String role = doc.data()?['role'];
+      print(role);
+      return UsersState(currentUserRole: role);
+    });
+  }
 }

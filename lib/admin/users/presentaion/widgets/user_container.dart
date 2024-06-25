@@ -5,7 +5,7 @@ import '../../user_bloc/users_event.dart';
 
 class UserContainer extends StatelessWidget {
   final String title;
-  final List<User> users;
+  final List<UserModel> users;
   final bool isAdmin;
   final bool isSuperAdmin;
   final UsersBloc bloc;
@@ -72,7 +72,7 @@ class UserContainer extends StatelessWidget {
     );
   }
 
-  Widget? _getTrailingIcon(User user, BuildContext context) {
+  Widget? _getTrailingIcon(UserModel user, BuildContext context) {
     if ((isSuperAdmin && user.role != 'SuperAdmin') || (!isAdmin && user.role == 'User')) {
       return IconButton(
         icon: Icon(Icons.delete),
@@ -84,7 +84,7 @@ class UserContainer extends StatelessWidget {
     return null;
   }
 
-  void Function()? _getOnTap(User user, BuildContext context) {
+  void Function()? _getOnTap(UserModel user, BuildContext context) {
     if (isSuperAdmin) {
       if (user.role == 'SuperAdmin') {
         return () async {
@@ -118,7 +118,7 @@ class UserContainer extends StatelessWidget {
     return null;
   }
 
-  Future<void> _showDeleteDialog(User user, BuildContext context) async {
+  Future<void> _showDeleteDialog(UserModel user, BuildContext context) async {
     bool delete = await showDialog(
       context: context,
       builder: (BuildContext context) {
