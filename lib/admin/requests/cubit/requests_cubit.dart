@@ -2,62 +2,53 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dsplus_finance/admin/requests/model/request_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../requests.dart';
 import 'requests_state.dart';
 
 class AdminRequestsCubit extends Cubit<AdminRequestsState> {
-  late final StreamSubscription<QuerySnapshot> _subscription;
+  static const int limit = 2; // Number of documents to fetch per page
+  // late final StreamSubscription _subscription;
 
   AdminRequestsCubit()
       : super(AdminRequestsState(
-            requests: [], status: AdminRequestsStatus.initial)) {
-    _subscription = FirebaseFirestore.instance
+      requests: [],
+      status: AdminRequestsStatus.initial,
+      hasMoreData: true,
+      lastDocument: null));
+
+  void fetchMoreData() async {
+    if (state.status == AdminRequestsStatus.loading || !state.hasMoreData) {
+      return;
+    }
+
+    emit(state.copyWith(status: AdminRequestsStatus.loading));
+
+    Query query = FirebaseFirestore.instance
         .collection('transactions')
         .where('status', isEqualTo: "pending")
-        .snapshots()
-        .listen((snapshot) {
-      final requests = snapshot.docs.map((doc) {
-        final data = doc.data();
-        return RequestModel(
-          docId: doc.id,
-          userId: data['User'] ?? "",
-          amount: data['amount'] ?? 0.0,
-          status: data['status'] ?? "",
-          email: data["email"] ?? "",
-          budgetName: data["name"] ?? "",
-          type: data["type"] ?? "",
-          reason: data["reason"] ?? "",
-          date: data["date"] ?? "",
-          expected_date: data["expected_date"] ?? "",
-          accountNumber: data["accountNumber"] ?? 0.0,
-          attachments: List<String>.from(data["attachments"] ?? []),
-          bankName: data["bankName"] ?? "",
-          cashOrCredit: data["cashOrCredit"] ?? false,
-          userName: data["userName"] ?? "",
-        );
-      }).toList();
+        .limit(limit);
 
-      emit(state.copyWith(
-          requests: requests, status: AdminRequestsStatus.loaded));
-    });
-  }
+    if (state.requests.isNotEmpty) {
+      query = query.startAfterDocument(state.lastDocument!);
+    }
 
-  void fetchData() async {
     try {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('transactions')
-          .where('status', isEqualTo: "pending")
-          .get();
+      final querySnapshot = await query.get();
 
-      final requests =
-          querySnapshot.docs.map((doc) => RequestModel.toMap(doc)).toList();
+      final requests = querySnapshot.docs
+          .map((doc) => RequestModel.toMap(doc))
+          .toList()
+          .cast<RequestModel>();
 
       emit(state.copyWith(
-          requests: requests, status: AdminRequestsStatus.loaded));
+        requests: List.from(state.requests)..addAll(requests),
+        status: AdminRequestsStatus.loaded,
+        lastDocument: querySnapshot.docs.isNotEmpty ? querySnapshot.docs.last : null,
+        hasMoreData: querySnapshot.docs.length >= limit,
+      ));
     } catch (e) {
       emit(state.copyWith(
         status: AdminRequestsStatus.error,
-        error: 'Failed to fetch data: $e',
+        error: 'Failed to fetch more data: $e',
       ));
     }
   }
@@ -69,7 +60,6 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           .collection('transactions')
           .doc(budgetId)
           .update({'status': 'Approved'});
-      fetchData(); // Refresh data after approval
       emit(state.copyWith(status: AdminRequestsStatus.loaded));
     } catch (error) {
       emit(state.copyWith(
@@ -80,12 +70,12 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
   }
 
   Future<void> rejectBudget(String budgetId, String reason) async {
+    emit(state.copyWith(status: AdminRequestsStatus.loading));
     try {
       await FirebaseFirestore.instance
           .collection('transactions')
           .doc(budgetId)
           .update({'status': 'Rejected', 'reason': reason});
-      fetchData(); // Refresh data after rejection
       emit(state.copyWith(status: AdminRequestsStatus.loaded));
     } catch (error) {
       emit(state.copyWith(
@@ -94,22 +84,20 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
       ));
     }
   }
-
-  Stream<int> numberOfRequests() {
-    StreamController<int> controller = StreamController<int>();
+  void numberOfRequests() {
     FirebaseFirestore.instance
         .collection('transactions')
-        .where('status', isEqualTo: "pending")
+        .where('status', isEqualTo: 'pending')
         .snapshots()
         .listen((QuerySnapshot snapshot) {
-      controller.add(snapshot.docs.length);
-    });
-    return controller.stream;
+      emit(state.copyWith(numberOfRequests: snapshot.docs.length));
+  });
   }
-
-  @override
-  Future<void> close() {
-    _subscription.cancel();
-    return super.close();
-  }
+  //
+  //
+  // @override
+  // Future<void> close() {
+  //   _subscription.cancel();
+  //   return super.close();
+  // }
 }

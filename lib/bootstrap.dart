@@ -36,9 +36,8 @@ Future<void> bootstrap() async {
   ]).then((value) {
     PrefUtils().init();
     Logger.init(kReleaseMode ? LogMode.live : LogMode.debug);
-    runApp(DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => App(),
-    ));
+    runApp(
+     App(),
+    );
   });
 }

@@ -1,3 +1,4 @@
+import 'package:dsplus_finance/admin/requests/cubit/requests_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -263,7 +264,10 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => AdminHomePage(),
+              builder: (context) => BlocProvider(
+                create: (context) => AdminRequestsCubit(),
+  child: AdminHomePage(),
+),
             ),
           );
         } else {

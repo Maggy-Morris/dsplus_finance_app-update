@@ -1,4 +1,5 @@
 import 'package:dsplus_finance/admin/requests/cubit/requests_cubit.dart';
+import 'package:dsplus_finance/admin/requests/cubit/requests_state.dart';
 import 'package:dsplus_finance/admin/users/presentaion/users.dart';
 import 'package:dsplus_finance/admin/users/user_bloc/users_bloc.dart';
 import 'package:dsplus_finance/admin/users/user_bloc/users_event.dart';
@@ -24,8 +25,7 @@ class AdminHomePage extends StatelessWidget {
       await FirebaseAuth.instance.signOut();
 
       NavigatorService.pushNamedAndRemoveUntil(
-          AppRoutes.loginPageTabContainerScreen
-          );
+          AppRoutes.loginPageTabContainerScreen);
     } catch (e) {
       print('Error signing out: $e');
     }
@@ -33,6 +33,7 @@ class AdminHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<AdminRequestsCubit>().numberOfRequests();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey[200],
@@ -47,174 +48,151 @@ class AdminHomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocProvider(
-        create: (context) => AdminRequestsCubit(),
-        child: GridView.builder(
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.all(10),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // Number of columns in the grid
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 10.0,
-            childAspectRatio:
-                3 / 5, // Adjust the aspect ratio to fit your design
-          ),
-          itemCount: 4,
-          // Total number of items in the grid
-          itemBuilder: (context, index) {
-            return InkWell(
-              hoverDuration: Duration(milliseconds: 100),
-              splashColor: Colors.grey[200],
-              highlightColor: Colors.grey[200],
-              borderRadius: BorderRadius.circular(15),
-              onTap: () {
-                if (index == 0) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BlocProvider(
-                        create: (context) => AdminRequestsCubit(),
-                        child: AdminRequestsView(),
-                      ),
+      body: GridView.builder(
+        physics: BouncingScrollPhysics(),
+        padding: EdgeInsets.all(10),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, // Number of columns in the grid
+          crossAxisSpacing: 10.0,
+          mainAxisSpacing: 10.0,
+          childAspectRatio: 3 / 5, // Adjust the aspect ratio to fit your design
+        ),
+        itemCount: 4,
+        // Total number of items in the grid
+        itemBuilder: (context, index) {
+          return InkWell(
+            hoverDuration: Duration(milliseconds: 100),
+            splashColor: Colors.grey[200],
+            highlightColor: Colors.grey[200],
+            borderRadius: BorderRadius.circular(15),
+            onTap: () {
+              if (index == 0) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => AdminRequestsCubit(),
+                      child: AdminRequestsView(),
                     ),
-                  );
-                } else if (index == 1) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MultiBlocProvider(
-                        providers: [
-                          BlocProvider(
-                            create: (context) => UsersBloc()..add(LoadUsers()),
-                          ),
-                          BlocProvider(
-                            create: (context) => AddUserCubit(
-                                FirebaseAuth.instance,
-                                FirebaseFirestore.instance),
-                          ),
-                        ],
-                        child: UsersPage(
-                          addUserCubit: AddUserCubit(FirebaseAuth.instance,
+                  ),
+                );
+              } else if (index == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => UsersBloc()..add(LoadUsers()),
+                        ),
+                        BlocProvider(
+                          create: (context) => AddUserCubit(
+                              FirebaseAuth.instance,
                               FirebaseFirestore.instance),
                         ),
-                      ),
-                    ),
-                  );
-                } else if (index == 2) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BlocProvider(
-                        create: (context) => OrderHistoryCubit(),
-                        child: OrderHistoryView(),
-                      ),
-                    ),
-                  );
-                } else if (index == 3) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BlocProvider(
-                        create: (context) => AddUserCubit(
+                      ],
+                      child: UsersPage(
+                        addUserCubit: AddUserCubit(
                             FirebaseAuth.instance, FirebaseFirestore.instance),
-                        child: AddUsers(
-                          addUserCubit: AddUserCubit(FirebaseAuth.instance,
-                              FirebaseFirestore.instance),
-                        ),
                       ),
                     ),
-                  );
-                }
-              },
-              child: Card(
-                clipBehavior: Clip.antiAlias,
-                borderOnForeground: true,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                semanticContainer: true,
-                margin: EdgeInsets.all(10),
-                child: (index == 0)
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Spacer(
-                            flex: 1,
+                  ),
+                );
+              } else if (index == 2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => OrderHistoryCubit(),
+                      child: OrderHistoryView(),
+                    ),
+                  ),
+                );
+              } else if (index == 3) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => AddUserCubit(
+                          FirebaseAuth.instance, FirebaseFirestore.instance),
+                      child: AddUsers(
+                        addUserCubit: AddUserCubit(
+                            FirebaseAuth.instance, FirebaseFirestore.instance),
+                      ),
+                    ),
+                  ),
+                );
+              }
+            },
+            child: Card(
+              clipBehavior: Clip.antiAlias,
+              borderOnForeground: true,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              semanticContainer: true,
+              margin: EdgeInsets.all(10),
+              child: (index == 0)
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Spacer(
+                          flex: 1,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(
+                                Icons.request_page,
+                                size: 50,
+                              ),
+                              BlocBuilder<AdminRequestsCubit, AdminRequestsState>(
+                                builder: (context, state) {
+                                  return SizedBox(
+                                    height: 40,
+                                    width: 35,
+                                    child: Badge(
+
+                                      backgroundColor: Colors.red.withOpacity(.8),
+                                      textColor: Colors.white,
+                                      label: (state.numberOfRequests >= 99 )?Text(
+                                          "99+",style: TextStyle(fontSize: 15),) :Text(
+                                        "${state.numberOfRequests}",style: TextStyle(fontSize: 15),
+                                      ),
+
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: StreamBuilder(
-                                  stream: context
-                                      .read<AdminRequestsCubit>()
-                                      .numberOfRequests(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData && (snapshot.data != 0) && (snapshot.data != null)) {
-                                      return SizedBox(
-                                        height: 40,
-                                        width: 40,
-                                        child: Badge(
-                                          backgroundColor:
-                                              Colors.red.withOpacity(0.6),
-                                          alignment: Alignment.topRight,
-                                          label: (snapshot.data! <= 99)? Text(
-                                            snapshot.data.toString(),
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16),
-                                          ): Text(
-                                            "99",
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16),
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return SizedBox(
-                                        height: 40,
-                                        width: 40,
-                                        child: Badge(
-                                          backgroundColor:
-                                          Colors.red.withOpacity(0.6),
-                                          alignment: Alignment.topRight,
-                                          label: Text(
-                                            "0",
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  }),
-                            ),
-                          ),
-                          Spacer(
-                            flex: 2,
-                          ),
-                          ListTile(
-                            title: Text(_getTitle(index)),
-                            subtitle: Text(_getSubtitle(index)),
-                            trailing: Icon(Icons.arrow_forward_ios),
-                          ),
-                          Spacer(
-                            flex: 6,
-                          )
-                        ],
-                      )
-                    : Center(
-                        child: ListTile(
+                        ),
+                        Spacer(
+                          flex: 2,
+                        ),
+                        ListTile(
                           title: Text(_getTitle(index)),
                           subtitle: Text(_getSubtitle(index)),
                           trailing: Icon(Icons.arrow_forward_ios),
                         ),
+                        Spacer(
+                          flex: 6,
+                        )
+                      ],
+                    )
+                  : Center(
+                      child: ListTile(
+                        title: Text(_getTitle(index)),
+                        subtitle: Text(_getSubtitle(index)),
+                        trailing: Icon(Icons.arrow_forward_ios),
                       ),
-              ),
-            );
-          },
-        ),
+                    ),
+            ),
+          );
+        },
       ),
     );
   }
