@@ -148,26 +148,30 @@ class AdminHomePage extends StatelessWidget {
                                 Icons.request_page,
                                 size: 50,
                               ),
-                              BlocBuilder<AdminRequestsCubit, AdminRequestsState>(
+                              BlocBuilder<AdminRequestsCubit,
+                                  AdminRequestsState>(
                                 builder: (context, state) {
                                   return SizedBox(
                                     height: 40,
                                     width: 35,
                                     child: Badge(
-
-                                      backgroundColor: Colors.red.withOpacity(.8),
+                                      backgroundColor:
+                                          Colors.red.withOpacity(.8),
                                       textColor: Colors.white,
-                                      label: (state.numberOfRequests >= 99 )?Text(
-                                          "99+",style: TextStyle(fontSize: 15),) :Text(
-                                        "${state.numberOfRequests}",style: TextStyle(fontSize: 15),
-                                      ),
-
+                                      label: (state.numberOfRequests >= 99)
+                                          ? Text(
+                                              "99+",
+                                              style: TextStyle(fontSize: 15),
+                                            )
+                                          : Text(
+                                              "${state.numberOfRequests}",
+                                              style: TextStyle(fontSize: 15),
+                                            ),
                                     ),
                                   );
                                 },
                               ),
                             ],
-
                           ),
                         ),
                         Spacer(
@@ -183,14 +187,115 @@ class AdminHomePage extends StatelessWidget {
                         )
                       ],
                     )
-                  : Center(
-                      child: ListTile(
-                        title: Text(_getTitle(index)),
-                        subtitle: Text(_getSubtitle(index)),
-                        trailing: Icon(Icons.arrow_forward_ios),
-                      ),
-                    ),
+                  : (index == 1)
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Spacer(
+                              flex: 1,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.person,
+                                    size: 50,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Spacer(
+                              flex: 2,
+                            ),
+                            ListTile(
+                              title: Text(_getTitle(index)),
+                              subtitle: Text(_getSubtitle(index)),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                            ),
+                            Spacer(
+                              flex: 6,
+                            )
+                          ],
+                        )
+                      : (index == 2)
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Spacer(
+                                  flex: 1,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.history,
+                                        size: 50,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Spacer(
+                                  flex: 2,
+                                ),
+                                ListTile(
+                                  title: Text(_getTitle(index)),
+                                  subtitle: Text(_getSubtitle(index)),
+                                  trailing: Icon(Icons.arrow_forward_ios),
+                                ),
+                                Spacer(
+                                  flex: 6,
+                                )
+                              ],
+                            )
+                          : (index == 3)
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Spacer(
+                                      flex: 1,
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.person_add,
+                                            size: 50,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Spacer(
+                                      flex: 2,
+                                    ),
+                                    ListTile(
+                                      title: Text(_getTitle(index)),
+                                      subtitle: Text(_getSubtitle(index)),
+                                      trailing: Icon(Icons.arrow_forward_ios),
+                                    ),
+                                    Spacer(
+                                      flex: 6,
+                                    )
+                                  ],
+                                )
+                              : Container(),
             ),
+
+            //   Center(
+            //           child: ListTile(
+            //             title: Text(_getTitle(index)),
+            //             subtitle: Text(_getSubtitle(index)),
+            //             trailing: Icon(Icons.arrow_forward_ios),
+            //           ),
+            //         ),
+            // ),
           );
         },
       ),

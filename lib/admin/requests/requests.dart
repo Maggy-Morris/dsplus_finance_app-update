@@ -115,7 +115,7 @@ class AdminRequestsView extends StatelessWidget {
         ElevatedButton(
           onPressed: () {
             cubit.approveBudget(budgetId);
-          },
+                      },
           style: ElevatedButton.styleFrom(
             fixedSize: Size(150, 40),
             backgroundColor: Colors.green,

@@ -21,7 +21,7 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
 
     emit(state.copyWith(status: OrderHistoryStateStatus.loading));
 
-    Query query = FirebaseFirestore.instance.collection("transactions").limit(limit);
+    Query query = FirebaseFirestore.instance.collection("transactions").orderBy("createdAt" , descending: true).limit(limit);
 
     if (state.selectedFilter != 'All') {
       query = query.where('status', isEqualTo: state.selectedFilter);
@@ -50,7 +50,7 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
   Future<void> fetchAllData() async {
     emit(state.copyWith(status: OrderHistoryStateStatus.loading, documents: [], lastDocument: null));
 
-    Query query = FirebaseFirestore.instance.collection("transactions").limit(limit);
+    Query query = FirebaseFirestore.instance.collection("transactions").orderBy("createdAt" , descending: true).limit(limit);
 
     final snapshot = await query.get();
     if (snapshot.docs.isNotEmpty) {
@@ -73,7 +73,7 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
 
     Query query = FirebaseFirestore.instance
         .collection("transactions")
-        .where("status", isEqualTo: "Approved")
+        .where("status", isEqualTo: "Approved").orderBy("createdAt" , descending: true)
         .limit(limit);
 
     final snapshot = await query.get();
@@ -97,7 +97,7 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
 
     Query query = FirebaseFirestore.instance
         .collection("transactions")
-        .where("status", isEqualTo: "pending")
+        .where("status", isEqualTo: "pending").orderBy("createdAt" , descending: true)
         .limit(limit);
 
     final snapshot = await query.get();
@@ -121,7 +121,7 @@ class OrderHistoryCubit extends Cubit<OrderHistoryState> {
 
     Query query = FirebaseFirestore.instance
         .collection("transactions")
-        .where("status", isEqualTo: "Rejected")
+        .where("status", isEqualTo: "Rejected").orderBy("createdAt" , descending: true)
         .limit(limit);
 
     final snapshot = await query.get();

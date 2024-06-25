@@ -24,7 +24,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
 
     Query query = FirebaseFirestore.instance
         .collection('transactions')
-        .where('status', isEqualTo: "pending")
+        .where('status', isEqualTo: "pending").orderBy("createdAt" , descending: true)
         .limit(limit);
 
     if (state.requests.isNotEmpty) {
@@ -60,6 +60,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           .collection('transactions')
           .doc(budgetId)
           .update({'status': 'Approved'});
+      fetchMoreData();
       emit(state.copyWith(status: AdminRequestsStatus.loaded));
     } catch (error) {
       emit(state.copyWith(
