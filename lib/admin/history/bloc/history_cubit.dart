@@ -5,60 +5,145 @@ import '../../requests/model/request_model.dart';
 import 'history_state.dart';
 
 class OrderHistoryCubit extends Cubit<OrderHistoryState> {
-  OrderHistoryCubit() : super(OrderHistoryState());
+  final int limit = 3;
 
-  void applyFilter(String query) {
-    if (state.status == OrderHistoryStatus.loaded) {
-      final newFilter = query.toLowerCase();
-      emit(state.copyWith(filter: newFilter));
+  OrderHistoryCubit()
+      : super(OrderHistoryState(
+    status: OrderHistoryStateStatus.initial,
+    documents: [],
+  ));
+
+  Future<void> fetchMoreData() async {
+    if (state.status == OrderHistoryStateStatus.loading || !state.hasMoreData) {
+      return;
     }
-  }
 
-  void applySelectedFilter(String newFilter) {
-    if (state.status == OrderHistoryStatus.loaded) {
-      if (newFilter == 'All') {
-        emit(state.copyWith(selectedFilter: newFilter, filter: ''));
-      } else {
-        emit(state.copyWith(selectedFilter: newFilter));
-      }
+    emit(state.copyWith(status: OrderHistoryStateStatus.loading));
+
+    Query query =
+    FirebaseFirestore.instance.collection("transactions").limit(limit);
+
+    if (state.lastDocument != null) {
+      query = query.startAfterDocument(state.lastDocument!);
     }
-  }
 
-  void fetchData( int batchSize) async {
-    emit(state.copyWith(status: OrderHistoryStatus.loading));
-
-    try {
-      final snapshot = await FirebaseFirestore.instance.collection('transactions')                       .orderBy('date', descending: true) // Assuming 'date' is the field to order by
-          .limit(batchSize).get();
-
-      final orders = snapshot.docs.map((doc) {
-        final data = doc.data();
-        return RequestModel(
-          docId: doc.id,
-          userId: data['User'] ?? '',
-          amount: data['amount'] ?? 0.0,
-          status: data['status'] ?? '',
-          email: data['email'] ?? '',
-          budgetName: data['name'] ?? '',
-          type: data['type'] ?? '',
-          reason: data['reason'] ?? '',
-          date: data['date'] ?? '',
-          expected_date: data['expected_date'] ?? '',
-          accountNumber: data['accountNumber'] ?? 0.0,
-          attachments: List<String>.from(data['attachments'] ?? []),
-          bankName: data['bankName'] ?? '',
-          cashOrCredit: data['cashOrCredit'] ?? false,
-          userName: data['userName'] ?? '',
-        );
-      }).toList();
+    final snapshot = await query.get();
+    if (snapshot.docs.isNotEmpty) {
       emit(state.copyWith(
-        users: orders,
-        selectedFilter: 'All',
-        filter: '',
-        status: OrderHistoryStatus.loaded,
+        status: OrderHistoryStateStatus.loaded,
+        lastDocument: snapshot.docs.last,
+        documents: List.from(state.documents)..addAll(snapshot.docs),
+        hasMoreData: snapshot.docs.length >= limit,
       ));
-    } catch (e) {
-      emit(state.copyWith(status: OrderHistoryStatus.error, error: 'Failed to fetch data: $e'));
+    } else {
+      emit(state.copyWith(
+        status: OrderHistoryStateStatus.noMoreData,
+        hasMoreData: false,
+      ));
     }
   }
 }
+
+//
+// class OrderHistoryCubit extends Cubit<OrderHistoryState> {
+//   OrderHistoryCubit() : super(OrderHistoryState());
+//
+//   void applyFilter(String query) {
+//     if (state.status == OrderHistoryStatus.loaded) {
+//       final newFilter = query.toLowerCase();
+//       emit(state.copyWith(filter: newFilter));
+//     }
+//   }
+//
+//   void applySelectedFilter(String newFilter) {
+//     if (state.status == OrderHistoryStatus.loaded) {
+//       if (newFilter == 'All') {
+//         emit(state.copyWith(selectedFilter: newFilter, filter: ''));
+//       } else {
+//         emit(state.copyWith(selectedFilter: newFilter));
+//       }
+//     }
+//   }
+//
+//   Future<void> fetchData(int batchSize) async {
+//
+//     emit(state.copyWith(isLoading: true, status: OrderHistoryStatus.loading));
+//
+//     try {
+//       Query query = FirebaseFirestore.instance
+//           .collection('transactions')
+//           .orderBy('date', descending: true)
+//           .limit(batchSize);
+//
+//       if (state.lastDocument != null) {
+//         query = query.startAfterDocument(state.lastDocument!);
+//       }
+//
+//       final snapshot = await query.get();
+//       if (snapshot.docs.isNotEmpty) {
+//         if (snapshot.docs.length < 3) {
+//           emit(state.copyWith(
+//             hasMoreData: false,
+//           ));
+//           return;
+//         }
+//
+//         emit(state.copyWith(
+//           status: OrderHistoryStatus.loaded,
+//           isLoading: false,
+//           lastDocument: snapshot.docs.last,
+//           orders:
+//           snapshot.docs.map((doc) => RequestModel.toMap(doc)).toList(),
+//         ));
+//         return;
+//       }
+//     } catch (e) {
+//       emit(state.copyWith(
+//         status: OrderHistoryStatus.error,
+//         error: 'Failed to fetch data: $e',
+//         isLoading: false,
+//       ));
+//     }
+//   }
+//   void fetchMoreData() async {
+//     if (state.isLoading || !state.hasMoreData) return;
+//
+//     try {
+//       Query query = FirebaseFirestore.instance
+//           .collection('transactions')
+//           .limit(3);
+//
+//       if (state.lastDocument != null) {
+//         query.startAfterDocument(state.lastDocument!);
+//       }
+//
+//       final snapshot = await query.get();
+//       if (snapshot.docs.isNotEmpty) {
+//         if (snapshot.docs.length < 3) {
+//           emit(state.copyWith(
+//             hasMoreData: false,
+//           ));
+//         }
+//
+//         emit(state.copyWith(
+//           status: OrderHistoryStatus.loaded,
+//           isLoading: false,
+//           lastDocument: snapshot.docs.last,
+//           orders: snapshot.docs.map((doc) => RequestModel.toMap(doc)).toList(),
+//         ));
+//       } else {
+//         emit(state.copyWith(
+//           hasMoreData: false,
+//           isLoading: false,
+//         ));
+//       }
+//     } catch (e) {
+//       emit(state.copyWith(
+//         status: OrderHistoryStatus.error,
+//         error: 'Failed to fetch more data: $e',
+//         isLoading: false,
+//       ));
+//     }
+//   }
+//
+// }

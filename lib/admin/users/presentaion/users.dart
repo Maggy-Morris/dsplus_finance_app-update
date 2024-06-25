@@ -1,4 +1,4 @@
-import 'package:dsplus_finance/admin/add_user/add_user_cubit.dart';
+import 'package:dsplus_finance/admin/add_user/cubit/add_user_cubit.dart';
 import 'package:dsplus_finance/admin/add_user/widgets/form_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

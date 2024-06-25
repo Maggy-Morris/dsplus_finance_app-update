@@ -105,13 +105,7 @@ Widget buildButtons(BuildContext context, String budgetId, String userId) {
       ElevatedButton(
         onPressed: () {
           cubit.approveBudget(budgetId);
-          if (cubit.state.status == AdminRequestsStatus.loaded) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Request approved successfully"),
-              ),
-            );
-          }else if (cubit.state.status == AdminRequestsStatus.loading) {
+          if (cubit.state.status == AdminRequestsStatus.loading) {
              Center(child: CircularProgressIndicator());
           }
         },

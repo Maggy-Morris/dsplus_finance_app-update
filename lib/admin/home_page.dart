@@ -12,7 +12,7 @@ import '../core/utils/navigator_service.dart';
 import '../routes/app_routes.dart';
 import 'history/bloc/history_cubit.dart';
 import 'requests/requests.dart';
-import 'add_user/add_user_cubit.dart';
+import 'add_user/cubit/add_user_cubit.dart';
 import 'add_user/add_users.dart';
 import 'history/presentation/orders_history.dart';
 
@@ -150,7 +150,7 @@ class AdminHomePage extends StatelessWidget {
                                       .read<AdminRequestsCubit>()
                                       .numberOfRequests(),
                                   builder: (context, snapshot) {
-                                    if (snapshot.hasData && snapshot.data! > 0) {
+                                    if (snapshot.hasData && (snapshot.data != 0) && (snapshot.data != null)) {
                                       return SizedBox(
                                         height: 40,
                                         width: 40,
@@ -180,7 +180,7 @@ class AdminHomePage extends StatelessWidget {
                                           Colors.red.withOpacity(0.6),
                                           alignment: Alignment.topRight,
                                           label: Text(
-                                            snapshot.data.toString(),
+                                            "0",
                                             style: const TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 16),

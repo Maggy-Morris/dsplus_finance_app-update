@@ -12,7 +12,7 @@ final class RequestModel extends Equatable {
   final String? date;
   final String? expected_date;
   final num? accountNumber;
-  final List<String?> attachments;
+  final List<dynamic> attachments;
   final String? bankName;
   final bool cashOrCredit;
   final String? reason;
@@ -37,23 +37,23 @@ final class RequestModel extends Equatable {
   });
 
 
-  factory RequestModel.toMap(QueryDocumentSnapshot<Map<String, dynamic>> map) {
+  factory RequestModel.toMap(QueryDocumentSnapshot<Object?> map) {
     return RequestModel(
-      expected_date: map['expected_date'],
-      date: map['date'],
-      userId: map['id'],
-      budgetName: map['name'],
-      email: map['email'],
-      amount: map['amount'],
-      type: map['type'],
-      status: map['status'],
-      accountNumber: map['accountNumber'],
-      attachments: map['attachments'],
-      bankName: map['bankName'],
-      cashOrCredit: map['cashOrCredit'],
-      reason: map['reason'],
-      docId: map['docId'],
-      userName: map['userName'],
+      docId: map.id,
+      expected_date: map['expected_date'] ?? "",
+      date: map['date'] ?? "",
+      userId: map['id']?? "",
+      budgetName: map['name']?? "",
+      email: map['email']?? "",
+      amount: map['amount']?? 0.0,
+      type: map['type']?? "",
+      status: map['status']?? "",
+      accountNumber: map['accountNumber']?? 0.0,
+      attachments: map['attachments']?? [],
+      bankName: map['bankName']?? "",
+      cashOrCredit: map['cashOrCredit']?? false,
+      reason: map['reason']?? "",
+      userName: map['userName']?? "",
     );
   }
 
@@ -75,6 +75,26 @@ final class RequestModel extends Equatable {
       'docId': docId,
       'userName': userName,
     };
+  }
+
+  factory RequestModel.fromMap(Map<String, dynamic> map) {
+    return RequestModel(
+      docId: map['id']?? "",
+      expected_date: map['expected_date'] ?? "",
+      date: map['date'] ?? "",
+      userId: map['userId']?? "",
+      budgetName: map['name']?? "",
+      email: map['email']?? "",
+      amount: map['amount']?? 0.0,
+      type: map['type']?? "",
+      status: map['status']?? "",
+      accountNumber: map['accountNumber']?? 0.0,
+      attachments: map['attachments']?? [],
+      bankName: map['bankName']?? "",
+      cashOrCredit: map['cashOrCredit']?? false,
+      reason: map['reason']?? "",
+      userName: map['userName']?? "",
+    );
   }
   @override
   // TODO: implement props

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 enum AdminRequestsStatus { initial, loading, loaded, error }
 class AdminRequestsState extends Equatable {
-  final List<RequestModel>? requests;
+  final List<dynamic>? requests;
   final AdminRequestsStatus status;
   final String error;
   
@@ -15,7 +15,7 @@ class AdminRequestsState extends Equatable {
   });
 
   AdminRequestsState copyWith({
-    List<RequestModel>? requests,
+    List<dynamic>? requests,
     AdminRequestsStatus? status,
     String? error,
   }) {

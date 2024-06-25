@@ -1,52 +1,101 @@
-import 'package:dsplus_finance/admin/requests/model/request_model.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum OrderHistoryStatus { initial, loading, loaded, error }
+enum OrderHistoryStateStatus { initial, loading, loaded, noMoreData }
 
-class OrderHistoryState extends Equatable {
-  final String selectedFilter; // Holds the currently selected filter
-  final String filter; // Holds the current filter text
-  final List<RequestModel> orders; // List of order models
-  final OrderHistoryStatus status; // Current status of the state
-  final String error; // Error message if an error occurs
-  final DocumentSnapshot? lastDocument; // Last fetched document for pagination
+class OrderHistoryState extends Equatable{
+  final OrderHistoryStateStatus status;
+  final List<DocumentSnapshot> documents;
+  final DocumentSnapshot? lastDocument;
+  final bool hasMoreData;
+
 
   OrderHistoryState({
-    this.orders = const [], // Default empty list of orders
-    this.status = OrderHistoryStatus.initial, // Default status is initial
-    this.error = '', // Default empty error message
-    this.selectedFilter = '', // Default empty selected filter
-    this.filter = '', // Default empty filter text
-    this.lastDocument, // Default is null
+    required this.status,
+    required this.documents,
+    this.lastDocument,
+    this.hasMoreData = true,
   });
 
-  // Copy constructor to create a new state object with updated values
   OrderHistoryState copyWith({
-    List<RequestModel>? users,
-    OrderHistoryStatus? status,
-    String? error,
-    String? selectedFilter,
-    String? filter,
+    OrderHistoryStateStatus? status,
+    List<DocumentSnapshot>? documents,
     DocumentSnapshot? lastDocument,
-    TextEditingController? searchController, // Unused in current implementation
+    bool? hasMoreData,
   }) {
     return OrderHistoryState(
       status: status ?? this.status,
-      error: error ?? this.error,
-      orders: users ?? this.orders,
-      selectedFilter: selectedFilter ?? this.selectedFilter,
-      filter: filter ?? this.filter,
+      documents: documents ?? this.documents,
       lastDocument: lastDocument ?? this.lastDocument,
+      hasMoreData: hasMoreData ?? this.hasMoreData,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [orders, status, error, selectedFilter, filter, lastDocument];
-
-  // Equatable comparison method to determine equality between state objects
-  @override
-  bool get stringify => true; // Enables toString implementation for Equatable
+  // TODO: implement props
+  List<Object?> get props => [status,documents,lastDocument,hasMoreData];
 }
+
+// import 'package:equatable/equatable.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:dsplus_finance/admin/requests/model/request_model.dart';
+//
+// enum OrderHistoryStatus { initial, loading, loaded, error }
+//
+// class OrderHistoryState extends Equatable {
+//   final List<RequestModel> orders;
+//   final String selectedFilter;
+//   final String filter;
+//   final OrderHistoryStatus status;
+//   final String error;
+//   DocumentSnapshot? lastDocument;
+//   final bool isLoading;
+//   final bool hasMoreData;
+//
+//   OrderHistoryState({
+//     this.orders = const [],
+//     this.status = OrderHistoryStatus.initial,
+//     this.error = '',
+//     this.selectedFilter = 'All',
+//     this.filter = '',
+//     this.lastDocument,
+//     this.isLoading = false,
+//     this.hasMoreData = true,
+//   });
+//
+//   OrderHistoryState copyWith({
+//     List<RequestModel>? orders,
+//     OrderHistoryStatus? status,
+//     String? error,
+//     String? selectedFilter,
+//     String? filter,
+//     DocumentSnapshot? lastDocument,
+//     bool? isLoading,
+//     bool? hasMoreData,
+//   }) {
+//     return OrderHistoryState(
+//       orders: orders ?? this.orders,
+//       status: status ?? this.status,
+//       error: error ?? this.error,
+//       selectedFilter: selectedFilter ?? this.selectedFilter,
+//       filter: filter ?? this.filter,
+//       lastDocument: lastDocument ?? this.lastDocument,
+//       isLoading: isLoading ?? this.isLoading,
+//       hasMoreData: hasMoreData ?? this.hasMoreData,
+//     );
+//   }
+//
+//   @override
+//   List<Object?> get props => [
+//     orders,
+//     status,
+//     error,
+//     selectedFilter,
+//     filter,
+//     lastDocument,
+//     isLoading,
+//     hasMoreData,
+//   ];
+//
+//
+// }
