@@ -24,6 +24,11 @@ class AddUserCubit extends Cubit<AddUserState> {
         name: 'Secondary',
         options: Firebase.app().options,
       );
+      UserCredential userCredential;
+
+
+        userCredential = await FirebaseAuth.instanceFor(app: app)
+            .createUserWithEmailAndPassword(email: email, password: password);
 
       if (state.images != null) {
         final Reference storageRef = FirebaseStorage.instance
@@ -41,7 +46,7 @@ class AddUserCubit extends Cubit<AddUserState> {
         await FirebaseFirestore.instanceFor(app: app)
             .collection('users')
             .doc(
-          app.name,
+          userCredential.user!.uid,
             )
             .set({
           'name': name,
