@@ -6,8 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/add_user_cubit.dart';
 
 class AddUsers extends StatelessWidget {
-
-  const AddUsers({Key? key, }) : super(key: key);
+  const AddUsers({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,5 +23,3 @@ class AddUsers extends StatelessWidget {
     );
   }
 }
-
-

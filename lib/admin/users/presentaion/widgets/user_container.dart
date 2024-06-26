@@ -3,6 +3,8 @@ import 'package:dsplus_finance/admin/users/presentaion/widgets/user_model.dart';
 import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../presentation/ask_for_cash_screen/ask_for_cash_screen.dart';
+
 class UserContainer extends StatelessWidget {
   final String title;
   final List<UserModel> users;
@@ -64,7 +66,29 @@ class UserContainer extends StatelessWidget {
                   return Card(
                     child: ListTile(
                       title: Text(users[index].name),
-                      subtitle: Text(users[index].email),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(users[index].email),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                  builder: (context) =>
+                              FullScreenImage(imageUrl: users[index].image)));
+                            },
+                            child: Image.network(
+                              users[index].image,
+                              width: 100,
+                              height: 100,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const SizedBox.shrink();
+                              }
+                            ),
+                          ),
+                        ],
+                      ),
                       trailing: (state.currentUserRole == "SuperAdmin")
                           ? _getTrailingIcon(users[index], context)
                           : (state.currentUserRole == "Admin")

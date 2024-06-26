@@ -6,7 +6,6 @@ import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:flutter/material.dart';
 
 class FormFields extends StatefulWidget {
-
   const FormFields({Key? key}) : super(key: key);
 
   @override
@@ -17,8 +16,7 @@ class _FormFieldsState extends State<FormFields> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _jobTitleController = TextEditingController();
   String _selectedRole = 'User';
 
   final _formKey = GlobalKey<FormState>();
@@ -30,8 +28,8 @@ class _FormFieldsState extends State<FormFields> {
       child: ListView(
         children: [
           TextFormFieldWidget(
-            controller: _userNameController,
-            labelText: "User name",
+            controller: _nameController,
+            labelText: "User Name",
             hintText: "Enter User name",
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -42,18 +40,20 @@ class _FormFieldsState extends State<FormFields> {
             onFieldSubmitted: (_) => _addUser(context),
           ),
           SizedBox(height: 10),
+
           TextFormFieldWidget(
-            controller: _nameController,
-            labelText: "Name",
-            hintText: "Enter name",
+            controller: _jobTitleController,
+            labelText: "Job Title",
+            hintText: "Enter job title",
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter a name';
+                return 'Please enter a job title';
               }
               return null;
             },
             onFieldSubmitted: (_) => _addUser(context),
           ),
+
           SizedBox(height: 10),
           TextFormFieldWidget(
             controller: _emailController,
@@ -92,15 +92,17 @@ class _FormFieldsState extends State<FormFields> {
           DropdownButtonFormField<String>(
             value: _selectedRole,
             onChanged: (newValue) {
-              setState(() {
-                _selectedRole = newValue!;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                setState(() {
+                  _selectedRole = newValue!;
+                });
               });
             },
             items: ['User', 'Admin']
                 .map((role) => DropdownMenuItem(
-              child: Text(role),
-              value: role,
-            ))
+                      child: Text(role),
+                      value: role,
+                    ))
                 .toList(),
             decoration: InputDecoration(
               border: OutlineInputBorder(
@@ -110,7 +112,7 @@ class _FormFieldsState extends State<FormFields> {
             ),
           ),
           SizedBox(height: 8),
-          //add user image
+          // Add user image
           ElevatedButton(
             onPressed: () {
               context.read<AddUserCubit>().uploadImage();
@@ -134,10 +136,10 @@ class _FormFieldsState extends State<FormFields> {
             ),
           ),
           SizedBox(height: 10),
-          // display image
+          // Display image
           BlocBuilder<AddUserCubit, AddUserState>(
             builder: (context, state) {
-              if (state.images != null &&state.images != Uint8List(0) ) {
+              if (state.images != null && state.images != Uint8List(0)) {
                 return Image.memory(
                   state.images!,
                   width: 100,
@@ -151,25 +153,43 @@ class _FormFieldsState extends State<FormFields> {
             },
           ),
           SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () => _addUser(context),
-            style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(Colors.blue),
-              fixedSize: WidgetStateProperty.all(Size(200, 50)),
-              shape: WidgetStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+          BlocBuilder<AddUserCubit, AddUserState>(
+            builder: (context, state) {
+              if (state.status == AddUserStatus.loading) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state.status == AddUserStatus.success) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Navigator.of(context).pop();
+                  _nameController.clear();
+                  _emailController.clear();
+                  _passwordController.clear();
+                  _jobTitleController.clear();
+                });
+              }
+              return ElevatedButton(
+                onPressed: () {
+                  _addUser(context);
+                },
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Colors.blue),
+                  fixedSize: WidgetStateProperty.all(Size(200, 50)),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            child: Text(
-              "Add User",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+                child: Text(
+                  "Add User",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -185,22 +205,9 @@ class _FormFieldsState extends State<FormFields> {
     final email = _emailController.text;
     final password = _passwordController.text;
     final role = _selectedRole;
-    final userName = _userNameController.text;
-
+    final userName = _jobTitleController.text;
 
     context.read<AddUserCubit>().addUser(name, email, password, role, userName);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('User added successfully!'),
-      ),
-    );
-    // Navigator.pop(context);
-
     // Clearing form fields
-    _nameController.clear();
-    _emailController.clear();
-    _passwordController.clear();
-    _userNameController.clear();
   }
 }

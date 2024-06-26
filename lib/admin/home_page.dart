@@ -2,15 +2,10 @@ import 'package:dsplus_finance/admin/requests/cubit/requests_cubit.dart';
 import 'package:dsplus_finance/admin/requests/cubit/requests_state.dart';
 import 'package:dsplus_finance/admin/users/cubit/users_cubit.dart';
 import 'package:dsplus_finance/admin/users/presentaion/users.dart';
-import 'package:dsplus_finance/admin/users/user_bloc/users_bloc.dart';
-import 'package:dsplus_finance/admin/users/user_bloc/users_event.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../core/utils/navigator_service.dart';
-
 import '../routes/app_routes.dart';
 import 'history/bloc/history_cubit.dart';
 import 'requests/requests.dart';
@@ -24,9 +19,7 @@ class AdminHomePage extends StatelessWidget {
   Future<void> logout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
-
-      NavigatorService.pushNamedAndRemoveUntil(
-          AppRoutes.loginPageTabContainerScreen);
+      NavigatorService.pushNamedAndRemoveUntil(AppRoutes.loginPageTabContainerScreen);
     } catch (e) {
       print('Error signing out: $e');
     }
@@ -38,261 +31,88 @@ class AdminHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey[200],
-        title: Text("Admin Dashboard", style: TextStyle(fontSize: 20)),
+        title: const Text("Admin Dashboard", style: TextStyle(fontSize: 20)),
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {
-              logout(context);
-            },
-            icon: Icon(Icons.logout),
+            onPressed: () => logout(context),
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),
       body: GridView.builder(
-        physics: BouncingScrollPhysics(),
-        padding: EdgeInsets.all(10),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Number of columns in the grid
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(10),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
           crossAxisSpacing: 10.0,
           mainAxisSpacing: 10.0,
-          childAspectRatio: 3 / 5, // Adjust the aspect ratio to fit your design
+          childAspectRatio: 3 / 5,
         ),
         itemCount: 4,
-        // Total number of items in the grid
         itemBuilder: (context, index) {
-          return InkWell(
-            hoverDuration: Duration(milliseconds: 100),
-            splashColor: Colors.grey[200],
-            highlightColor: Colors.grey[200],
-            borderRadius: BorderRadius.circular(15),
-            onTap: () {
-              if (index == 0) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      create: (context) => AdminRequestsCubit(),
-                      child: AdminRequestsView(),
-                    ),
-                  ),
-                );
-              } else if (index == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider(
-                          create: (context) => UsersCubit()..LoadUsers()..LoadAdmins()..LoadSuperAdmins(),
-                        ),
-                      ],
-                      child: UsersPage(
-                      ),
-                    ),
-                  ),
-                );
-              } else if (index == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      create: (context) => OrderHistoryCubit(),
-                      child: OrderHistoryView(),
-                    ),
-                  ),
-                );
-              } else if (index == 3) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      create: (context) => AddUserCubit(
-                         ),
-                      child: AddUsers(
-
-                      ),
-                    ),
-                  ),
-                );
-              }
-            },
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              borderOnForeground: true,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              semanticContainer: true,
-              margin: EdgeInsets.all(10),
-              child: (index == 0)
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Spacer(
-                          flex: 1,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(
-                                Icons.request_page,
-                                size: 50,
-                              ),
-                              BlocBuilder<AdminRequestsCubit,
-                                  AdminRequestsState>(
-                                builder: (context, state) {
-                                  return SizedBox(
-                                    height: 40,
-                                    width: 35,
-                                    child: Badge(
-                                      backgroundColor:
-                                          Colors.red.withOpacity(.8),
-                                      textColor: Colors.white,
-                                      label: (state.numberOfRequests >= 99)
-                                          ? Text(
-                                              "99+",
-                                              style: TextStyle(fontSize: 15),
-                                            )
-                                          : Text(
-                                              "${state.numberOfRequests}",
-                                              style: TextStyle(fontSize: 15),
-                                            ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        Spacer(
-                          flex: 2,
-                        ),
-                        ListTile(
-                          title: Text(_getTitle(index)),
-                          subtitle: Text(_getSubtitle(index)),
-                          trailing: Icon(Icons.arrow_forward_ios),
-                        ),
-                        Spacer(
-                          flex: 6,
-                        )
-                      ],
-                    )
-                  : (index == 1)
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Spacer(
-                              flex: 1,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.person,
-                                    size: 50,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Spacer(
-                              flex: 2,
-                            ),
-                            ListTile(
-                              title: Text(_getTitle(index)),
-                              subtitle: Text(_getSubtitle(index)),
-                              trailing: Icon(Icons.arrow_forward_ios),
-                            ),
-                            Spacer(
-                              flex: 6,
-                            )
-                          ],
-                        )
-                      : (index == 2)
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Spacer(
-                                  flex: 1,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.history,
-                                        size: 50,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Spacer(
-                                  flex: 2,
-                                ),
-                                ListTile(
-                                  title: Text(_getTitle(index)),
-                                  subtitle: Text(_getSubtitle(index)),
-                                  trailing: Icon(Icons.arrow_forward_ios),
-                                ),
-                                Spacer(
-                                  flex: 6,
-                                )
-                              ],
-                            )
-                          : (index == 3)
-                              ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Spacer(
-                                      flex: 1,
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 8.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.person_add,
-                                            size: 50,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Spacer(
-                                      flex: 2,
-                                    ),
-                                    ListTile(
-                                      title: Text(_getTitle(index)),
-                                      subtitle: Text(_getSubtitle(index)),
-                                      trailing: Icon(Icons.arrow_forward_ios),
-                                    ),
-                                    Spacer(
-                                      flex: 6,
-                                    )
-                                  ],
-                                )
-                              : Container(),
-            ),
-
-            //   Center(
-            //           child: ListTile(
-            //             title: Text(_getTitle(index)),
-            //             subtitle: Text(_getSubtitle(index)),
-            //             trailing: Icon(Icons.arrow_forward_ios),
-            //           ),
-            //         ),
-            // ),
+          return DashboardCard(
+            index: index,
+            onTap: () => _navigateToPage(context, index),
+            title: _getTitle(index),
+            subtitle: _getSubtitle(index),
           );
         },
       ),
     );
+  }
+
+  void _navigateToPage(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => AdminRequestsCubit(),
+              child: AdminRequestsView(),
+            ),
+          ),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => UsersCubit(),
+                ),
+              ],
+              child: UsersPage(),
+            ),
+          ),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => OrderHistoryCubit(),
+              child: OrderHistoryView(),
+            ),
+          ),
+        );
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => AddUserCubit(),
+              child: AddUsers(),
+            ),
+          ),
+        );
+        break;
+    }
   }
 
   String _getTitle(int index) {
@@ -322,6 +142,105 @@ class AdminHomePage extends StatelessWidget {
         return "Add new users";
       default:
         return "";
+    }
+  }
+}
+
+class DashboardCard extends StatelessWidget {
+  final int index;
+  final VoidCallback onTap;
+  final String title;
+  final String subtitle;
+
+  const DashboardCard({
+    Key? key,
+    required this.index,
+    required this.onTap,
+    required this.title,
+    required this.subtitle,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      hoverDuration: const Duration(milliseconds: 100),
+      splashColor: Colors.grey[200],
+      highlightColor: Colors.grey[200],
+      borderRadius: BorderRadius.circular(15),
+      onTap: onTap,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        margin: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (index == 0) ...[
+              const Spacer(flex: 1),
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Icon(Icons.request_page, size: 50),
+                    BlocBuilder<AdminRequestsCubit, AdminRequestsState>(
+                      builder: (context, state) {
+                        return SizedBox(
+                          height: 40,
+                          width: 35,
+                          child: Badge(
+                            backgroundColor: Colors.red.withOpacity(.8),
+                            textColor: Colors.white,
+                            label: (state.numberOfRequests >= 99)
+                                ? const Text("99+", style: TextStyle(fontSize: 15))
+                                : Text("${state.numberOfRequests}", style: const TextStyle(fontSize: 15)),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(flex: 2),
+            ] else ...[
+              const Spacer(flex: 1),
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(_getIcon(index), size: 50),
+                  ],
+                ),
+              ),
+              const Spacer(flex: 2),
+            ],
+            ListTile(
+              title: Text(title),
+              subtitle: Text(subtitle),
+              trailing: const Icon(Icons.arrow_forward_ios),
+            ),
+            const Spacer(flex: 6),
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _getIcon(int index) {
+    switch (index) {
+      case 0:
+        return Icons.request_page;
+      case 1:
+        return Icons.person;
+      case 2:
+        return Icons.history;
+      case 3:
+        return Icons.person_add;
+      default:
+        return Icons.error;
     }
   }
 }

@@ -55,6 +55,7 @@ class AddUserCubit extends Cubit<AddUserState> {
           'password': password,
           'username': userName,
           'userImageUrl': imageUrl,
+          "uid": userCredential.user!.uid,
         });
 
         emit(state.copyWith(status: AddUserStatus.success));
