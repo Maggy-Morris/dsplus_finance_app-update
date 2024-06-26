@@ -16,7 +16,7 @@ class AddUserCubit extends Cubit<AddUserState> {
   AddUserCubit() : super(AddUserState());
 
   Future<void> addUser(String name, String email, String password, String role,
-      String userName) async {
+      String jobTitle) async {
     emit(state.copyWith(status: AddUserStatus.loading));
 
     try {
@@ -53,7 +53,7 @@ class AddUserCubit extends Cubit<AddUserState> {
           'email': email,
           'role': role,
           'password': password,
-          'username': userName,
+          'jobTitle': jobTitle,
           'userImageUrl': imageUrl,
           "uid": userCredential.user!.uid,
         });

@@ -205,9 +205,9 @@ class _FormFieldsState extends State<FormFields> {
     final email = _emailController.text;
     final password = _passwordController.text;
     final role = _selectedRole;
-    final userName = _jobTitleController.text;
+    final jobTitle = _jobTitleController.text;
 
-    context.read<AddUserCubit>().addUser(name, email, password, role, userName);
+    context.read<AddUserCubit>().addUser(name, email, password, role, jobTitle);
     // Clearing form fields
   }
 }

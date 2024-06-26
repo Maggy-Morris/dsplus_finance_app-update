@@ -82,7 +82,7 @@ class AdminHomePage extends StatelessWidget {
             builder: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider(
-                  create: (context) => UsersCubit(),
+                  create: (context) => UsersCubit()..currentUserRole(),
                 ),
               ],
               child: UsersPage(),

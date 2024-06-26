@@ -23,53 +23,99 @@ class UserContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<UsersCubit>().currentUserRole();
-    return Container(
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border.all(color: isAdmin ? Colors.blue : Colors.green),
-        borderRadius: BorderRadius.circular(10),
-        color: isSuperAdmin
-            ? Colors.red[100]
-            : isAdmin
-                ? Colors.blue[100]
-                : Colors.green[100],
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 7,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            margin: EdgeInsets.all(10),
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              border: Border.all(color: isAdmin ? Colors.blue : Colors.green),
+              borderRadius: BorderRadius.circular(10),
+              color: isSuperAdmin
+                  ? Colors.red[100]
+                  : isAdmin
+                  ? Colors.blue[100]
+                  : Colors.green[100],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 7,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
             ),
           ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              return BlocBuilder<UsersCubit, UsersState>(
-                builder: (context, state) {
-                  return Card(
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: users.length,
+          itemBuilder: (context, index) {
+            return BlocBuilder<UsersCubit, UsersState>(
+              builder: (context, state) {
+                return Container(
+                  margin: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: isAdmin ? Colors.blue : Colors.green),
+                    borderRadius: BorderRadius.circular(10),
+                    color: isSuperAdmin
+                        ? Colors.red[100]
+                        : isAdmin
+                        ? Colors.blue[100]
+                        : Colors.green[100],
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 7,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Card(
                     child: ListTile(
-                      title: Text(users[index].name),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text("Name : " , style: TextStyle(fontWeight: FontWeight.bold),),
+                              Text(" ${users[index].name}"),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text("JobTitle : " , style: TextStyle(fontWeight: FontWeight.bold),),
+                              Text(" ${users[index].jobTitle}"),
+                            ],
+                          ),
+                        ],
+                      ),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(users[index].email),
+                          Row(
+                            children: [
+                              Text("Email :" , style: TextStyle(fontWeight: FontWeight.bold),),
+                              Text(" ${users[index].email}"),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          Text("Profile Image " , style: TextStyle(fontWeight: FontWeight.bold),),
                           InkWell(
                             onTap: () {
                               Navigator.push(
@@ -100,14 +146,14 @@ class UserContainer extends StatelessWidget {
                               ? getOnTap(users[index], context)
                               : null
                     ),
-                  );
-                },
-              );
-            },
-          ),
-          SizedBox(height: 10),
-        ],
-      ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        SizedBox(height: 10),
+      ],
     );
   }
 
