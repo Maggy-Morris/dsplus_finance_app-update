@@ -6,27 +6,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/add_user_cubit.dart';
 
 class AddUsers extends StatelessWidget {
-  final AddUserCubit addUserCubit;
 
-  const AddUsers({Key? key, required this.addUserCubit}) : super(key: key);
+  const AddUsers({Key? key, }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AddUserCubit, AddUserStatus>(
-      bloc: addUserCubit,
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text("Add Users"),
-            centerTitle: true,
-          ),
-          body: Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(16.0),
-            child: FormFields(addUserCubit: addUserCubit),
-          ),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add Users"),
+        centerTitle: true,
+      ),
+      body: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(16.0),
+        child: FormFields(),
+      ),
     );
   }
 }

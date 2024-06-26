@@ -1,32 +1,37 @@
+import 'package:dsplus_finance/admin/users/cubit/users_cubit.dart';
 import 'package:dsplus_finance/admin/users/presentaion/widgets/user_model.dart';
+import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:flutter/material.dart';
-import 'package:dsplus_finance/admin/users/user_bloc/users_bloc.dart';
-import '../../user_bloc/users_event.dart';
 
 class UserContainer extends StatelessWidget {
   final String title;
   final List<UserModel> users;
   final bool isAdmin;
   final bool isSuperAdmin;
-  final UsersBloc bloc;
+  final UsersCubit cubit;
 
   const UserContainer({
     required this.title,
     required this.users,
     required this.isAdmin,
-    required this.bloc,
+    required this.cubit,
     required this.isSuperAdmin,
   });
 
   @override
   Widget build(BuildContext context) {
+    context.read<UsersCubit>().currentUserRole();
     return Container(
       margin: EdgeInsets.all(10),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         border: Border.all(color: isAdmin ? Colors.blue : Colors.green),
         borderRadius: BorderRadius.circular(10),
-        color: isSuperAdmin ? Colors.red[100] : isAdmin ? Colors.blue[100] : Colors.green[100],
+        color: isSuperAdmin
+            ? Colors.red[100]
+            : isAdmin
+                ? Colors.blue[100]
+                : Colors.green[100],
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -49,31 +54,53 @@ class UserContainer extends StatelessWidget {
               ),
             ),
           ),
-          ...users.map((user) {
-            return ListTile(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(user.name),
-                  Text(user.email),
-                  Text(
-                    user.role,
-                    style: TextStyle(color: isAdmin || isSuperAdmin ? Colors.red : Colors.black),
-                  ),
-                ],
-              ),
-              dense: true,
-              trailing: _getTrailingIcon(user, context),
-              onTap: _getOnTap(user, context),
-            );
-          }).toList(),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: users.length,
+            itemBuilder: (context, index) {
+              return BlocBuilder<UsersCubit, UsersState>(
+                builder: (context, state) {
+                  return Card(
+                    child: ListTile(
+                      title: Text(users[index].name),
+                      subtitle: Text(users[index].email),
+                      trailing: (state.currentUserRole == "SuperAdmin")
+                          ? _getTrailingIcon(users[index], context)
+                          : (state.currentUserRole == "Admin")
+                              ? getTrailingIcon(users[index], context)
+                              : null,
+                      onTap: (state.currentUserRole == "SuperAdmin")
+                          ? _getOnTap(users[index], context)
+                          : (state.currentUserRole == "Admin")
+                              ? getOnTap(users[index], context)
+                              : null
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+          SizedBox(height: 10),
         ],
       ),
     );
   }
 
   Widget? _getTrailingIcon(UserModel user, BuildContext context) {
-    if ((isSuperAdmin && user.role != 'SuperAdmin') || (!isAdmin && user.role == 'User')) {
+    if ((user.role == 'Admin') || (user.role == 'User')) {
+      return IconButton(
+        icon: Icon(Icons.delete),
+        onPressed: () {
+          _showDeleteDialog(user, context);
+        },
+      );
+    }
+    return null;
+  }
+
+  Widget? getTrailingIcon(UserModel user, BuildContext context) {
+    if ((user.role == 'User')) {
       return IconButton(
         icon: Icon(Icons.delete),
         onPressed: () {
@@ -85,37 +112,47 @@ class UserContainer extends StatelessWidget {
   }
 
   void Function()? _getOnTap(UserModel user, BuildContext context) {
-    if (isSuperAdmin) {
-      if (user.role == 'SuperAdmin') {
-        return () async {
-          if (user.role == 'User') {
-            bool makeAdmin = await _showRoleChangeDialog(context, 'Change User Role', 'Do you want to make this user an admin?');
-            if (makeAdmin) {
-              bloc.add(MakeAdmin(user.id));
-            }
-          } else if (user.role == 'Admin') {
-            bool makeSuperAdmin = await _showRoleChangeDialog(context, 'Change User Role', 'Do you want to make this admin a super admin?');
-            if (makeSuperAdmin) {
-              bloc.add(MakeSuperAdmin(user.id));
-            } else {
-              bool makeUser = await _showRoleChangeDialog(context, 'Change User Role', 'Do you want to make this admin a regular user?');
-              if (makeUser) {
-                bloc.add(DemoteAdmin(user.id));
-              }
-            }
-          }
-        };
-      }
-    }
-    else if (!isAdmin && user.role == 'User') {
       return () async {
-        bool makeAdmin = await _showRoleChangeDialog(context, 'Change User Role', 'Do you want to make this user an admin?');
-        if (makeAdmin) {
-          bloc.add(MakeAdmin(user.id));
+        if (user.role == 'User') {
+          bool makeAdmin = await _showRoleChangeDialog(context,
+              'Change User Role', 'Do you want to make this user an admin?');
+          if (makeAdmin) {
+            cubit.makeAdmin(user.id);
+            cubit.LoadAdmins();
+            cubit.LoadUsers();
+          }
+        } else if (user.role == 'Admin') {
+          bool makeSuperAdmin = await showRoleChangeDialog(
+              context,
+              'Change User Role',
+              'Do you want to make this admin a super admin or a regular user?');
+          if (makeSuperAdmin) {
+            cubit.makeSuperAdmin(user.id);
+            cubit.LoadSuperAdmins();
+            cubit.LoadUsers();
+            cubit.LoadAdmins();
+          }else if (!makeSuperAdmin){
+            cubit.demoteAdmin(user.id);
+            cubit.LoadUsers();
+            cubit.LoadAdmins();
+          }
         }
       };
-    }
+
     return null;
+  }
+  void Function()? getOnTap(UserModel user, BuildContext context) {
+      return () async {
+        if (user.role == 'User') {
+          bool makeAdmin = await _showRoleChangeDialog(context,
+              'Change User Role', 'Do you want to make this user an admin?');
+          if (makeAdmin) {
+            cubit.makeAdmin(user.id);
+            cubit.LoadAdmins();
+            cubit.LoadUsers();
+          }
+        }
+      };
   }
 
   Future<void> _showDeleteDialog(UserModel user, BuildContext context) async {
@@ -131,7 +168,12 @@ class UserContainer extends StatelessWidget {
               child: Text('Cancel'),
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context, true),
+              onPressed: () {
+                cubit.deleteUser(user.id);
+                cubit.LoadUsers();
+                cubit.LoadAdmins();
+                Navigator.pop(context, true);
+              },
               child: Text('Delete'),
             ),
           ],
@@ -140,11 +182,13 @@ class UserContainer extends StatelessWidget {
     );
 
     if (delete) {
-      bloc.add(DeleteUser(user.id));
+      cubit.deleteUser(user.id);
+      cubit.LoadUsers(); // Ensure the list is reloaded
     }
   }
 
-  Future<bool> _showRoleChangeDialog(BuildContext context, String title, String content) async {
+  Future<bool> _showRoleChangeDialog(
+      BuildContext context, String title, String content) async {
     return await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -165,4 +209,32 @@ class UserContainer extends StatelessWidget {
       },
     );
   }
+
+  Future<bool> showRoleChangeDialog(
+      BuildContext context, String title, String content) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text('Make User'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text('Make Super Admin'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
+

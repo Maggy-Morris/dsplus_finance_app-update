@@ -1,38 +1,77 @@
-// import 'package:flutter/material.dart';
+import 'dart:typed_data'; // for Uint8List
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
-enum AddUserStatus { initial, loading, success, error }
+part 'add_user_state.dart';
 
-class AddUserCubit extends Cubit<AddUserStatus> {
-  final FirebaseAuth _auth;
-  final FirebaseFirestore _fireStore;
+class AddUserCubit extends Cubit<AddUserState> {
+  XFile? pickedFile;
+  Uint8List? bytes;
 
-  AddUserCubit(this._auth, this._fireStore) : super(AddUserStatus.initial);
+  AddUserCubit() : super(AddUserState());
 
-  void addUser(String name, String email, String password, String role , String userName) async {
-    emit(AddUserStatus.loading);
+  Future<void> addUser(String name, String email, String password, String role,
+      String userName) async {
+    emit(state.copyWith(status: AddUserStatus.loading));
+
     try {
-      final userCredential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+      FirebaseApp app = await Firebase.initializeApp(
+        name: 'Secondary',
+        options: Firebase.app().options,
       );
 
-      await _fireStore.collection('users').doc(userCredential.user!.uid).set({
-        'name': name,
-        'email': email,
-        'role': role,
-        "password": password,
-        "uid": userCredential.user!.uid,
-        "username": userName,
-      });
+      if (state.images != null) {
+        final Reference storageRef = FirebaseStorage.instance
+            .ref()
+            .child('user_images')
+            .child(pickedFile!.path);
 
-      emit(AddUserStatus.success);
+        final UploadTask uploadTask = storageRef.putData(bytes!);
+        TaskSnapshot snapshot = await uploadTask.whenComplete(() {
+          print('Image uploaded successfully.');
+        });
+
+        final String imageUrl = await snapshot.ref.getDownloadURL();
+
+        await FirebaseFirestore.instanceFor(app: app)
+            .collection('users')
+            .doc(
+          app.name,
+            )
+            .set({
+          'name': name,
+          'email': email,
+          'role': role,
+          'password': password,
+          'username': userName,
+          'userImageUrl': imageUrl,
+        });
+
+        emit(state.copyWith(status: AddUserStatus.success));
+      } else {
+        emit(state.copyWith(status: AddUserStatus.error));
+      }
     } catch (e) {
-      emit(AddUserStatus.error);
+      print('Error adding user: $e');
+      emit(state.copyWith(status: AddUserStatus.error));
+    }
+  }
+
+  void uploadImage() async {
+    try {
+      final picker = ImagePicker();
+      pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        bytes = await pickedFile!.readAsBytes();
+        emit(state.copyWith(images: bytes, status: AddUserStatus.editing));
+      }
+    } catch (err) {
+      print(err);
     }
   }
 }
-
-

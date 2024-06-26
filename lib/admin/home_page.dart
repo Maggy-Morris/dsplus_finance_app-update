@@ -1,5 +1,6 @@
 import 'package:dsplus_finance/admin/requests/cubit/requests_cubit.dart';
 import 'package:dsplus_finance/admin/requests/cubit/requests_state.dart';
+import 'package:dsplus_finance/admin/users/cubit/users_cubit.dart';
 import 'package:dsplus_finance/admin/users/presentaion/users.dart';
 import 'package:dsplus_finance/admin/users/user_bloc/users_bloc.dart';
 import 'package:dsplus_finance/admin/users/user_bloc/users_event.dart';
@@ -83,17 +84,10 @@ class AdminHomePage extends StatelessWidget {
                     builder: (context) => MultiBlocProvider(
                       providers: [
                         BlocProvider(
-                          create: (context) => UsersBloc()..add(LoadUsers()),
-                        ),
-                        BlocProvider(
-                          create: (context) => AddUserCubit(
-                              FirebaseAuth.instance,
-                              FirebaseFirestore.instance),
+                          create: (context) => UsersCubit()..LoadUsers()..LoadAdmins()..LoadSuperAdmins(),
                         ),
                       ],
                       child: UsersPage(
-                        addUserCubit: AddUserCubit(
-                            FirebaseAuth.instance, FirebaseFirestore.instance),
                       ),
                     ),
                   ),
@@ -114,10 +108,9 @@ class AdminHomePage extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => BlocProvider(
                       create: (context) => AddUserCubit(
-                          FirebaseAuth.instance, FirebaseFirestore.instance),
+                         ),
                       child: AddUsers(
-                        addUserCubit: AddUserCubit(
-                            FirebaseAuth.instance, FirebaseFirestore.instance),
+
                       ),
                     ),
                   ),

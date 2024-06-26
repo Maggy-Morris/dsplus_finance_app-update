@@ -40,6 +40,7 @@ dependencies:
   easy_localization: ^3.0.4
   flutter_easyloading: ^3.0.5
   injectable_generator: ^2.4.2
+  toggle_switch: ^2.3.0
 
 
 dev_dependencies: 

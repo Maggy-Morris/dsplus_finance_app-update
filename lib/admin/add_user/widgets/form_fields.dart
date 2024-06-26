@@ -1,11 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:dsplus_finance/admin/add_user/cubit/add_user_cubit.dart';
 import 'package:dsplus_finance/admin/add_user/widgets/text_field.dart';
+import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:flutter/material.dart';
 
 class FormFields extends StatefulWidget {
-  final AddUserCubit addUserCubit;
 
-  const FormFields({Key? key, required this.addUserCubit}) : super(key: key);
+  const FormFields({Key? key}) : super(key: key);
 
   @override
   _FormFieldsState createState() => _FormFieldsState();
@@ -108,12 +110,53 @@ class _FormFieldsState extends State<FormFields> {
             ),
           ),
           SizedBox(height: 8),
+          //add user image
+          ElevatedButton(
+            onPressed: () {
+              context.read<AddUserCubit>().uploadImage();
+            },
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.all(Colors.blue),
+              fixedSize: WidgetStateProperty.all(Size(200, 50)),
+              shape: WidgetStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            child: Text(
+              "Add Image",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
+          // display image
+          BlocBuilder<AddUserCubit, AddUserState>(
+            builder: (context, state) {
+              if (state.images != null &&state.images != Uint8List(0) ) {
+                return Image.memory(
+                  state.images!,
+                  width: 100,
+                  height: 100,
+                  errorBuilder: (context, error, stackTrace) {
+                    return SizedBox.shrink();
+                  },
+                );
+              }
+              return SizedBox.shrink();
+            },
+          ),
+          SizedBox(height: 10),
           ElevatedButton(
             onPressed: () => _addUser(context),
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.blue),
-              fixedSize: MaterialStateProperty.all(Size(200, 50)),
-              shape: MaterialStateProperty.all(
+              backgroundColor: WidgetStateProperty.all(Colors.blue),
+              fixedSize: WidgetStateProperty.all(Size(200, 50)),
+              shape: WidgetStateProperty.all(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -145,14 +188,14 @@ class _FormFieldsState extends State<FormFields> {
     final userName = _userNameController.text;
 
 
-    widget.addUserCubit.addUser(name, email, password, role, userName);
+    context.read<AddUserCubit>().addUser(name, email, password, role, userName);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('User added successfully!'),
       ),
     );
-    Navigator.pop(context);
+    // Navigator.pop(context);
 
     // Clearing form fields
     _nameController.clear();
