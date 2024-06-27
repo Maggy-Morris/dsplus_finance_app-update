@@ -14,7 +14,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
       hasMoreData: true,
       lastDocument: null));
 
-   fetchMoreData() async {
+  fetchMoreData() async {
     if (state.status == AdminRequestsStatus.loading || !state.hasMoreData) {
       return;
     }

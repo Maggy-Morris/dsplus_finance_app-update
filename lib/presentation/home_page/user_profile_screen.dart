@@ -68,7 +68,7 @@ class UserProfileScreen extends StatelessWidget {
                                                 image: DecorationImage(
                                                   image: NetworkImage(state
                                                           .userModel
-                                                          ?.imageUrl ??
+                                                          ?.image ??
                                                       ""),
                                                   fit: BoxFit.fill,
                                                 ),

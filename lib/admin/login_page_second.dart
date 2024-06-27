@@ -1,4 +1,5 @@
 import 'package:dsplus_finance/admin/home_page.dart';
+import 'package:dsplus_finance/admin/requests/cubit/requests_cubit.dart';
 import 'package:dsplus_finance/widgets/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -246,11 +247,15 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        if (documentSnapshot.get('role') == "Admin") {
+        if (documentSnapshot.get('role') == "Admin" ||
+            documentSnapshot.get('role') == "SuperAdmin") {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => AdminHomePage(),
+              builder: (context) => BlocProvider(
+                create: (context) => AdminRequestsCubit(),
+                child: AdminHomePage(),
+              ),
             ),
           );
         } else {
