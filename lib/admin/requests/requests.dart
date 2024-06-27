@@ -14,6 +14,16 @@ class AdminRequestsView extends StatelessWidget {
       ),
       body: BlocBuilder<AdminRequestsCubit, AdminRequestsState>(
         builder: (context, state) {
+          if (state.status == AdminRequestsStatus.loaded &&
+              state.requests.isEmpty || state.requests.isEmpty && state.status == AdminRequestsStatus.approved || state.requests.isEmpty && state.status == AdminRequestsStatus.rejected) {
+            return const Center(child: Text("No requests found"));
+          }
+          if (state.status == AdminRequestsStatus.error) {
+            return Center(child: Text("Error loading requests"));
+          }
+          if (state.status == AdminRequestsStatus.loading ) {
+            context.read<AdminRequestsCubit>().fetchMoreData();
+          }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -113,8 +123,10 @@ class AdminRequestsView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
+                        await
             cubit.approveBudget(budgetId);
+                        await cubit.fetchMoreData();
                       },
           style: ElevatedButton.styleFrom(
             fixedSize: Size(150, 40),
@@ -191,6 +203,7 @@ class AdminRequestsView extends StatelessWidget {
                 String reason = reasonController.text;
                 if (reason.isNotEmpty) {
                   await cubit.rejectBudget(budgetId, reason);
+                  await cubit.fetchMoreData();
                   Navigator.pop(context);
                 }
               },

@@ -1,6 +1,6 @@
 part of 'users_cubit.dart';
 
-enum UsersStatus { initial, loading, success, error }
+enum UsersStatus { initial, loading, error ,adminSuccess , superAdminSuccess, userSuccess}
 
 class UsersState extends Equatable {
   final List<UserModel> admins;

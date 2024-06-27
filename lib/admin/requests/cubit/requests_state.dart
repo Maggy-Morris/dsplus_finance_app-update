@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:dsplus_finance/admin/requests/model/request_model.dart';
 
-enum AdminRequestsStatus { initial, loading, loaded, error }
+enum AdminRequestsStatus { initial, loading, loaded, error , approved , rejected}
 
 class AdminRequestsState extends Equatable {
   final List<RequestModel> requests;

@@ -6,7 +6,6 @@ import 'requests_state.dart';
 
 class AdminRequestsCubit extends Cubit<AdminRequestsState> {
   static const int limit = 2; // Number of documents to fetch per page
-  // late final StreamSubscription _subscription;
 
   AdminRequestsCubit()
       : super(AdminRequestsState(
@@ -15,7 +14,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
       hasMoreData: true,
       lastDocument: null));
 
-  void fetchMoreData() async {
+   fetchMoreData() async {
     if (state.status == AdminRequestsStatus.loading || !state.hasMoreData) {
       return;
     }
@@ -24,7 +23,8 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
 
     Query query = FirebaseFirestore.instance
         .collection('transactions')
-        .where('status', isEqualTo: "pending").orderBy("createdAt" , descending: true)
+        .where('status', isEqualTo: "pending")
+        .orderBy("createdAt", descending: true)
         .limit(limit);
 
     if (state.requests.isNotEmpty) {
@@ -60,8 +60,8 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           .collection('transactions')
           .doc(budgetId)
           .update({'status': 'Approved'});
-      fetchMoreData();
-      emit(state.copyWith(status: AdminRequestsStatus.loaded));
+      state.requests.clear();
+      emit(state.copyWith(status: AdminRequestsStatus.approved));
     } catch (error) {
       emit(state.copyWith(
         status: AdminRequestsStatus.error,
@@ -77,7 +77,8 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           .collection('transactions')
           .doc(budgetId)
           .update({'status': 'Rejected', 'reason': reason});
-      emit(state.copyWith(status: AdminRequestsStatus.loaded));
+      state.requests.clear();
+      emit(state.copyWith(status: AdminRequestsStatus.rejected));
     } catch (error) {
       emit(state.copyWith(
         status: AdminRequestsStatus.error,
@@ -85,6 +86,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
       ));
     }
   }
+
   void numberOfRequests() {
     FirebaseFirestore.instance
         .collection('transactions')
@@ -92,13 +94,6 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
         .snapshots()
         .listen((QuerySnapshot snapshot) {
       emit(state.copyWith(numberOfRequests: snapshot.docs.length));
-  });
+    });
   }
-  //
-  //
-  // @override
-  // Future<void> close() {
-  //   _subscription.cancel();
-  //   return super.close();
-  // }
 }

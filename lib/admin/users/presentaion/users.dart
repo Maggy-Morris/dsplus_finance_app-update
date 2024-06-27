@@ -8,79 +8,67 @@ class UsersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<UsersCubit>().currentUserRole();
-    context.read<UsersCubit>().LoadUsers();
-    context.read<UsersCubit>().LoadAdmins();
-    context.read<UsersCubit>().LoadSuperAdmins();
+    final usersCubit = context.read<UsersCubit>();
+    usersCubit.currentUserRole();
+    usersCubit.loadUsers();
+    usersCubit.loadAdmins();
+    usersCubit.loadSuperAdmins();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Users"),
+        title: const Text("Users"),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            BlocBuilder<UsersCubit, UsersState>(
-              builder: (context, state) {
-                print(" ///////////////${state.currentUserRole}" );
-                if (state.status == UsersStatus.loading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state.status == UsersStatus.error) {
-                  return const Center(child: Text("Error"));
-                }
-                 UserContainer(
-                  isSuperAdmin: true,
-                  title: 'Super Admins',
-                  users: state.superAdmins,
-                  isAdmin: false,
-                  cubit: context.read<UsersCubit>(),
-                );
-                return Container();
-              },
-            ),
-            BlocBuilder<UsersCubit, UsersState>(
-              builder: (context, state) {
-                if (state.status == UsersStatus.loading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state.status == UsersStatus.success) {
-                  return UserContainer(
+      body: BlocBuilder<UsersCubit, UsersState>(
+        builder: (context, state) {
+          if (state.status == UsersStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state.status == UsersStatus.error) {
+            return const Center(child: Text("Error loading users"));
+          }
+          if (state.status == UsersStatus.adminSuccess ||
+              state.status == UsersStatus.superAdminSuccess ||
+              state.status == UsersStatus.userSuccess) {
+            return SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  (state.currentUserRole == "SuperAdmin")
+                      ? UserContainer(
+                    isSuperAdmin: true,
+                    title: 'Super Admins',
+                    users: state.superAdmins,
+                    isAdmin: false,
+                    cubit: context.read<UsersCubit>(),
+                  )
+                      : Container(),
+                  (state.admins.isEmpty)
+                      ? Container()
+                      : UserContainer(
                     isSuperAdmin: false,
                     title: 'Admins',
                     users: state.admins,
-                    isAdmin: false,
+                    isAdmin: true,
                     cubit: context.read<UsersCubit>(),
-                  );
-                  return const Center(child: Text("Error"));
-                }else if (state.status == UsersStatus.error) {
-                  return const Center(child: Text("Error"));
-                }
-                return CircularProgressIndicator();
-              },
-            ),
-            SizedBox(height: 10),
-            BlocBuilder<UsersCubit, UsersState>(
-              builder: (context, state) {
-                if (state.status == UsersStatus.loading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state.status == UsersStatus.success) {
-                  return UserContainer(
+                  ),
+                  SizedBox(height: 10),
+                  (state.users.isEmpty)
+                      ? Container()
+                      : UserContainer(
                     isSuperAdmin: false,
                     title: 'Users',
                     users: state.users,
                     isAdmin: false,
                     cubit: context.read<UsersCubit>(),
-                  );
-                  return const Center(child: Text("Error"));
-                }else if (state.status == UsersStatus.error) {
-                  return const Center(child: Text("Error"));
-                }
-                return CircularProgressIndicator();
-              },
-            ),
-          ],
-        ),
+                  ),
+                ],
+              ),
+            );
+          }
+          return const Center(child: Text("No users found"));
+        },
       ),
     );
   }
