@@ -64,7 +64,7 @@ class AddUserCubit extends Cubit<AddUserState> {
       }
     } catch (e) {
       print('Error adding user: $e');
-      emit(state.copyWith(status: AddUserStatus.error));
+      emit(state.copyWith(status: AddUserStatus.error , error: e.toString()));
     }
   }
 

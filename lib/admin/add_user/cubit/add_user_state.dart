@@ -6,12 +6,15 @@ class AddUserState extends Equatable {
   final Uint8List? images;
   final AddUserStatus? status;
 
-  AddUserState({this.images, this.status = AddUserStatus.initial});
+  final String? error;
 
-  AddUserState copyWith({ Uint8List? images, AddUserStatus? status}) {
+  AddUserState({this.images, this.status = AddUserStatus.initial, this.error});
+
+  AddUserState copyWith({ Uint8List? images, AddUserStatus? status , String? error}) {
     return AddUserState(
       images: images ?? this.images,
       status: status ?? this.status,
+      error: error ?? this.error,
     );
   }
 
@@ -19,5 +22,6 @@ class AddUserState extends Equatable {
   List<Object?> get props => [
     images,
     status,
+    error,
   ];
 }
