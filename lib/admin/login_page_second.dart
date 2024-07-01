@@ -1,5 +1,6 @@
 import 'package:dsplus_finance/admin/home_page.dart';
 import 'package:dsplus_finance/admin/requests/cubit/requests_cubit.dart';
+import 'package:dsplus_finance/presentation/home_page/bloc/home_bloc.dart';
 import 'package:dsplus_finance/widgets/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -252,8 +253,15 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                create: (context) => AdminRequestsCubit(),
+              builder: (context) => MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => AdminRequestsCubit(),
+                  ),
+                  BlocProvider(
+                    create: (context) => HomeBloc(),
+                  )
+                ],
                 child: AdminHomePage(),
               ),
             ),

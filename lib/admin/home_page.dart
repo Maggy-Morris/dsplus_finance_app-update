@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../core/utils/navigator_service.dart';
+import '../presentation/home_page/bloc/home_bloc.dart';
+import '../presentation/home_page/widgets/my_drawer_widget.dart';
 import '../routes/app_routes.dart';
 import 'history/bloc/history_cubit.dart';
 import 'requests/requests.dart';
@@ -17,12 +19,16 @@ class AdminHomePage extends StatelessWidget {
   static Widget builder(BuildContext context) {
     return AdminHomePage();
   }
+
   AdminHomePage({super.key});
+
+  final GlobalKey<ScaffoldState> _foldKey = GlobalKey<ScaffoldState>();
 
   Future<void> logout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
-      NavigatorService.pushNamedAndRemoveUntil(AppRoutes.loginPageTabContainerScreen);
+      NavigatorService.pushNamedAndRemoveUntil(
+          AppRoutes.loginPageTabContainerScreen);
     } catch (e) {
       print('Error signing out: $e');
     }
@@ -31,37 +37,47 @@ class AdminHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<AdminRequestsCubit>().numberOfRequests();
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey[200],
-        title: const Text("Admin Dashboard", style: TextStyle(fontSize: 20)),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () => logout(context),
-            icon: const Icon(Icons.logout),
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        return Scaffold(
+          key: _foldKey,
+          appBar: AppBar(
+            backgroundColor: Colors.grey[200],
+            title:
+                const Text("Admin Dashboard", style: TextStyle(fontSize: 20)),
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                _foldKey.currentState?.openDrawer();
+              },
+            ),
           ),
-        ],
-      ),
-      body: GridView.builder(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(10),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10.0,
-          mainAxisSpacing: 10.0,
-          childAspectRatio: 3 / 5,
-        ),
-        itemCount: 4,
-        itemBuilder: (context, index) {
-          return DashboardCard(
-            index: index,
-            onTap: () => _navigateToPage(context, index),
-            title: _getTitle(index),
-            subtitle: _getSubtitle(index),
-          );
-        },
-      ),
+          drawer: MyDrawer(
+              name: state.userModel?.name ?? "",
+              imageUrl: state.userModel?.image ?? '',
+              parentContext: context),
+          body: GridView.builder(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.all(10),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 10.0,
+              childAspectRatio: 3 / 5,
+            ),
+            itemCount: 4,
+            itemBuilder: (context, index) {
+              return DashboardCard(
+                index: index,
+                onTap: () => _navigateToPage(context, index),
+                title: _getTitle(index),
+                subtitle: _getSubtitle(index),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -197,8 +213,10 @@ class DashboardCard extends StatelessWidget {
                             backgroundColor: Colors.red.withOpacity(.8),
                             textColor: Colors.white,
                             label: (state.numberOfRequests >= 99)
-                                ? const Text("99+", style: TextStyle(fontSize: 15))
-                                : Text("${state.numberOfRequests}", style: const TextStyle(fontSize: 15)),
+                                ? const Text("99+",
+                                    style: TextStyle(fontSize: 15))
+                                : Text("${state.numberOfRequests}",
+                                    style: const TextStyle(fontSize: 15)),
                           ),
                         );
                       },

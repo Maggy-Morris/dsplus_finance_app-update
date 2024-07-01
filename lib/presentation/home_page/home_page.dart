@@ -53,22 +53,6 @@ class HomePage extends StatelessWidget {
           ),
           actions: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              // CustomButton(
-              //     height: getVerticalSize(40),
-              //     width: getHorizontalSize(125),
-              //     text: "lbl_request".tr,
-              //     variant: ButtonVariant.FillTeal300,
-              //     padding: ButtonPadding.PaddingT10,
-              //     fontStyle: ButtonFontStyle.PoppinsMedium14,
-              //     prefixWidget: Container(
-              //         margin: getMargin(right: 8),
-              //         child: CustomImageView(
-              //             svgPath:
-              //                 ImageConstant.imgFrame243)),
-              //     onTap: () {
-              //       onTapRequest(context);
-              //     }),
-
               // icon plus button
               PopupMenuButton<int>(
                 itemBuilder: (context) => [
