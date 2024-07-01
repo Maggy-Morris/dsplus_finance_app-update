@@ -35,9 +35,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
       final querySnapshot = await query.get();
 
       final requests = querySnapshot.docs
-          .map((doc) => RequestModel.toMap(doc))
-          .toList()
-          .cast<RequestModel>();
+          .map((doc) => RequestModel.toMap(doc));
 
       emit(state.copyWith(
         requests: List.from(state.requests)..addAll(requests),
@@ -61,7 +59,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           .doc(budgetId)
           .update({'status': 'Approved'});
       state.requests.clear();
-      emit(state.copyWith(status: AdminRequestsStatus.approved));
+      emit(state.copyWith(status: AdminRequestsStatus.approved,hasMoreData: true));
     } catch (error) {
       emit(state.copyWith(
         status: AdminRequestsStatus.error,
@@ -78,7 +76,7 @@ class AdminRequestsCubit extends Cubit<AdminRequestsState> {
           .doc(budgetId)
           .update({'status': 'Rejected', 'reason': reason});
       state.requests.clear();
-      emit(state.copyWith(status: AdminRequestsStatus.rejected));
+      emit(state.copyWith(status: AdminRequestsStatus.rejected , hasMoreData: true));
     } catch (error) {
       emit(state.copyWith(
         status: AdminRequestsStatus.error,

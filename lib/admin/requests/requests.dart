@@ -40,10 +40,7 @@ class AdminRequestsView extends StatelessWidget {
                       }
                       return false;
                     },
-                    child: state.requests.isEmpty &&
-                        state.status == AdminRequestsStatus.initial
-                        ? const Center(child: Text("Empty list"))
-                        :
+                    child:
                     ListView.builder(
                       itemCount: state.requests.length +(state.hasMoreData ? 1 : 0),
                       itemBuilder: (context, index) {
