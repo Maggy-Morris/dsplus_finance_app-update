@@ -266,7 +266,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
               ),
             ),
           );
-        } else {
+        } else if(documentSnapshot.get('role') == "User") {
           NavigatorService.pushNamedAndRemoveUntil(
             AppRoutes.homePageContainerScreen,
           );
