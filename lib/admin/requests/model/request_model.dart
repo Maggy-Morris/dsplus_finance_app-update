@@ -99,20 +99,20 @@ final class RequestModel extends Equatable {
   @override
   // TODO: implement props
   List<Object?> get props => [
-        userId,
-        budgetName,
-        email,
-        amount,
-        type,
-        status,
-        date,
-        expected_date,
-        accountNumber,
-        attachments,
-        bankName,
-        cashOrCredit,
-        reason,
-        docId
+    userId,
+    budgetName,
+    email,
+    amount,
+    type,
+    status,
+    date,
+    expected_date,
+    accountNumber,
+    attachments,
+    bankName,
+    cashOrCredit,
+    reason,
+    docId
     ,userName
-      ];
+  ];
 }

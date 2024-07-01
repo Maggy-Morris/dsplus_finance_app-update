@@ -72,7 +72,7 @@ class AdminHomePage extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => BlocProvider(
-              create: (context) => AdminRequestsCubit(),
+              create: (context) => AdminRequestsCubit()..fetchMoreData(),
               child: AdminRequestsView(),
             ),
           ),
