@@ -32,7 +32,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
           // loggedInUserId?.isNotEmpty ?? false ||
           emailSaved.isNotEmpty) {
         debugPrint('id:$loggedInUserId');
-        if (roleSaved == "Admin") {
+        if (roleSaved == "Admin" || roleSaved == "SuperAdmin") {
           NavigatorService.popAndPushNamed(AppRoutes.adminHomePage);
         } else {
           NavigatorService.popAndPushNamed(AppRoutes.homePageContainerScreen);
