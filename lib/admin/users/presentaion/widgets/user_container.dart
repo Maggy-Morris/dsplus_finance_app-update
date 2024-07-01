@@ -96,6 +96,7 @@ class UserContainer extends StatelessWidget {
                                 Text(users[index].name),
                               ],
                             ),
+
                             Row(
                               children: [
                                 const Text("Job Title: ", style: TextStyle(fontWeight: FontWeight.bold)),

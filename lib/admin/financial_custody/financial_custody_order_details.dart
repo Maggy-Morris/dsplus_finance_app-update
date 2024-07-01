@@ -35,7 +35,13 @@ class OrderDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Order Details")),
+      appBar: AppBar(
+        title: Text("Order Details"),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        forceMaterialTransparency: true,
+
+      ),
       body: OrderDetailsBody(userData: userData),
     );
   }
@@ -85,8 +91,19 @@ class OrderDetailsBody extends StatelessWidget {
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 SizedBox(height: 20),
-                if (userData.status == 'Approved' &&
-                    userData.type == 'عهدة'&& userData.attachments.isNotEmpty) ...[
+                if (
+                userData.type == 'عهدة' &&
+                    userData.attachments.isEmpty)...[
+                      SizedBox(height: 50),
+                  Center(
+                    child: Text("No Attachments placed yet",
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  ),
+                ],
+                  if (
+                    userData.type == 'عهدة' &&
+                    userData.attachments.isNotEmpty) ...[
                   Text("Settlement Amount:",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),

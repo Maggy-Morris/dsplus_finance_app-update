@@ -13,6 +13,8 @@ class AdminRequestsView extends StatelessWidget {
       appBar: AppBar(
         title: Text("Pending Requests"),
         centerTitle: true,
+        // backgroundColor: Colors.white,
+        forceMaterialTransparency: true,
       ),
       body: BlocBuilder<AdminRequestsCubit, AdminRequestsState>(
           builder: (context, state) {
@@ -92,7 +94,7 @@ class AdminRequestsView extends StatelessWidget {
               : Container(),
           buildListTile("Status", request.status ?? ''),
           buildListTile("Start Date", request.date ?? ''),
-          request.type == "اذن صرف"
+          request.type == "عهدة"
               ? buildListTile("End Date", request.expected_date ?? '')
               : Container(),
           (request.type == "اذن صرف")

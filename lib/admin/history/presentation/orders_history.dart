@@ -25,6 +25,8 @@ class OrderHistoryView extends StatelessWidget {
       appBar: AppBar(
         title: Text("Transactions History"),
         centerTitle: true,
+        forceMaterialTransparency: true,
+
       ),
       body: OrderHistoryBody(),
     );
@@ -99,7 +101,7 @@ class OrderHistoryBody extends StatelessWidget {
                           final document = state.documents[index];
                           final data = document.data() as Map<String, dynamic>;
                           RequestModel user = RequestModel.fromMap(data);
-                          return InkWell(
+                          return GestureDetector(
                             onTap: () {
                               if (user.type == "عهدة" && user.status == "Approved") {
                                 Navigator.of(context).push(
