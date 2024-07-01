@@ -15,9 +15,9 @@ class HomePage extends StatelessWidget {
 
   static Widget builder() {
     return BlocProvider<HomeBloc>(
-        create: (context) =>
-        HomeBloc()
-          ..add(HomeEvent())..add(GetUserData()),
+        create: (context) => HomeBloc()
+          ..add(HomeEvent())
+          ..add(GetUserData()),
         child: HomePage());
   }
 
@@ -26,11 +26,11 @@ class HomePage extends StatelessWidget {
     // String userName = PostRegisterReq().name ?? "";
     // User? user = FirebaseAuth.instance.currentUser;
     return Scaffold(
-      // backgroundColor: ColorConstant.whiteA700,
+      backgroundColor: Colors.white,
       key: _scaffoldKey, // Assign the key to the Scaffold
 
       appBar: CustomAppBar(
-        height: getVerticalSize(40),
+        height: getVerticalSize(60),
         leadingWidth: 59,
         leading: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -43,12 +43,16 @@ class HomePage extends StatelessWidget {
         ),
         centerTitle: false,
         title: Padding(
-          padding: const EdgeInsets.only(top: 12.0, left: 20),
-          child: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+          padding: const EdgeInsets.only(
+            top: 12.0,
+            left: 20,
+          ),
+          child: BlocBuilder<HomeBloc, HomeState>(
+            builder: (context, state) {
               return AppbarSubtitle(
                 text:
-                //  homePageItemModelObj?.type ??
-                "Welcome ${state.userModel?.name ?? ""}",
+                    //  homePageItemModelObj?.type ??
+                    "Welcome ${state.userModel?.name ?? ""}",
               );
             },
           ),
@@ -57,8 +61,7 @@ class HomePage extends StatelessWidget {
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             // icon plus button
             PopupMenuButton<int>(
-              itemBuilder: (context) =>
-              [
+              itemBuilder: (context) => [
                 PopupMenuItem(
                     value: 0,
                     child: CustomButton(
@@ -95,7 +98,7 @@ class HomePage extends StatelessWidget {
               ],
               icon: Padding(
                 padding:
-                const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
                 child: Icon(
                   Icons.add,
                   size: 30,
@@ -120,12 +123,13 @@ class HomePage extends StatelessWidget {
         ],
       ),
 
-      drawer: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
-        return MyDrawer(
-            name: state.userModel?.name ?? "",
-            imageUrl: state.userModel?.image ?? '',
-            parentContext: context);
-      },
+      drawer: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          return MyDrawer(
+              name: state.userModel?.name ?? "",
+              imageUrl: state.userModel?.image ?? '',
+              parentContext: context);
+        },
       ),
 
       //   ];
@@ -134,76 +138,72 @@ class HomePage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.only(top: 0),
         child:
-        // NestedScrollView(
-        //   headerSliverBuilder: (context, innerBox) {
-        //     return [
-        ////////// ///////////     //////////////////////////////////
+            // NestedScrollView(
+            //   headerSliverBuilder: (context, innerBox) {
+            //     return [
+            ////////// ///////////     //////////////////////////////////
 
-        Container(
-            width: double.maxFinite,
-            padding: getPadding(left: 24, top: 21, right: 24),
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                      padding: getPadding(top: 23),
-                      child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("lbl_transfer_history".tr,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: AppStyle.txtPoppinsSemiBold18),
-                            // Padding(
-                            //     padding: getPadding(top: 5, bottom: 3),
-                            //     child: Text("lbl_see_all".tr,
-                            //         overflow: TextOverflow.ellipsis,
-                            //         textAlign: TextAlign.left,
-                            //         style: AppStyle.txtPoppinsMedium12))
-                          ])),
-                  SizedBox(height: getVerticalSize(15)),
-                  BlocSelector<HomeBloc,
-                      HomeState,
-                      List<TransactionsModel>?>(
-                      selector: (state) => state.allTransactions,
-                      builder: (context, transactions) {
-                        return transactions?.length != 0
-                            ? Padding(
-                          padding:
-                          const EdgeInsets.only(bottom: 36),
-                          child: ListView.separated(
-                              physics:
-                              NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              separatorBuilder: (context, index) {
-                                return SizedBox(
-                                    height: getVerticalSize(15));
-                              },
-                              itemCount: transactions?.length ?? 0,
-                              itemBuilder: (context, index) {
-                                // HomePageItemModel model = homeModelObj
-                                //         ?.homePageItemList[index] ??
-                                //     HomePageItemModel();
-                                return HomePageItemWidget(
-                                    transactions?[index] ??
-                                        TransactionsModel());
-                              }),
-                        )
-                            : Column(
-                          children: [
-                            SizedBox(
-                              height: 50,
-                            ),
-                            Image.asset("assets/images/money.png"),
-                          ],
-                        );
-                      })
-                ],
-              ),
-            )),
+            Container(
+                width: double.maxFinite,
+                padding: getPadding(left: 24, top: 21, right: 24),
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                          padding: getPadding(top: 23),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("lbl_transfer_history".tr,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.left,
+                                    style: AppStyle.txtPoppinsSemiBold18),
+                                // Padding(
+                                //     padding: getPadding(top: 5, bottom: 3),
+                                //     child: Text("lbl_see_all".tr,
+                                //         overflow: TextOverflow.ellipsis,
+                                //         textAlign: TextAlign.left,
+                                //         style: AppStyle.txtPoppinsMedium12))
+                              ])),
+                      SizedBox(height: getVerticalSize(15)),
+                      BlocSelector<HomeBloc, HomeState,
+                              List<TransactionsModel>?>(
+                          selector: (state) => state.allTransactions,
+                          builder: (context, transactions) {
+                            return transactions?.length != 0
+                                ? Padding(
+                                    padding: const EdgeInsets.only(bottom: 36),
+                                    child: ListView.separated(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        separatorBuilder: (context, index) {
+                                          return SizedBox(
+                                              height: getVerticalSize(15));
+                                        },
+                                        itemCount: transactions?.length ?? 0,
+                                        itemBuilder: (context, index) {
+                                          // HomePageItemModel model = homeModelObj
+                                          //         ?.homePageItemList[index] ??
+                                          //     HomePageItemModel();
+                                          return HomePageItemWidget(
+                                              transactions?[index] ??
+                                                  TransactionsModel());
+                                        }),
+                                  )
+                                : Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 50,
+                                      ),
+                                      Image.asset("assets/images/money.png"),
+                                    ],
+                                  );
+                          })
+                    ],
+                  ),
+                )),
       ),
     );
   }
