@@ -46,71 +46,65 @@ class SendMoneyScreen extends StatelessWidget {
                     //     margin: getMargin(left: 24, top: 7, right: 24, bottom: 7))
                     // ]
                   ),
-                  body: state.loading == true
+                  body: ListView(
+                    padding: EdgeInsets.all(16.0),
+                    children: [
+                      BuildCard(
+                        title: 'Name',
+                        value: transaction.name ?? "",
+                      ),
+                      transaction.accountNumber == 0
+                          ? SizedBox()
+                          : BuildCard(
+                              title: 'Date', value: transaction.date ?? ""),
+                      BuildCard(
+                        title: 'Amount',
+                        value: "${transaction.amount}",
+                      ),
+                      transaction.expectedDate != ""
+                          ? SizedBox()
+                          : BuildCard(
+                              title: 'Expected Date',
+                              value: transaction.expectedDate ?? ""),
+                      BuildCard(
+                          title: 'Status', value: transaction.status ?? ""),
+                      BuildCard(title: 'Type', value: transaction.type ?? ""),
+                      transaction.bankName?.isEmpty == true
+                          ? BuildCard(
+                              title: 'Receiving Money By', value: 'Cash')
+                          : BuildCard(
+                              title: 'Receiving Money By', value: "Credit"),
+                      // transaction.accountNumber == 0
+                      //     ? SizedBox()
+                      //     : BuildCard(
+                      //         title: 'Account Number',
+                      //         value: "${transaction.accountNumber}"),
+                      transaction.attachments?.length == 0 ||
+                              transaction.attachments?.length.toString() == null
+                          ? SizedBox()
+                          : BuildCard(
+                              title: 'Attachments',
+                              value:
+                                  transaction.attachments?.length.toString() ??
+                                      ''),
+                    ],
+                  ),
+                  bottomNavigationBar: state.loading == true
                       ? Center(child: CircularProgressIndicator())
-                      : ListView(
-                          padding: EdgeInsets.all(16.0),
-                          children: [
-                            BuildCard(
-                              title: 'Name',
-                              value: transaction.name ?? "",
-                            ),
-                            transaction.accountNumber == 0
-                                ? SizedBox()
-                                : BuildCard(
-                                    title: 'Date',
-                                    value: transaction.date ?? ""),
-                            BuildCard(
-                              title: 'Amount',
-                              value: "${transaction.amount}",
-                            ),
-                            transaction.expectedDate != ""
-                                ? SizedBox()
-                                : BuildCard(
-                                    title: 'Expected Date',
-                                    value: transaction.expectedDate ?? ""),
-                            BuildCard(
-                                title: 'Status',
-                                value: transaction.status ?? ""),
-                            BuildCard(
-                                title: 'Type', value: transaction.type ?? ""),
-                            transaction.bankName?.isEmpty == true
-                                ? BuildCard(
-                                    title: 'Receiving Money By', value: 'Cash')
-                                : BuildCard(
-                                    title: 'Receiving Money By',
-                                    value: "Credit"),
-                            // transaction.accountNumber == 0
-                            //     ? SizedBox()
-                            //     : BuildCard(
-                            //         title: 'Account Number',
-                            //         value: "${transaction.accountNumber}"),
-                            transaction.attachments?.length == 0 ||
-                                    transaction.attachments?.length
-                                            .toString() ==
-                                        null
-                                ? SizedBox()
-                                : BuildCard(
-                                    title: 'Attachments',
-                                    value: transaction.attachments?.length
-                                            .toString() ??
-                                        ''),
-                          ],
-                        ),
-                  bottomNavigationBar: CustomButton(
-                      onTap: () async {
-                        await context
-                            .read<TransferBloc>()
-                            .uploadFilesAndUpdateTransaction(transaction);
-                        NavigatorService.pushNamedAndRemoveUntil(
-                          AppRoutes.homePageContainerScreen,
-                          arguments:
-                              transaction, // Pass the transaction object as an argument
-                        );
-                      },
-                      height: getVerticalSize(50),
-                      text: "Send Request".tr,
-                      margin: getMargin(left: 24, right: 24, bottom: 36))));
+                      : CustomButton(
+                          onTap: () async {
+                            await context
+                                .read<TransferBloc>()
+                                .uploadFilesAndUpdateTransaction(transaction);
+                            NavigatorService.pushNamedAndRemoveUntil(
+                              AppRoutes.homePageContainerScreen,
+                              arguments:
+                                  transaction, // Pass the transaction object as an argument
+                            );
+                          },
+                          height: getVerticalSize(50),
+                          text: "Send Request".tr,
+                          margin: getMargin(left: 24, right: 24, bottom: 36))));
         },
       ),
     );

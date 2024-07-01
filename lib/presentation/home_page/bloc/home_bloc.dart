@@ -30,10 +30,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   _onAllTransactionsEvent(AllTransactionsEvent event, Emitter<HomeState> emit) {
+    emit(state.copyWith(loading: true));
     try {
       transactionsSubscription?.cancel();
     } catch (_) {}
     emit(state.copyWith(allTransactions: event.allTransactions));
+    emit(state.copyWith(loading: false));
+
     //      try{
     //   transactionsSubscription?.cancel();
     // }catch(_){}
