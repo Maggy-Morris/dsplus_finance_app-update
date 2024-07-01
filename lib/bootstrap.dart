@@ -54,11 +54,6 @@ Future<void> bootstrap() async {
 
     // Run the Flutter application
     runApp(
-      // Optionally enable DevicePreview for development
-      // DevicePreview(
-      //   enabled: !kReleaseMode,
-      //   builder: (context) => App(),
-      // ),
       App(),
     );
   });

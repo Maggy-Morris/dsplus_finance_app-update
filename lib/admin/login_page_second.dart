@@ -253,17 +253,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (context) => AdminRequestsCubit(),
-                  ),
-                  BlocProvider(
-                    create: (context) => HomeBloc()..add(GetUserData()),
-                  )
-                ],
-                child: AdminHomePage(),
-              ),
+              builder: (context) => AdminHomePage(),
             ),
           );
         } else {

@@ -1,5 +1,6 @@
 import 'package:dsplus_finance/bootstrap.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -11,6 +12,12 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+      systemNavigationBarColor:
+      Colors.white, // Background color of the bottom status bar
+      systemNavigationBarIconBrightness:
+      Brightness.dark, // Icon color of the bottom status bar
+    ));
     return MaterialApp(
       navigatorKey: NavigatorService.navigatorKey,
       debugShowCheckedModeBanner: false,
@@ -28,7 +35,6 @@ class App extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-
       title: 'dsplus_finance',
       initialRoute: AppRoutes.initialRoute,
       routes: AppRoutes.routes,
