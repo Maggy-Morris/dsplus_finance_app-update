@@ -101,7 +101,7 @@ class OrderHistoryBody extends StatelessWidget {
                           RequestModel user = RequestModel.fromMap(data);
                           return InkWell(
                             onTap: () {
-                              if (user.type == "عهدة") {
+                              if (user.type == "عهدة" && user.status == "Approved") {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) => OrderDetailsScreen(

@@ -86,7 +86,7 @@ class OrderDetailsBody extends StatelessWidget {
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 SizedBox(height: 20),
                 if (userData.status == 'Approved' &&
-                    userData.type == 'عهدة') ...[
+                    userData.type == 'عهدة'&& userData.attachments.isNotEmpty) ...[
                   Text("Settlement Amount:",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),

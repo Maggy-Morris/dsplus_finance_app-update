@@ -67,7 +67,7 @@ class UsersPage extends StatelessWidget {
               ),
             );
           }
-          return const Center(child: Text("No users found"));
+          return Container();
         },
       ),
     );
