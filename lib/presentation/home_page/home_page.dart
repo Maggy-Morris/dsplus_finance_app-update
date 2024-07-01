@@ -135,7 +135,7 @@ class HomePage extends StatelessWidget {
 
         drawer: MyDrawer(
             name: state.userModel?.name ?? "",
-            imageUrl: state.userModel?.imageUrl ?? '',
+            imageUrl: state.userModel?.image ?? '',
             parentContext: context),
 
         //   ];

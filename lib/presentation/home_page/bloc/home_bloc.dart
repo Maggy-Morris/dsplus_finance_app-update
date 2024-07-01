@@ -52,8 +52,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emit(state.copyWith(
               userModel: UserModel(
                   jobTitle: documentSnapshot.get('jobTitle'),
-                  imageUrl: documentSnapshot.get('imageUrl'),
-                  id: documentSnapshot.get('id'),
+                  image: documentSnapshot.get('userImageUrl'),
+                  id: documentSnapshot.get('uid'),
                   name: documentSnapshot.get('name'),
                   email: documentSnapshot.get('email'),
                   role: documentSnapshot.get('role'))));

@@ -102,7 +102,7 @@ class UserProfileScreen extends StatelessWidget {
                                           MaterialPageRoute(
                                             builder: (context) => FullScreenImage(
                                                 imageUrl:
-                                                    "${state.userModel?.imageUrl}"),
+                                                    "${state.userModel?.image}"),
                                           ),
                                         );
                                       },
@@ -120,7 +120,7 @@ class UserProfileScreen extends StatelessWidget {
                                                     image: DecorationImage(
                                                       image: NetworkImage(state
                                                               .userModel
-                                                              ?.imageUrl ??
+                                                              ?.image ??
                                                           ""),
                                                       fit: BoxFit.fill,
                                                     ),
