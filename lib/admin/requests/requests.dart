@@ -3,6 +3,8 @@ import 'package:dsplus_finance/admin/requests/cubit/requests_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../widgets/fullscreenImage.dart';
+
 class AdminRequestsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -65,6 +67,7 @@ class AdminRequestsView extends StatelessWidget {
   }
 
   Widget buildRequestCard(BuildContext context, dynamic request) {
+    final ScrollController _scrollController = ScrollController();
     return Card(
       color: Colors.grey[200],
       elevation: 5,
@@ -95,6 +98,65 @@ class AdminRequestsView extends StatelessWidget {
           request.type == "اذن صرف"
               ? buildListTile("End Date", request.expected_date ?? '')
               : Container(),
+          (request.type == "اذن صرف")
+              ? Scrollbar(
+            radius: Radius.circular(10),
+            thickness: 5,
+            controller: _scrollController,
+            thumbVisibility: true,
+            child: SizedBox(
+              height: 100,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FullScreenImageList(
+                        imageUrlList: request.attachments.cast<String>(),
+                      ),
+                    ),
+                  );
+                },
+                child: ListView(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    for (var attachment
+                    in request.attachments)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 5,
+                                offset: Offset(0, 5),
+                              ),
+                            ],
+                            border: Border.all(color: Colors.grey, width: 1),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              attachment,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          )
+              : Container(),
+          SizedBox(height: 10),
           SizedBox(height: 10),
           buildButtons(context, request.docId ?? "", request.userId ?? ""),
           SizedBox(height: 10),
