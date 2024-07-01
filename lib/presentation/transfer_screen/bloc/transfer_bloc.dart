@@ -231,6 +231,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
 
   // upload files to firebase
   uploadFilesAndUpdateTransaction(TransactionsModel transaction) async {
+    emit(state.copyWith(loading: true));
     try {
       List<String> fileUrls = [];
       for (final file in transaction.attachments ?? []) {
@@ -248,6 +249,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       // debugPrint(fileUrls);
 
       add(AddTransactionEvent(transaction));
+      emit(state.copyWith(loading: false));
     } catch (error) {
       debugPrint("Error uploading files: $error");
     }
