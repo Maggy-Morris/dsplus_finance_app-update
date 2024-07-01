@@ -101,124 +101,136 @@ class OrderHistoryBody extends StatelessWidget {
                           final document = state.documents[index];
                           final data = document.data() as Map<String, dynamic>;
                           RequestModel user = RequestModel.fromMap(data);
-                          return GestureDetector(
-                            onTap: () {
-                              if (user.type == "عهدة" && user.status == "Approved") {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => OrderDetailsScreen(
-                                      userData: user,
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(15),
+                              onTap: () {
+                                if (user.type == "عهدة" && user.status == "Approved") {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => OrderDetailsScreen(
+                                        userData: user,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }
-                            },
-                            child: Card(
-                              color: Colors.grey[200],
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                side: BorderSide(color: Colors.grey),
-                              ),
-                              margin: EdgeInsets.all(10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  buildListTile("User Email", user.email ?? ""),
-                                  buildListTile(
-                                      "User Name", user.userName ?? ""),
-                                  buildListTile(
-                                      "Budget Name", user.budgetName ?? ''),
-                                  buildListTile(
-                                      "Amount", "${user.amount ?? 0}"),
-                                  buildListTile("Budget Type", user.type ?? ''),
-                                  user.cashOrCredit == false
-                                      ? buildListTile(
-                                          "Payment Method", "Credit")
-                                      : buildListTile("Payment Method", "Cash"),
-                                  if (user.cashOrCredit == false)
+                                  );
+                                }
+                              },
+                              child: Card(
+                                color: Colors.grey[200],
+                                elevation: 5,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  side: BorderSide(color: Colors.grey),
+                                ),
+                                // margin: EdgeInsets.all(10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    buildListTile("User Email", user.email ?? ""),
                                     buildListTile(
-                                        "Bank Name", user.bankName ?? ''),
-                                  if (user.cashOrCredit == false)
-                                    buildListTile("Account Number",
-                                        "${user.accountNumber ?? 0}"),
-                                  buildListTile("Status", user.status ?? ''),
-                                  buildListTile("Start Date", user.date ?? ''),
-                                  if (user.type == "عهدة")
+                                        "User Name", user.userName ?? ""),
                                     buildListTile(
-                                        "End Date", user.expected_date ?? ''),
-                                  SizedBox(height: 10),
-                                  (user.type == "اذن صرف")
-                                      ? SizedBox(
-                                        height: 100,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    FullScreenImageList(
-                                                  imageUrlList: user
-                                                      .attachments
-                                                      .cast<String>(),
+                                        "Budget Name", user.budgetName ?? ''),
+                                    buildListTile(
+                                        "Amount", "${user.amount ?? 0} "),
+                                    buildListTile("Budget Type", user.type ?? ''),
+                                    user.cashOrCredit == false
+                                        ? buildListTile(
+                                            "Payment Method", "Credit")
+                                        : buildListTile("Payment Method", "Cash"),
+                                    if (user.cashOrCredit == false)
+                                      buildListTile(
+                                          "Bank Name", user.bankName ?? ''),
+                                    if (user.cashOrCredit == false)
+                                      ListTile(
+                                        title: Text(
+                                          "Account Number",
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        subtitle: SelectableText(
+                                          "${user.accountNumber} ?? ''",
+                                          style: TextStyle(fontSize: 17),
+                                        ),
+                                      ),
+                                    buildListTile("Status", user.status ?? ''),
+                                    buildListTile("Start Date", user.date ?? ''),
+                                    if (user.type == "عهدة")
+                                      buildListTile(
+                                          "End Date", user.expected_date ?? ''),
+                                    SizedBox(height: 10),
+                                    (user.type == "اذن صرف")
+                                        ? SizedBox(
+                                          height: 100,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FullScreenImageList(
+                                                    imageUrlList: user
+                                                        .attachments
+                                                        .cast<String>(),
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          },
-                                          child: ListView(
-                                            scrollDirection:
-                                                Axis.horizontal,
-                                            children: [
-                                              for (var attachment
-                                                  in user.attachments)
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(
-                                                          8.0),
-                                                  child: Container(
-                                                    width: 100,
-                                                    height: 100,
-                                                    decoration:
-                                                        BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius
-                                                              .circular(8),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors
-                                                              .black
-                                                              .withOpacity(
-                                                                  0.1),
-                                                          blurRadius: 5,
-                                                          offset:
-                                                              Offset(0, 5),
+                                              );
+                                            },
+                                            child: ListView(
+                                              scrollDirection:
+                                                  Axis.horizontal,
+                                              children: [
+                                                for (var attachment
+                                                    in user.attachments)
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Container(
+                                                      width: 100,
+                                                      height: 100,
+                                                      decoration:
+                                                          BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors
+                                                                .black
+                                                                .withOpacity(
+                                                                    0.1),
+                                                            blurRadius: 5,
+                                                            offset:
+                                                                Offset(0, 5),
+                                                          ),
+                                                        ],
+                                                        border: Border.all(
+                                                            color:
+                                                                Colors.grey,
+                                                            width: 1),
+                                                      ),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                        child: Image.network(
+                                                          attachment,
+                                                          width: 100,
+                                                          height: 100,
+                                                          fit: BoxFit.cover,
                                                         ),
-                                                      ],
-                                                      border: Border.all(
-                                                          color:
-                                                              Colors.grey,
-                                                          width: 1),
-                                                    ),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius
-                                                              .circular(8),
-                                                      child: Image.network(
-                                                        attachment,
-                                                        width: 100,
-                                                        height: 100,
-                                                        fit: BoxFit.cover,
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      )
-                                      : Container(),
-                                  SizedBox(height: 10),
-                                ],
+                                        )
+                                        : Container(),
+                                    SizedBox(height: 10),
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -238,7 +250,7 @@ class OrderHistoryBody extends StatelessWidget {
         title,
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      subtitle: SelectableText(
+      subtitle: Text(
         subtitle,
         style: TextStyle(fontSize: 17),
       ),
