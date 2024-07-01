@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class TransactionsModel extends Equatable {
+  DateTime? createdAt;
+
   String? reason;
   String? userId;
   String? id;
@@ -19,6 +22,7 @@ class TransactionsModel extends Equatable {
   String? bankName;
   String? userName;
   TransactionsModel({
+    this.createdAt,
     this.userId,
     this.email,
     this.reason,
@@ -37,6 +41,8 @@ class TransactionsModel extends Equatable {
   });
 
   TransactionsModel.fromJson(Map<String, dynamic> json, this.id) {
+    createdAt = (json['createdAt'] as Timestamp?)?.toDate();
+
     userId = json['userId'];
     reason = json['reason'];
     id = json['id'];
@@ -56,7 +62,6 @@ class TransactionsModel extends Equatable {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
-
     data['userId'] = this.userId;
     data['reason'] = this.reason;
     data['id'] = this.id;
@@ -72,11 +77,14 @@ class TransactionsModel extends Equatable {
     data['accountNumber'] = this.accountNumber; // Convert num to string
     data['bankName'] = this.bankName;
     data['userName'] = this.userName;
+    data['createdAt'] =
+        this.createdAt != null ? Timestamp.fromDate(this.createdAt!) : null;
 
     return data;
   }
 
   TransactionsModel copyWith({
+    DateTime? createdAt,
     String? userId,
     String? email,
     String? reason,
@@ -94,6 +102,7 @@ class TransactionsModel extends Equatable {
     String? userName,
   }) {
     return TransactionsModel(
+      createdAt: createdAt ?? this.createdAt,
       userId: userId ?? this.userId,
       email: email ?? this.email,
       reason: reason ?? this.reason,
@@ -114,6 +123,7 @@ class TransactionsModel extends Equatable {
 
   @override
   List<Object?> get props => [
+        createdAt,
         userId,
         email,
         reason,

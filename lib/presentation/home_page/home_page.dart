@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
         key: _scaffoldKey, // Assign the key to the Scaffold
 
         appBar: CustomAppBar(
-          height: getVerticalSize(49),
+          height: getVerticalSize(40),
           leadingWidth: 59,
           leading: Padding(
             padding: const EdgeInsets.all(10.0),
@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
           ),
           centerTitle: false,
           title: Padding(
-            padding: const EdgeInsets.only(top: 10.0, left: 20),
+            padding: const EdgeInsets.only(top: 12.0, left: 20),
             child: AppbarSubtitle(
               text:
                   //  homePageItemModelObj?.type ??
@@ -107,7 +107,8 @@ class HomePage extends StatelessWidget {
                   ),
                 ],
                 icon: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
                   child: Icon(
                     Icons.add,
                     size: 30,
@@ -141,7 +142,7 @@ class HomePage extends StatelessWidget {
         // },
 
         body: Padding(
-          padding: const EdgeInsets.only(top: 15),
+          padding: const EdgeInsets.only(top: 0),
           child:
               // NestedScrollView(
               //   headerSliverBuilder: (context, innerBox) {

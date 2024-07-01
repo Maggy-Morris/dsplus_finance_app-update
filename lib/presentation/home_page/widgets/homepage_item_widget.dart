@@ -41,70 +41,104 @@ class HomePageItemWidget extends StatelessWidget {
       },
 
       // home cards
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-          side: BorderSide(color: Colors.black, width: 1),
-        ),
-        child: Container(
-          padding: EdgeInsets.all(16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CustomIconButton(
-                  height: 100,
-                  width: 100,
-                  variant: IconButtonVariant.FillGray100,
-                  shape: IconButtonShape.RoundedBorder13,
-                  padding: IconButtonPadding.PaddingAll15,
-                  child: homePageItemModelObj.type == 'عهدة'
-                      ? Image(image: AssetImage('assets/images/1.png'))
-                      : Image(image: AssetImage('assets/images/2.png'))
-                  //  CustomImageView(
-                  //   svgPath: ImageConstant.imgFire,
-                  // ),
+      child: Stack(
+        children: [
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+              // side: BorderSide(color: Colors.black, width: 1),
+            ),
+            child: Container(
+              padding: EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CustomIconButton(
+                      height: 100,
+                      width: 100,
+                      variant: IconButtonVariant.FillGray100,
+                      shape: IconButtonShape.RoundedBorder13,
+                      padding: IconButtonPadding.PaddingAll15,
+                      child: homePageItemModelObj.type == 'عهدة'
+                          ? Image(image: AssetImage('assets/images/1.png'))
+                          : Image(image: AssetImage('assets/images/2.png'))
+                      //  CustomImageView(
+                      //   svgPath: ImageConstant.imgFire,
+                      // ),
+                      ),
+                  SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          homePageItemModelObj.name ?? "",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          homePageItemModelObj.amount?.toString() ?? "",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-              SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      homePageItemModelObj.name ?? "",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      homePageItemModelObj.amount?.toString() ?? "",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
-                ),
+                  // SizedBox(width: 16),
+                  // Text(
+                  //   homePageItemModelObj.expectedDate ?? "",
+                  //   style: TextStyle(
+                  //     fontSize: 14,
+                  //     color: Colors.grey.shade600,
+                  //   ),
+                  // ),
+                ],
               ),
-              SizedBox(width: 16),
-              Text(
-                homePageItemModelObj.expectedDate ?? "",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-            ],
+            ),
+            color: Colors.white,
+            //  (homePageItemModelObj.status == 'pending')
+            //     ? Colors.yellow
+            //     : (homePageItemModelObj.status == 'Approved')
+            //         ? Colors.green
+            //         : Colors.red,
           ),
-        ),
-        color: (homePageItemModelObj.status == 'pending')
-            ? Colors.yellow
-            : (homePageItemModelObj.status == 'Approved')
-                ? Colors.green
-                : Colors.red,
+          Positioned(
+              right: 0,
+              top: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircleAvatar(
+                  backgroundColor: (homePageItemModelObj.status == 'pending')
+                      ? Colors.yellow
+                      : (homePageItemModelObj.status == 'Approved')
+                          ? Colors.green
+                          : Colors.red,
+                  radius: 30,
+                  child: Text(
+                    "${homePageItemModelObj.status}",
+                    style: TextStyle(fontSize: 12, color: Colors.black),
+                  ),
+                ),
+              )),
+          SizedBox(width: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
+            child: Text(
+              homePageItemModelObj.expectedDate ?? "",
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

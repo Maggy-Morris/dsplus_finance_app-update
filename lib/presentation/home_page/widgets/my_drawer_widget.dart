@@ -1,6 +1,7 @@
 import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:dsplus_finance/presentation/attachements/widgets/my_alert_dialog.dart';
 import 'package:dsplus_finance/presentation/profile_screen/profile_screen.dart';
+import 'package:dsplus_finance/widgets/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -28,8 +29,10 @@ class MyDrawer extends StatelessWidget {
           Builder(builder: (c) {
             return DrawerHeader(
                 decoration: BoxDecoration(
-                  color: scheme.primary,
-                  border: Border.all(color: scheme.primary),
+                  color: AppColors.logoColorlight,
+                  border: Border.all(
+                    color: AppColors.logoColorlight,
+                  ),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

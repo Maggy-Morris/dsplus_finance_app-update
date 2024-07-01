@@ -25,22 +25,41 @@ Future<void> bootstrap() async {
   FlutterError.onError =
       (details) => log(details.exceptionAsString(), stackTrace: details.stack);
 
+  // Set up the Bloc observer for state management logging
   // Bloc.observer = AppBlocObserver();
 
+  // Initialize dependency injection
   configInjector();
 
+  // Initialize Firebase (if required)
   await ApiClient.initializeFirebase();
 
+  // Set the system UI overlay style for status bar and navigation bar
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: Colors.white,
+      systemNavigationBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
+  );
+
+  // Lock the device orientation to portrait mode
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-  ]).then((value) {
+  ]).then((_) {
+    // Initialize shared preferences and logger
     PrefUtils().init();
     Logger.init(kReleaseMode ? LogMode.live : LogMode.debug);
-    runApp(
-      // DevicePreview(
 
+    // Run the Flutter application
+    runApp(
+      // Optionally enable DevicePreview for development
+      // DevicePreview(
+      //   enabled: !kReleaseMode,
+      //   builder: (context) => App(),
+      // ),
       App(),
-      // )
     );
   });
 }

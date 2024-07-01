@@ -12,7 +12,6 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
       navigatorKey: NavigatorService.navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -29,7 +28,7 @@ class App extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      
+
       title: 'dsplus_finance',
       initialRoute: AppRoutes.initialRoute,
       routes: AppRoutes.routes,
