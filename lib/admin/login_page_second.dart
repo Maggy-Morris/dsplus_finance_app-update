@@ -259,7 +259,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
                     create: (context) => AdminRequestsCubit(),
                   ),
                   BlocProvider(
-                    create: (context) => HomeBloc(),
+                    create: (context) => HomeBloc()..add(GetUserData()),
                   )
                 ],
                 child: AdminHomePage(),
@@ -301,7 +301,7 @@ class _LoginPageSecondState extends State<LoginPageSecond> {
             prefs.setString('role', documentSnapshot.get('role'));
             prefs.setString('userName', documentSnapshot.get('name'));
             prefs.setString('jobTitle', documentSnapshot.get('jobTitle'));
-            prefs.setString('imageUrl', documentSnapshot.get('imageUrl'));
+            prefs.setString('userImageUrl', documentSnapshot.get('userImageUrl'));
           }
         });
         // String semail = prefs.getString('email') ?? "";
