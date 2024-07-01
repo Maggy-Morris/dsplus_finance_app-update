@@ -76,7 +76,7 @@ class ColorConstant {
 
   static Color black90014 = fromHex('#14000000');
 
-  static Color whiteA700 = fromHex('#ffffff');
+  static Color whiteA700 = Colors.white;
 
   static Color fromHex(String hexString) {
     final buffer = StringBuffer();

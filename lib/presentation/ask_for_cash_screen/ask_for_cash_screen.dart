@@ -39,104 +39,107 @@ class _AskForCashScreenState extends State<AskForCashScreen> {
         ],
         child: BlocBuilder<TransferBloc, TransferState>(
           builder: (context, state) {
-            return Scaffold(
-              backgroundColor: ColorConstant.whiteA700,
-              appBar: CustomAppBar(
-                height: getVerticalSize(50),
-                leadingWidth: 59,
-                leading: AppbarIconbutton(
-                  svgPath: ImageConstant.imgArrowleftBlack900,
-                  margin: getMargin(left: 24, top: 8, bottom: 7),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/home_page');
-                  },
+            return GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: Scaffold(
+                backgroundColor: ColorConstant.whiteA700,
+                appBar: CustomAppBar(
+                  height: getVerticalSize(50),
+                  leadingWidth: 59,
+                  leading: AppbarIconbutton(
+                    svgPath: ImageConstant.imgArrowleftBlack900,
+                    margin: getMargin(left: 24, top: 8, bottom: 7),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/home_page');
+                    },
+                  ),
+                  centerTitle: true,
+                  title: AppbarSubtitle(text: "اذن صرف".tr),
                 ),
-                centerTitle: true,
-                title: AppbarSubtitle(text: "اذن صرف".tr),
-              ),
-              body: SingleChildScrollView(
-                padding: getPadding(left: 24, right: 24, top: 30, bottom: 30),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    buildBanner(),
-                    buildTextFormField(
-                      context,
-                      state,
-                      'Name',
-                      Icons.person,
-                      TextInputType.text,
-                      (value) {
-                        TransferBloc.get(context).add(EditName(name: value));
-                        TransferBloc.get(context)
-                            .add(EditUserName(userName: state.userName));
-                      },
-                    ),
-                    SizedBox(height: 16),
-                    buildTextFormField(
-                      context,
-                      state,
-                      'Money',
-                      Icons.monetization_on_sharp,
-                      TextInputType.number,
-                      (value) {
-                        TransferBloc.get(context).add(
-                            EditAmount(amount: double.tryParse(value) ?? 0.0));
-                      },
-                    ),
-                    SizedBox(height: 16),
-                    buildRadioOptions(context, state),
-                    SizedBox(height: 16),
-                    buildImagePickers(context, state),
-                    SizedBox(height: 20),
-                    buildAttachmentsList(context, state),
-                    SizedBox(height: 40),
-                    Center(
-                      child: CustomIconButton(
-                        height: 70,
-                        width: 70,
-                        variant: IconButtonVariant.OutlineBlueA70066,
-                        shape: IconButtonShape.CircleBorder35,
-                        padding: IconButtonPadding.PaddingAll23,
-                        onTap: () async {
-                          if (state.name?.isNotEmpty == true &&
-                              state.amount != 0 &&
-                              state.files.isNotEmpty) {
-                            final now = DateTime.now();
-                            final dateFormat = DateFormat('dd/MM/yyyy');
-                            final formattedDate = dateFormat.format(now);
-                            TransactionsModel transaction = TransactionsModel(
-                              
-                              email: firebaseAuth.currentUser?.email ?? "",
-                              attachments: state.files,
-                              name: state.name,
-                              userName: state.userName,
-                              amount: state.amount,
-                              userId: firebaseAuth.currentUser?.uid,
-                              type: 'اذن صرف',
-                              status: 'pending',
-                              date: formattedDate,
-                              id: '',
-                              cashOrCredit: state.selectedOption == "cash",
-                              bankName: state.bankName,
-                              accountNumber: state.accountNumber,
-                            );
-
-                            onTapBtnArrowright(context, transaction);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  backgroundColor: Colors.red,
-                                  content: Text(
-                                      'Please fill all fields and add attachments.')),
-                            );
-                          }
+                body: SingleChildScrollView(
+                  padding: getPadding(left: 24, right: 24, top: 30, bottom: 30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      buildBanner(),
+                      buildTextFormField(
+                        context,
+                        state,
+                        'Name',
+                        Icons.person,
+                        TextInputType.text,
+                        (value) {
+                          TransferBloc.get(context).add(EditName(name: value));
+                          TransferBloc.get(context)
+                              .add(EditUserName(userName: state.userName));
                         },
-                        child: CustomImageView(
-                            svgPath: ImageConstant.imgArrowright),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 16),
+                      buildTextFormField(
+                        context,
+                        state,
+                        'Money',
+                        Icons.monetization_on_sharp,
+                        TextInputType.number,
+                        (value) {
+                          TransferBloc.get(context).add(EditAmount(
+                              amount: double.tryParse(value) ?? 0.0));
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      buildRadioOptions(context, state),
+                      SizedBox(height: 16),
+                      buildImagePickers(context, state),
+                      SizedBox(height: 20),
+                      buildAttachmentsList(context, state),
+                      SizedBox(height: 40),
+                      Center(
+                        child: CustomIconButton(
+                          height: 70,
+                          width: 70,
+                          variant: IconButtonVariant.OutlineBlueA70066,
+                          shape: IconButtonShape.CircleBorder35,
+                          padding: IconButtonPadding.PaddingAll23,
+                          onTap: () async {
+                            if (state.name?.isNotEmpty == true &&
+                                state.amount != 0 &&
+                                state.files.isNotEmpty) {
+                              final now = DateTime.now();
+                              final dateFormat = DateFormat('dd/MM/yyyy');
+                              final formattedDate = dateFormat.format(now);
+                              TransactionsModel transaction = TransactionsModel(
+                                createdAt: DateTime.now(),
+                                email: firebaseAuth.currentUser?.email ?? "",
+                                attachments: state.files,
+                                name: state.name,
+                                userName: state.userName,
+                                amount: state.amount,
+                                userId: firebaseAuth.currentUser?.uid,
+                                type: 'اذن صرف',
+                                status: 'pending',
+                                date: formattedDate,
+                                id: '',
+                                cashOrCredit: state.selectedOption == "cash",
+                                bankName: state.bankName,
+                                accountNumber: state.accountNumber,
+                              );
+
+                              onTapBtnArrowright(context, transaction);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content: Text(
+                                        'Please fill all fields and add attachments.')),
+                              );
+                            }
+                          },
+                          child: CustomImageView(
+                              svgPath: ImageConstant.imgArrowright),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

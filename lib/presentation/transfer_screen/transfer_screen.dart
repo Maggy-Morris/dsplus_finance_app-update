@@ -1,18 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as fs;
-
 import '../home_page/models/transactions_model.dart';
 import 'bloc/transfer_bloc.dart';
-import 'models/transfer_model.dart';
+
 import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:dsplus_finance/widgets/app_bar/appbar_iconbutton.dart';
 import 'package:dsplus_finance/widgets/app_bar/appbar_subtitle.dart';
 import 'package:dsplus_finance/widgets/app_bar/custom_app_bar.dart';
 import 'package:dsplus_finance/widgets/custom_icon_button.dart';
-import 'package:dsplus_finance/widgets/custom_image_view.dart';
 
 class TransferScreen extends StatelessWidget {
   final TransactionsModel transactionsModel = TransactionsModel();
@@ -192,6 +189,7 @@ class TransferScreen extends StatelessWidget {
                             cashOrCredit: state.selectedOption == "cash",
                             bankName: state.bankName,
                             accountNumber: state.accountNumber,
+                            createdAt: DateTime.now(),
                           );
 
                           onTapBtnArrowright(context, transaction);

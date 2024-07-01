@@ -1,3 +1,5 @@
+import 'package:dsplus_finance/widgets/app_colors.dart';
+
 import 'bloc/splash_bloc.dart';
 import 'models/splash_model.dart';
 import 'package:dsplus_finance/core/app/app_export.dart';
@@ -17,7 +19,7 @@ class SplashScreen extends StatelessWidget {
     return BlocBuilder<SplashBloc, SplashState>(builder: (context, state) {
       return SafeArea(
           child: Scaffold(
-              backgroundColor: ColorConstant.blueA70026,
+              backgroundColor: AppColors.logoColorlight,
               body: Container(
                   width: double.maxFinite,
                   padding: getPadding(left: 74, right: 74),

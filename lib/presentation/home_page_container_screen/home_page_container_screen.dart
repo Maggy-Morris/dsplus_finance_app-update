@@ -13,9 +13,6 @@ import 'package:flutter/material.dart';
 class HomePageContainerScreen extends StatelessWidget {
   // GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
-
-
-
   static Widget builder(BuildContext context) {
     return BlocProvider<HomePageContainerBloc>(
         create: (context) => HomePageContainerBloc(HomePageContainerState(
@@ -30,7 +27,7 @@ class HomePageContainerScreen extends StatelessWidget {
         builder: (context, state) {
       return SafeArea(
           child: Scaffold(
-              backgroundColor: ColorConstant.whiteA700,
+              backgroundColor: Colors.white,
               body: Navigator(
                   // key: navigatorKey,
                   initialRoute: AppRoutes.homePage,
@@ -40,16 +37,14 @@ class HomePageContainerScreen extends StatelessWidget {
                       transitionDuration: Duration(seconds: 0))),
               // bottomNavigationBar:
               //     CustomBottomAppBar(onChanged: (BottomBarEnum type) {
-                // Navigator.pushNamed(
-                    // navigatorKey.currentContext!, getCurrentRoute(type)
-                    //  );
+              // Navigator.pushNamed(
+              // navigatorKey.currentContext!, getCurrentRoute(type)
+              //  );
               // }
               // ),
               floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked)
-              );
-    }
-    );
+                  FloatingActionButtonLocation.centerDocked));
+    });
   }
 
   ///Handling route based on bottom click actions

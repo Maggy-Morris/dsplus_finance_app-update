@@ -1,9 +1,7 @@
-import 'package:dsplus_finance/presentation/ask_for_cash_screen/ask_for_cash_screen.dart';
 import 'package:dsplus_finance/widgets/custom_cardItem.dart';
 import 'package:dsplus_finance/widgets/fullscreenImage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 import '../../core/utils/image_constant.dart';
 import '../../core/utils/navigator_service.dart';
@@ -94,21 +92,42 @@ class DetailsPage extends StatelessWidget {
                   : GestureDetector(
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => FullScreenImageList(
-                                      imageUrlList:
-                                          (homePageItemModelObj.attachments ??
-                                                  [])
-                                              .cast<String>(),
-                                    )));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FullScreenImageList(
+                              imageUrlList:
+                                  (homePageItemModelObj.attachments ?? [])
+                                      .cast<String>(),
+                            ),
+                          ),
+                        );
                       },
-                      child: BuildCard(
-                          title: 'Attachments',
-                          value: homePageItemModelObj.attachments?.length
-                                  .toString() ??
-                              ''),
-                    ),
+                      child: Stack(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: BuildCard(
+                              title: 'Attachments',
+                              value: homePageItemModelObj.attachments?.length
+                                      .toString() ??
+                                  '',
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 12.0,
+                            right: 10.0,
+                            child: Text(
+                              'View Attachments',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 16.0,
+                                // fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
             ])
           : ListView(padding: EdgeInsets.all(16.0), children: [
               BuildCard(
@@ -123,12 +142,4 @@ class DetailsPage extends StatelessWidget {
   onTapArrowleft5(BuildContext context) {
     NavigatorService.goBack();
   }
-
-//  onTapSettlementScreen(BuildContext context) {
-//     NavigatorService.pushNamed(
-//             AppRoutes.settlementPage,
-//                   arguments: homePageItemModelObj, // Pass the transaction object as an argument
-
-//     );
-//   }
 }
