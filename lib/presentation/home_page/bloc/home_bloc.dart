@@ -40,6 +40,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   _onGetUserData(GetUserData event, Emitter<HomeState> emit) async {
+    emit(state.copyWith(loading: true));
     User? user = FirebaseAuth.instance.currentUser;
 
     try {
@@ -57,6 +58,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                   name: documentSnapshot.get('name'),
                   email: documentSnapshot.get('email'),
                   role: documentSnapshot.get('role'))));
+
+          emit(state.copyWith(loading: false));
+
           // prefs.setString('role', documentSnapshot.get('role'));
           // prefs.setString('userName', documentSnapshot.get('name'));
           // prefs.setString('jobTitle', documentSnapshot.get('jobTitle'));

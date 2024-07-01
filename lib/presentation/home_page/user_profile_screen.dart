@@ -44,356 +44,375 @@ class UserProfileScreen extends StatelessWidget {
                 //           getMargin(left: 25, top: 7, right: 25, bottom: 8))
                 // ]
               ),
-              body: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Stack(
-                  children: [
-                    CustomPaint(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                      ),
-                      painter: HeaderCurvedContainer(),
-                    ),
-                    Container(
-                        width: double.maxFinite,
-                        padding: getPadding(
-                            left: 24, top: 60, right: 24, bottom: 25),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(
-                                child: Column(
+              body: state.loading == true
+                  ? Center(child: CircularProgressIndicator())
+                  : SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
+                      child: Stack(
+                        children: [
+                          CustomPaint(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                            ),
+                            painter: HeaderCurvedContainer(),
+                          ),
+                          Container(
+                              width: double.maxFinite,
+                              padding: getPadding(
+                                  left: 24, top: 60, right: 24, bottom: 25),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text("${state.userModel?.name}".tr,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w400)),
-                                    // Padding(
-                                    //     padding: getPadding(top: 1),
-                                    //     child: Text(
-                                    //         "${state.userModel?.jobTitle}".tr,
-                                    //         overflow: TextOverflow.ellipsis,
-                                    //         textAlign: TextAlign.left,
-                                    //         style: AppStyle
-                                    //             .txtPoppinsMedium10Gray500))
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Padding(
-                                padding:
-                                    getPadding(left: 0, right: 0, bottom: 20),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => FullScreenImage(
-                                                imageUrl:
-                                                    "${state.userModel?.image}"),
-                                          ),
-                                        );
-                                      },
-                                      child: Container(
-                                          height: getSize(150),
-                                          width: getSize(150),
-                                          child: Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                Container(
-                                                  width: 150,
-                                                  height: 150,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(state
-                                                              .userModel
-                                                              ?.image ??
-                                                          ""),
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                    color: Colors.white,
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      "",
-                                                      // name.isNotEmpty ? name.substring(0, 1) : 'F',
-                                                      style: TextStyle(
-                                                        color: scheme.primary,
-                                                        fontSize: 30,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                      ),
-                                                    ),
-                                                  ),
+                                    Center(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text("${state.userModel?.name}".tr,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w400)),
+                                          // Padding(
+                                          //     padding: getPadding(top: 1),
+                                          //     child: Text(
+                                          //         "${state.userModel?.jobTitle}".tr,
+                                          //         overflow: TextOverflow.ellipsis,
+                                          //         textAlign: TextAlign.left,
+                                          //         style: AppStyle
+                                          //             .txtPoppinsMedium10Gray500))
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Padding(
+                                      padding: getPadding(
+                                          left: 0, right: 0, bottom: 20),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FullScreenImage(
+                                                          imageUrl:
+                                                              "${state.userModel?.image}"),
                                                 ),
-                                                Align(
+                                              );
+                                            },
+                                            child: Container(
+                                                height: getSize(150),
+                                                width: getSize(150),
+                                                child: Stack(
                                                     alignment: Alignment.center,
-                                                    child: Container(
-                                                        height: getSize(150),
-                                                        width: getSize(150),
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                          value: 1,
-                                                        )))
-                                              ])),
+                                                    children: [
+                                                      Container(
+                                                        width: 150,
+                                                        height: 150,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          image:
+                                                              DecorationImage(
+                                                            image: NetworkImage(
+                                                                state.userModel
+                                                                        ?.image ??
+                                                                    ""),
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                          color: Colors.white,
+                                                        ),
+                                                        child: Center(
+                                                          child: Text(
+                                                            "",
+                                                            // name.isNotEmpty ? name.substring(0, 1) : 'F',
+                                                            style: TextStyle(
+                                                              color: scheme
+                                                                  .primary,
+                                                              fontSize: 30,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Align(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Container(
+                                                              height:
+                                                                  getSize(150),
+                                                              width:
+                                                                  getSize(150),
+                                                              child:
+                                                                  CircularProgressIndicator(
+                                                                value: 1,
+                                                              )))
+                                                    ])),
+                                          ),
+
+                                          // CustomImageView(
+                                          //     svgPath: ImageConstant.imgPlay30x30,
+                                          //     height: getSize(30),
+                                          //     width: getSize(30),
+                                          //     margin: getMargin(
+                                          //         left: 26, top: 25, bottom: 25))
+                                        ],
+                                      ),
                                     ),
 
-                                    // CustomImageView(
-                                    //     svgPath: ImageConstant.imgPlay30x30,
-                                    //     height: getSize(30),
-                                    //     width: getSize(30),
-                                    //     margin: getMargin(
-                                    //         left: 26, top: 25, bottom: 25))
-                                  ],
-                                ),
-                              ),
+                                    // SizedBox(
+                                    //   height: 20,
+                                    // ),
 
-                              // SizedBox(
-                              //   height: 20,
-                              // ),
+                                    Text(
+                                      "Name:",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0, horizontal: 40),
+                                      child: Text("${state.userModel?.name}"),
+                                    ),
+                                    Divider(),
+                                    Text(
+                                      "Job Title:",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0, horizontal: 40),
+                                      child:
+                                          Text("${state.userModel?.jobTitle}"),
+                                    ),
+                                    Divider(),
 
-                              Text(
-                                "Name:",
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 40),
-                                child: Text("${state.userModel?.name}"),
-                              ),
-                              Divider(),
-                              Text(
-                                "Job Title:",
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 40),
-                                child: Text("${state.userModel?.jobTitle}"),
-                              ),
-                              Divider(),
+                                    Text(
+                                      "Role:",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0, horizontal: 40),
+                                      child: Text("${state.userModel?.role}"),
+                                    ),
+                                    Divider(),
 
-                              Text(
-                                "Role:",
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 40),
-                                child: Text("${state.userModel?.role}"),
-                              ),
-                              Divider(),
+                                    Text(
+                                      "Email:",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0, horizontal: 40),
+                                      child: Text("${state.userModel?.email}"),
+                                    ),
 
-                              Text(
-                                "Email:",
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 40),
-                                child: Text("${state.userModel?.email}"),
-                              ),
+                                    // Padding(
+                                    //     padding: getPadding(top: 20, right: 1),
+                                    //     child: Row(
+                                    //         mainAxisAlignment: MainAxisAlignment.center,
+                                    //         children: [
+                                    //           CustomImageView(
+                                    //               svgPath: ImageConstant.imgIcon,
+                                    //               height: getSize(40),
+                                    //               width: getSize(40)),
+                                    //           Padding(
+                                    //               padding: getPadding(
+                                    //                   left: 16, top: 7, bottom: 8),
+                                    //               child: Text("lbl_personal_info".tr,
+                                    //                   overflow: TextOverflow.ellipsis,
+                                    //                   textAlign: TextAlign.left,
+                                    //                   style: AppStyle
+                                    //                       .txtPoppinsMedium16Black900)),
+                                    //           Spacer(),
+                                    //           CustomImageView(
+                                    //               svgPath:
+                                    //                   ImageConstant.imgArrowdownBlack900,
+                                    //               height: getVerticalSize(8),
+                                    //               width: getHorizontalSize(4),
+                                    //               margin: getMargin(top: 16, bottom: 16))
+                                    //         ])),
+                                    // Padding(
+                                    //     padding: getPadding(top: 20),
+                                    //     child: Row(
+                                    //         mainAxisAlignment: MainAxisAlignment.center,
+                                    //         children: [
+                                    //           CustomImageView(
+                                    //               svgPath: ImageConstant.imgUser40x40,
+                                    //               height: getSize(40),
+                                    //               width: getSize(40)),
+                                    //           Padding(
+                                    //               padding: getPadding(
+                                    //                   left: 16, top: 7, bottom: 8),
+                                    //               child: Text("lbl_notification".tr,
+                                    //                   overflow: TextOverflow.ellipsis,
+                                    //                   textAlign: TextAlign.left,
+                                    //                   style: AppStyle
+                                    //                       .txtPoppinsMedium16Black900)),
+                                    //           Spacer(),
+                                    //           Container(
+                                    //               margin: getMargin(top: 13, bottom: 13),
+                                    //               padding: getPadding(all: 4),
+                                    //               decoration: AppDecoration.fillIndigoA100
+                                    //                   .copyWith(
+                                    //                       borderRadius: BorderRadiusStyle
+                                    //                           .roundedBorder7),
+                                    //               child: Column(
+                                    //                   mainAxisSize: MainAxisSize.min,
+                                    //                   crossAxisAlignment:
+                                    //                       CrossAxisAlignment.end,
+                                    //                   mainAxisAlignment:
+                                    //                       MainAxisAlignment.start,
+                                    //                   children: [
+                                    //                     Container(
+                                    //                         height: getSize(6),
+                                    //                         width: getSize(6),
+                                    //                         decoration: BoxDecoration(
+                                    //                             color:
+                                    //                                 ColorConstant.whiteA700,
+                                    //                             borderRadius:
+                                    //                                 BorderRadius.circular(
+                                    //                                     getHorizontalSize(
+                                    //                                         3))))
+                                    //                   ]))
 
-                              // Padding(
-                              //     padding: getPadding(top: 20, right: 1),
-                              //     child: Row(
-                              //         mainAxisAlignment: MainAxisAlignment.center,
-                              //         children: [
-                              //           CustomImageView(
-                              //               svgPath: ImageConstant.imgIcon,
-                              //               height: getSize(40),
-                              //               width: getSize(40)),
-                              //           Padding(
-                              //               padding: getPadding(
-                              //                   left: 16, top: 7, bottom: 8),
-                              //               child: Text("lbl_personal_info".tr,
-                              //                   overflow: TextOverflow.ellipsis,
-                              //                   textAlign: TextAlign.left,
-                              //                   style: AppStyle
-                              //                       .txtPoppinsMedium16Black900)),
-                              //           Spacer(),
-                              //           CustomImageView(
-                              //               svgPath:
-                              //                   ImageConstant.imgArrowdownBlack900,
-                              //               height: getVerticalSize(8),
-                              //               width: getHorizontalSize(4),
-                              //               margin: getMargin(top: 16, bottom: 16))
-                              //         ])),
-                              // Padding(
-                              //     padding: getPadding(top: 20),
-                              //     child: Row(
-                              //         mainAxisAlignment: MainAxisAlignment.center,
-                              //         children: [
-                              //           CustomImageView(
-                              //               svgPath: ImageConstant.imgUser40x40,
-                              //               height: getSize(40),
-                              //               width: getSize(40)),
-                              //           Padding(
-                              //               padding: getPadding(
-                              //                   left: 16, top: 7, bottom: 8),
-                              //               child: Text("lbl_notification".tr,
-                              //                   overflow: TextOverflow.ellipsis,
-                              //                   textAlign: TextAlign.left,
-                              //                   style: AppStyle
-                              //                       .txtPoppinsMedium16Black900)),
-                              //           Spacer(),
-                              //           Container(
-                              //               margin: getMargin(top: 13, bottom: 13),
-                              //               padding: getPadding(all: 4),
-                              //               decoration: AppDecoration.fillIndigoA100
-                              //                   .copyWith(
-                              //                       borderRadius: BorderRadiusStyle
-                              //                           .roundedBorder7),
-                              //               child: Column(
-                              //                   mainAxisSize: MainAxisSize.min,
-                              //                   crossAxisAlignment:
-                              //                       CrossAxisAlignment.end,
-                              //                   mainAxisAlignment:
-                              //                       MainAxisAlignment.start,
-                              //                   children: [
-                              //                     Container(
-                              //                         height: getSize(6),
-                              //                         width: getSize(6),
-                              //                         decoration: BoxDecoration(
-                              //                             color:
-                              //                                 ColorConstant.whiteA700,
-                              //                             borderRadius:
-                              //                                 BorderRadius.circular(
-                              //                                     getHorizontalSize(
-                              //                                         3))))
-                              //                   ]))
-
-                              //         ])),
-                              // Padding(
-                              //     padding: getPadding(top: 20, right: 1),
-                              //     child: Row(
-                              //         mainAxisAlignment: MainAxisAlignment.center,
-                              //         children: [
-                              //           CustomImageView(
-                              //               svgPath: ImageConstant.imgCheckmark40x40,
-                              //               height: getSize(40),
-                              //               width: getSize(40)),
-                              //           Padding(
-                              //               padding: getPadding(
-                              //                   left: 16, top: 10, bottom: 5),
-                              //               child: Text("lbl_billing_details".tr,
-                              //                   overflow: TextOverflow.ellipsis,
-                              //                   textAlign: TextAlign.left,
-                              //                   style: AppStyle
-                              //                       .txtPoppinsMedium16Black900)),
-                              //           Spacer(),
-                              //           CustomImageView(
-                              //               svgPath:
-                              //                   ImageConstant.imgArrowdownBlack900,
-                              //               height: getVerticalSize(8),
-                              //               width: getHorizontalSize(4),
-                              //               margin: getMargin(top: 16, bottom: 16))
-                              //         ])),
-                              // Padding(
-                              //     padding: getPadding(top: 20, right: 1),
-                              //     child: Row(
-                              //         mainAxisAlignment: MainAxisAlignment.center,
-                              //         children: [
-                              //           CustomImageView(
-                              //               svgPath: ImageConstant.imgFacebook40x40,
-                              //               height: getSize(40),
-                              //               width: getSize(40),
-                              //               onTap: () {
-                              //                 onTapImgFacebook(context);
-                              //               }),
-                              //           Padding(
-                              //               padding: getPadding(
-                              //                   left: 16, top: 7, bottom: 8),
-                              //               child: Text("lbl_transfer_funds".tr,
-                              //                   overflow: TextOverflow.ellipsis,
-                              //                   textAlign: TextAlign.left,
-                              //                   style: AppStyle
-                              //                       .txtPoppinsMedium16Black900)),
-                              //           Spacer(),
-                              //           CustomImageView(
-                              //               svgPath:
-                              //                   ImageConstant.imgArrowdownBlack900,
-                              //               height: getVerticalSize(8),
-                              //               width: getHorizontalSize(4),
-                              //               margin: getMargin(top: 16, bottom: 16))
-                              //         ])),
-                              // Padding(
-                              //     padding: getPadding(top: 20),
-                              //     child: Divider(
-                              //         height: getVerticalSize(1),
-                              //         thickness: getVerticalSize(1),
-                              //         color: ColorConstant.gray200)),
-                              // Padding(
-                              //     padding: getPadding(top: 19, right: 1),
-                              //     child: Row(
-                              //         mainAxisAlignment: MainAxisAlignment.center,
-                              //         children: [
-                              //           CustomImageView(
-                              //               svgPath: ImageConstant.imgSignal,
-                              //               height: getSize(40),
-                              //               width: getSize(40)),
-                              //           Padding(
-                              //               padding: getPadding(
-                              //                   left: 16, top: 10, bottom: 5),
-                              //               child: Text("msg_privacy_setting".tr,
-                              //                   overflow: TextOverflow.ellipsis,
-                              //                   textAlign: TextAlign.left,
-                              //                   style: AppStyle
-                              //                       .txtPoppinsMedium16Black900)),
-                              //           Spacer(),
-                              //           CustomImageView(
-                              //               svgPath:
-                              //                   ImageConstant.imgArrowdownBlack900,
-                              //               height: getVerticalSize(8),
-                              //               width: getHorizontalSize(4),
-                              //               margin: getMargin(top: 16, bottom: 16))
-                              //         ])),
-                              // Padding(
-                              //     padding: getPadding(top: 20, right: 1, bottom: 5),
-                              //     child: Row(
-                              //         mainAxisAlignment: MainAxisAlignment.center,
-                              //         children: [
-                              //           CustomImageView(
-                              //               svgPath: ImageConstant.imgUser1,
-                              //               height: getSize(40),
-                              //               width: getSize(40)),
-                              //           Padding(
-                              //               padding: getPadding(
-                              //                   left: 16, top: 9, bottom: 6),
-                              //               child: Text("lbl_community".tr,
-                              //                   overflow: TextOverflow.ellipsis,
-                              //                   textAlign: TextAlign.left,
-                              //                   style: AppStyle
-                              //                       .txtPoppinsMedium16Black900)),
-                              //           Spacer(),
-                              //           CustomImageView(
-                              //               svgPath:
-                              //                   ImageConstant.imgArrowdownBlack900,
-                              //               height: getVerticalSize(8),
-                              //               width: getHorizontalSize(4),
-                              //               margin: getMargin(top: 16, bottom: 16))
-                              //         ]))
-                            ])),
-                  ],
-                ),
-              ),
+                                    //         ])),
+                                    // Padding(
+                                    //     padding: getPadding(top: 20, right: 1),
+                                    //     child: Row(
+                                    //         mainAxisAlignment: MainAxisAlignment.center,
+                                    //         children: [
+                                    //           CustomImageView(
+                                    //               svgPath: ImageConstant.imgCheckmark40x40,
+                                    //               height: getSize(40),
+                                    //               width: getSize(40)),
+                                    //           Padding(
+                                    //               padding: getPadding(
+                                    //                   left: 16, top: 10, bottom: 5),
+                                    //               child: Text("lbl_billing_details".tr,
+                                    //                   overflow: TextOverflow.ellipsis,
+                                    //                   textAlign: TextAlign.left,
+                                    //                   style: AppStyle
+                                    //                       .txtPoppinsMedium16Black900)),
+                                    //           Spacer(),
+                                    //           CustomImageView(
+                                    //               svgPath:
+                                    //                   ImageConstant.imgArrowdownBlack900,
+                                    //               height: getVerticalSize(8),
+                                    //               width: getHorizontalSize(4),
+                                    //               margin: getMargin(top: 16, bottom: 16))
+                                    //         ])),
+                                    // Padding(
+                                    //     padding: getPadding(top: 20, right: 1),
+                                    //     child: Row(
+                                    //         mainAxisAlignment: MainAxisAlignment.center,
+                                    //         children: [
+                                    //           CustomImageView(
+                                    //               svgPath: ImageConstant.imgFacebook40x40,
+                                    //               height: getSize(40),
+                                    //               width: getSize(40),
+                                    //               onTap: () {
+                                    //                 onTapImgFacebook(context);
+                                    //               }),
+                                    //           Padding(
+                                    //               padding: getPadding(
+                                    //                   left: 16, top: 7, bottom: 8),
+                                    //               child: Text("lbl_transfer_funds".tr,
+                                    //                   overflow: TextOverflow.ellipsis,
+                                    //                   textAlign: TextAlign.left,
+                                    //                   style: AppStyle
+                                    //                       .txtPoppinsMedium16Black900)),
+                                    //           Spacer(),
+                                    //           CustomImageView(
+                                    //               svgPath:
+                                    //                   ImageConstant.imgArrowdownBlack900,
+                                    //               height: getVerticalSize(8),
+                                    //               width: getHorizontalSize(4),
+                                    //               margin: getMargin(top: 16, bottom: 16))
+                                    //         ])),
+                                    // Padding(
+                                    //     padding: getPadding(top: 20),
+                                    //     child: Divider(
+                                    //         height: getVerticalSize(1),
+                                    //         thickness: getVerticalSize(1),
+                                    //         color: ColorConstant.gray200)),
+                                    // Padding(
+                                    //     padding: getPadding(top: 19, right: 1),
+                                    //     child: Row(
+                                    //         mainAxisAlignment: MainAxisAlignment.center,
+                                    //         children: [
+                                    //           CustomImageView(
+                                    //               svgPath: ImageConstant.imgSignal,
+                                    //               height: getSize(40),
+                                    //               width: getSize(40)),
+                                    //           Padding(
+                                    //               padding: getPadding(
+                                    //                   left: 16, top: 10, bottom: 5),
+                                    //               child: Text("msg_privacy_setting".tr,
+                                    //                   overflow: TextOverflow.ellipsis,
+                                    //                   textAlign: TextAlign.left,
+                                    //                   style: AppStyle
+                                    //                       .txtPoppinsMedium16Black900)),
+                                    //           Spacer(),
+                                    //           CustomImageView(
+                                    //               svgPath:
+                                    //                   ImageConstant.imgArrowdownBlack900,
+                                    //               height: getVerticalSize(8),
+                                    //               width: getHorizontalSize(4),
+                                    //               margin: getMargin(top: 16, bottom: 16))
+                                    //         ])),
+                                    // Padding(
+                                    //     padding: getPadding(top: 20, right: 1, bottom: 5),
+                                    //     child: Row(
+                                    //         mainAxisAlignment: MainAxisAlignment.center,
+                                    //         children: [
+                                    //           CustomImageView(
+                                    //               svgPath: ImageConstant.imgUser1,
+                                    //               height: getSize(40),
+                                    //               width: getSize(40)),
+                                    //           Padding(
+                                    //               padding: getPadding(
+                                    //                   left: 16, top: 9, bottom: 6),
+                                    //               child: Text("lbl_community".tr,
+                                    //                   overflow: TextOverflow.ellipsis,
+                                    //                   textAlign: TextAlign.left,
+                                    //                   style: AppStyle
+                                    //                       .txtPoppinsMedium16Black900)),
+                                    //           Spacer(),
+                                    //           CustomImageView(
+                                    //               svgPath:
+                                    //                   ImageConstant.imgArrowdownBlack900,
+                                    //               height: getVerticalSize(8),
+                                    //               width: getHorizontalSize(4),
+                                    //               margin: getMargin(top: 16, bottom: 16))
+                                    //         ]))
+                                  ])),
+                        ],
+                      ),
+                    ),
               bottomNavigationBar: GestureDetector(
                 onTap: () {
                   showDialog(
