@@ -31,13 +31,18 @@ class UserContainer extends StatelessWidget {
             margin: const EdgeInsets.all(10),
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              border: Border.all(color: isAdmin ? Colors.blue : Colors.green),
+              border: Border.all(
+                  color: isAdmin
+                      ? Colors.blue
+                      : isSuperAdmin
+                          ? Colors.red
+                          : Colors.green),
               borderRadius: BorderRadius.circular(10),
               color: isSuperAdmin
                   ? Colors.red[100]
                   : isAdmin
-                  ? Colors.blue[100]
-                  : Colors.green[100],
+                      ? Colors.blue[100]
+                      : Colors.green[100],
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),
@@ -69,13 +74,18 @@ class UserContainer extends StatelessWidget {
                   margin: const EdgeInsets.all(10),
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    border: Border.all(color: isAdmin ? Colors.blue : Colors.green),
+                    border: Border.all(
+                        color: isAdmin
+                            ? Colors.blue
+                            : isSuperAdmin
+                                ? Colors.red
+                                : Colors.green),
                     borderRadius: BorderRadius.circular(10),
                     color: isSuperAdmin
                         ? Colors.red[100]
                         : isAdmin
-                        ? Colors.blue[100]
-                        : Colors.green[100],
+                            ? Colors.blue[100]
+                            : Colors.green[100],
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.5),
@@ -92,14 +102,17 @@ class UserContainer extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                const Text("Name: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                const Text("Name: ",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
                                 Text(users[index].name),
                               ],
                             ),
-
                             Row(
                               children: [
-                                const Text("Job Title: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                const Text("Job Title: ",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
                                 Text(users[index].jobTitle),
                               ],
                             ),
@@ -110,43 +123,52 @@ class UserContainer extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                const Text("Email: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                const Text("Email: ",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
                                 Text(users[index].email),
                               ],
                             ),
                             const SizedBox(height: 5),
-                            const Text("Profile Image: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                            (users[index].image.isNotEmpty)
+                                ? Text("Profile Image: ",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold))
+                                : const SizedBox.shrink(),
                             InkWell(
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => FullScreenImage(imageUrl: users[index].image),
+                                    builder: (context) => FullScreenImage(
+                                        imageUrl: users[index].image),
                                   ),
                                 );
                               },
-                              child: Image.network(
-                                users[index].image,
-                                width: 100,
-                                height: 100,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const SizedBox.shrink();
-                                },
-                              ),
+                              child: (users[index].image.isNotEmpty)
+                                  ? Image.network(
+                                      users[index].image,
+                                      width: 100,
+                                      height: 100,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const SizedBox.shrink();
+                                      },
+                                    )
+                                  : const SizedBox.shrink(),
                             ),
                           ],
                         ),
                         trailing: (state.currentUserRole == "SuperAdmin")
                             ? _getTrailingIcon(users[index], context)
                             : (state.currentUserRole == "Admin")
-                            ? getTrailingIcon(users[index], context)
-                            : null,
+                                ? getTrailingIcon(users[index], context)
+                                : null,
                         onTap: (state.currentUserRole == "SuperAdmin")
                             ? _getOnTap(users[index], context)
                             : (state.currentUserRole == "Admin")
-                            ? getOnTap(users[index], context)
-                            : null
-                    ),
+                                ? getOnTap(users[index], context)
+                                : null),
                   ),
                 );
               },
@@ -202,7 +224,7 @@ class UserContainer extends StatelessWidget {
           cubit.loadSuperAdmins();
           // cubit.loadUsers();
           cubit.loadAdmins();
-        }else if (!makeSuperAdmin){
+        } else if (!makeSuperAdmin) {
           cubit.demoteAdmin(user.id);
           cubit.loadUsers();
           cubit.loadAdmins();
@@ -212,6 +234,7 @@ class UserContainer extends StatelessWidget {
 
     return null;
   }
+
   void Function()? getOnTap(UserModel user, BuildContext context) {
     return () async {
       if (user.role == 'User') {
