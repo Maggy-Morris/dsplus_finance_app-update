@@ -339,6 +339,18 @@ class FullScreenImage extends StatelessWidget {
         child: Image.network(
           imageUrl,
           fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Center(
+              child: Text(
+                'Image not found',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            );
+          }
         ),
       ),
     );

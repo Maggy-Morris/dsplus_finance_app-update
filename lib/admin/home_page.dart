@@ -50,6 +50,9 @@ class AdminHomePage extends StatelessWidget {
       ],
       child: BlocBuilder<UsersCubit, UsersState>(
         builder: (context, state) {
+          if (state.status == UsersStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
           return Scaffold(
             key: _foldKey,
             appBar: AppBar(

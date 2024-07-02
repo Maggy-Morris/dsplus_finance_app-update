@@ -5,6 +5,8 @@ import 'package:dsplus_finance/admin/add_user/widgets/text_field.dart';
 import 'package:dsplus_finance/core/app/app_export.dart';
 import 'package:flutter/material.dart';
 
+import '../../../presentation/attachements/constants/colors.dart';
+
 class FormFields extends StatefulWidget {
   const FormFields({Key? key}) : super(key: key);
 
@@ -118,7 +120,7 @@ class _FormFieldsState extends State<FormFields> {
               context.read<AddUserCubit>().uploadImage();
             },
             style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(Colors.blue),
+              backgroundColor: WidgetStateProperty.all(scheme.primary),
               fixedSize: WidgetStateProperty.all(Size(200, 50)),
               shape: WidgetStateProperty.all(
                 RoundedRectangleBorder(
@@ -167,13 +169,23 @@ class _FormFieldsState extends State<FormFields> {
                   _jobTitleController.clear();
                 });
               }
+              if (state.status == AddUserStatus.error) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error!),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                });
+              }
               return ElevatedButton(
                 onPressed: () {
 
                   _addUser(context);
                 },
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Colors.blue),
+                  backgroundColor: WidgetStateProperty.all(scheme.primary),
                   fixedSize: WidgetStateProperty.all(Size(200, 50)),
                   shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(

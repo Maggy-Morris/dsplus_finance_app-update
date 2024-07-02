@@ -62,9 +62,37 @@ class AddUserCubit extends Cubit<AddUserState> {
       } else {
         emit(state.copyWith(status: AddUserStatus.error));
       }
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      switch (e.code) {
+        case 'invalid-email':
+          errorMessage = 'The email address is not valid.';
+          break;
+        case 'user-disabled':
+          errorMessage = 'The user corresponding to the given email has been disabled.';
+          break;
+        case 'user-not-found':
+          errorMessage = 'There is no user corresponding to the given email.';
+          break;
+        case 'wrong-password':
+          errorMessage = 'The password is invalid for the given email.';
+          break;
+        case 'email-already-in-use':
+          errorMessage = 'The email address is already in use by another account.';
+          break;
+        case 'operation-not-allowed':
+          errorMessage = 'Email and password accounts are not enabled.';
+          break;
+        case 'weak-password':
+          errorMessage = 'The password provided is too weak.';
+          break;
+        default:
+          errorMessage = 'An undefined Error happened.';
+      }
+
+      emit(state.copyWith(status: AddUserStatus.error, error: errorMessage));
     } catch (e) {
-      print('Error adding user: $e');
-      emit(state.copyWith(status: AddUserStatus.error , error: e.toString()));
+      emit(state.copyWith(status: AddUserStatus.error, error: e.toString()));
     }
   }
 

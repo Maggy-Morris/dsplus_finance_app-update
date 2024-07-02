@@ -43,29 +43,42 @@ class MyDrawer extends StatelessWidget {
                     Container(
                       width: 100,
                       height: 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: NetworkImage(imageUrl),
+                      child: ClipRRect(
+                        borderRadius:
+                        BorderRadius
+                            .circular(75),
+                        child: Image.network(
+                          imageUrl.isNotEmpty ? imageUrl : '',
                           fit: BoxFit.fill,
-                        ),
-                        color: Colors.white,
-                      ),
-                      child: Center(
-                        child: Text(
-                          name.isNotEmpty ? name.substring(0, 1) : 'F',
-                          style: TextStyle(
-                            color: scheme.primary,
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 150,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                  color: ColorConstant
+                                      .gray200,
+                                  borderRadius:
+                                  BorderRadiusStyle
+                                      .roundedBorder7),
+                              child: Center(
+                                child: Text(
+                                  name.isNotEmpty ? name.substring(0, 1) : 'F',
+                                  style: TextStyle(
+                                    color: scheme.primary,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
                     Text(
                       name.isNotEmpty ? name : '',
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
