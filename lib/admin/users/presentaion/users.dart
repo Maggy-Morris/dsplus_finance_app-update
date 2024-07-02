@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dsplus_finance/admin/users/presentaion/widgets/user_container.dart';
 
+import '../../../core/utils/logout.dart';
+
 class UsersPage extends StatelessWidget {
   const UsersPage({super.key});
 
@@ -30,7 +32,7 @@ class UsersPage extends StatelessWidget {
           if (state.status == UsersStatus.adminSuccess ||
               state.status == UsersStatus.superAdminSuccess ||
               state.status == UsersStatus.userSuccess) {
-            return SingleChildScrollView(
+            return (state.currentUserRole == "Admin" || state.currentUserRole == "SuperAdmin")?SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -62,6 +64,17 @@ class UsersPage extends StatelessWidget {
                     users: state.users,
                     isAdmin: false,
                     cubit: context.read<UsersCubit>(),
+                  ),
+                ],
+              ),
+            ):Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("You are not authorized to view this page"),
+                  ElevatedButton(
+                    onPressed: () => logout(context),
+                    child: const Text("Logout"),
                   ),
                 ],
               ),

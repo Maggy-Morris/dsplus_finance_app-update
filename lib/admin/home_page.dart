@@ -36,7 +36,6 @@ class AdminHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // context.read<AdminRequestsCubit>().numberOfRequests();
     return MultiBlocProvider(
       providers: [
         BlocProvider<HomeBloc>(
@@ -45,47 +44,69 @@ class AdminHomePage extends StatelessWidget {
         BlocProvider<AdminRequestsCubit>(
           create: (context) => AdminRequestsCubit()..numberOfRequests(),
         ),
+        BlocProvider<UsersCubit>(
+          create: (context) => UsersCubit()..currentUserRole(),
+        ),
       ],
-      child: Scaffold(
-        key: _foldKey,
-        appBar: AppBar(
-          backgroundColor: Colors.grey[200],
-          title: const Text("Admin Dashboard", style: TextStyle(fontSize: 20)),
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              _foldKey.currentState?.openDrawer();
-            },
-          ),
-        ),
-        drawer: BlocBuilder<HomeBloc, HomeState>(
-          builder: (context, state) {
-            return MyDrawer(
-                name: state.userModel?.name ?? "",
-                imageUrl: state.userModel?.image ?? '',
-                parentContext: context);
-          },
-        ),
-        body: GridView.builder(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(10),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 10.0,
-            childAspectRatio: 3 / 5,
-          ),
-          itemCount: 4,
-          itemBuilder: (context, index) {
-            return DashboardCard(
-              index: index,
-              onTap: () => _navigateToPage(context, index),
-              title: _getTitle(index),
-              subtitle: _getSubtitle(index),
-            );
-          },
-        ),
+      child: BlocBuilder<UsersCubit, UsersState>(
+        builder: (context, state) {
+          return Scaffold(
+            key: _foldKey,
+            appBar: AppBar(
+              backgroundColor: Colors.grey[200],
+              title:
+                  const Text("Admin Dashboard", style: TextStyle(fontSize: 20)),
+              centerTitle: true,
+              leading: IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  _foldKey.currentState?.openDrawer();
+                },
+              ),
+            ),
+            drawer: BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                return MyDrawer(
+                    name: state.userModel?.name ?? "",
+                    imageUrl: state.userModel?.image ?? '',
+                    parentContext: context);
+              },
+            ),
+            body: (state.currentUserRole == "Admin" || state.currentUserRole == "SuperAdmin")
+                ? GridView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.all(10),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10.0,
+                      mainAxisSpacing: 10.0,
+                      childAspectRatio: 3 / 5,
+                    ),
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      return DashboardCard(
+                        index: index,
+                        onTap: () => _navigateToPage(context, index),
+                        title: _getTitle(index),
+                        subtitle: _getSubtitle(index),
+                      );
+                    },
+                  )
+                : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("You are not authorized to view this page"),
+                        ElevatedButton(
+                          onPressed: () => logout(context),
+                          child: const Text("Logout"),
+                        ),
+                      ],
+                    ),
+                  ),
+          );
+        },
       ),
     );
   }
@@ -96,8 +117,16 @@ class AdminHomePage extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => AdminRequestsCubit(),
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider<AdminRequestsCubit>(
+                    create: (context) => AdminRequestsCubit()
+
+                ),
+                BlocProvider<UsersCubit>(
+                  create: (context) =>  UsersCubit()..currentUserRole(),
+                ),
+              ],
               child: AdminRequestsView(),
             ),
           ),
@@ -107,12 +136,8 @@ class AdminHomePage extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => UsersCubit()..currentUserRole(),
-                ),
-              ],
+            builder: (context) => BlocProvider(
+              create: (context) => UsersCubit()..currentUserRole(),
               child: UsersPage(),
             ),
           ),
@@ -122,8 +147,15 @@ class AdminHomePage extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => OrderHistoryCubit(),
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider<OrderHistoryCubit>(
+                  create: (context) => OrderHistoryCubit(),
+                ),
+                BlocProvider<UsersCubit>(
+                  create: (context) => UsersCubit()..currentUserRole(),
+                ),
+              ],
               child: OrderHistoryView(),
             ),
           ),
@@ -133,8 +165,15 @@ class AdminHomePage extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => AddUserCubit(),
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider<UsersCubit>(
+                  create: (context) => UsersCubit()..currentUserRole(),
+                ),
+                BlocProvider<AddUserCubit>(
+                  create: (context) => AddUserCubit(),
+                ),
+              ],
               child: AddUsers(),
             ),
           ),

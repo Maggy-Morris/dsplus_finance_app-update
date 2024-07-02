@@ -80,6 +80,7 @@ class UsersCubit extends Cubit<UsersState> {
   }
 
   void currentUserRole() {
+    emit(state.copyWith(status: UsersStatus.loading));
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) {
       emit(state.copyWith(status: UsersStatus.error));
@@ -88,7 +89,7 @@ class UsersCubit extends Cubit<UsersState> {
 
     FirebaseFirestore.instance.collection('users').doc(userId).get().then((doc) {
       String? role = doc.data()?['role'];
-      emit(state.copyWith(currentUserRole: role ?? '', status: UsersStatus.initial));
+      emit(state.copyWith(currentUserRole: role ?? '', status: UsersStatus.success));
     }).catchError((_) {
       emit(state.copyWith(status: UsersStatus.error));
     });

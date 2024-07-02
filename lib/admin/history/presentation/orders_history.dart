@@ -1,4 +1,6 @@
 import 'package:dsplus_finance/admin/requests/model/request_model.dart';
+import 'package:dsplus_finance/admin/users/cubit/users_cubit.dart';
+import 'package:dsplus_finance/core/utils/logout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,37 +28,54 @@ class OrderHistoryView extends StatelessWidget {
         title: Text("Transactions History"),
         centerTitle: true,
         forceMaterialTransparency: true,
-
       ),
-      body: OrderHistoryBody(),
+      body: BlocBuilder<UsersCubit, UsersState>(
+        builder: (context, state) {
+          if (state.status == UsersStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return (state.currentUserRole == "Admin" ||
+                  state.currentUserRole == "SuperAdmin")
+              ? OrderHistoryBody()
+              : Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("You are not authorized to view this page"),
+                      ElevatedButton(
+                        onPressed: () => logout(context),
+                        child: const Text("Logout"),
+                      ),
+                    ],
+                  ),
+                );
+        },
+      ),
     );
   }
 }
-
 
 class OrderHistoryBody extends StatelessWidget {
   final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-
-    return BlocBuilder<OrderHistoryCubit, OrderHistoryState>(
-      builder: (context, state) {
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Filter By:",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  SizedBox(width: 10),
-                  DropdownButton<String>(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Filter By:",
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(width: 10),
+              BlocBuilder<OrderHistoryCubit, OrderHistoryState>(
+                builder: (context, state) {
+                  return DropdownButton<String>(
                     value: state.selectedFilter,
                     onChanged: (String? newValue) {
                       context
@@ -70,11 +89,15 @@ class OrderHistoryBody extends StatelessWidget {
                         child: Text(value),
                       );
                     }).toList(),
-                  ),
-                ],
+                  );
+                },
               ),
-            ),
-            Expanded(
+            ],
+          ),
+        ),
+        BlocBuilder<OrderHistoryCubit, OrderHistoryState>(
+          builder: (context, state) {
+            return Expanded(
               child: NotificationListener<ScrollNotification>(
                 onNotification: (ScrollNotification scrollInfo) {
                   if (scrollInfo.metrics.pixels ==
@@ -106,7 +129,8 @@ class OrderHistoryBody extends StatelessWidget {
                             child: InkWell(
                               borderRadius: BorderRadius.circular(15),
                               onTap: () {
-                                if (user.type == "عهدة" && user.status == "Approved") {
+                                if (user.type == "عهدة" &&
+                                    user.status == "Approved") {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => OrderDetailsScreen(
@@ -127,18 +151,21 @@ class OrderHistoryBody extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    buildListTile("User Email", user.email ?? ""),
+                                    buildListTile(
+                                        "User Email", user.email ?? ""),
                                     buildListTile(
                                         "User Name", user.userName ?? ""),
                                     buildListTile(
                                         "Budget Name", user.budgetName ?? ''),
                                     buildListTile(
                                         "Amount", "${user.amount ?? 0} "),
-                                    buildListTile("Budget Type", user.type ?? ''),
+                                    buildListTile(
+                                        "Budget Type", user.type ?? ''),
                                     user.cashOrCredit == false
                                         ? buildListTile(
                                             "Payment Method", "Credit")
-                                        : buildListTile("Payment Method", "Cash"),
+                                        : buildListTile(
+                                            "Payment Method", "Cash"),
                                     if (user.cashOrCredit == false)
                                       buildListTile(
                                           "Bank Name", user.bankName ?? ''),
@@ -146,7 +173,8 @@ class OrderHistoryBody extends StatelessWidget {
                                       ListTile(
                                         title: Text(
                                           "Account Number",
-                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
                                         ),
                                         subtitle: SelectableText(
                                           "${user.accountNumber} ?? ''",
@@ -154,79 +182,80 @@ class OrderHistoryBody extends StatelessWidget {
                                         ),
                                       ),
                                     buildListTile("Status", user.status ?? ''),
-                                    buildListTile("Start Date", user.date ?? ''),
+                                    buildListTile(
+                                        "Start Date", user.date ?? ''),
                                     if (user.type == "عهدة")
                                       buildListTile(
                                           "End Date", user.expected_date ?? ''),
                                     SizedBox(height: 10),
                                     (user.type == "اذن صرف")
                                         ? SizedBox(
-                                          height: 100,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      FullScreenImageList(
-                                                    imageUrlList: user
-                                                        .attachments
-                                                        .cast<String>(),
+                                            height: 100,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        FullScreenImageList(
+                                                      imageUrlList: user
+                                                          .attachments
+                                                          .cast<String>(),
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            },
-                                            child: ListView(
-                                              scrollDirection:
-                                                  Axis.horizontal,
-                                              children: [
-                                                for (var attachment
-                                                    in user.attachments)
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Container(
-                                                      width: 100,
-                                                      height: 100,
-                                                      decoration:
-                                                          BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors
-                                                                .black
-                                                                .withOpacity(
-                                                                    0.1),
-                                                            blurRadius: 5,
-                                                            offset:
-                                                                Offset(0, 5),
+                                                );
+                                              },
+                                              child: ListView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                children: [
+                                                  for (var attachment
+                                                      in user.attachments)
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Container(
+                                                        width: 100,
+                                                        height: 100,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Colors
+                                                                  .black
+                                                                  .withOpacity(
+                                                                      0.1),
+                                                              blurRadius: 5,
+                                                              offset:
+                                                                  Offset(0, 5),
+                                                            ),
+                                                          ],
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.grey,
+                                                              width: 1),
+                                                        ),
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                          child: Image.network(
+                                                            attachment,
+                                                            width: 100,
+                                                            height: 100,
+                                                            fit: BoxFit.cover,
                                                           ),
-                                                        ],
-                                                        border: Border.all(
-                                                            color:
-                                                                Colors.grey,
-                                                            width: 1),
-                                                      ),
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
-                                                        child: Image.network(
-                                                          attachment,
-                                                          width: 100,
-                                                          height: 100,
-                                                          fit: BoxFit.cover,
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        )
+                                          )
                                         : Container(),
                                     SizedBox(height: 10),
                                   ],
@@ -237,10 +266,10 @@ class OrderHistoryBody extends StatelessWidget {
                         },
                       ),
               ),
-            ),
-          ],
-        );
-      },
+            );
+          },
+        ),
+      ],
     );
   }
 

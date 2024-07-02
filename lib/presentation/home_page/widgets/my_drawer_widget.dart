@@ -1,4 +1,6 @@
 import 'package:dsplus_finance/core/app/app_export.dart';
+import 'package:dsplus_finance/core/utils/list_title.dart';
+import 'package:dsplus_finance/core/utils/logout.dart';
 import 'package:dsplus_finance/presentation/attachements/widgets/my_alert_dialog.dart';
 import 'package:dsplus_finance/presentation/profile_screen/profile_screen.dart';
 import 'package:dsplus_finance/widgets/app_colors.dart';
@@ -60,39 +62,17 @@ class MyDrawer extends StatelessWidget {
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        // NavigatorService.pushNamed(
-                        //   AppRoutes.userProfileScreen,
-                        // );
-                      },
-                      child: Text(
-                        name.isNotEmpty ? name : '',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
+                    Text(
+                      name.isNotEmpty ? name : '',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
                 ));
           }),
-          // listTile(
-          //   context,
-          //   'Orders History',
-          //   Icons.my_library_books_outlined,
-          //   () {
-          //     // Navigator.pushNamed(context, OrderHistoryScreen.routeName);
-          //   },
-          // ),
-          // listTile(
-          //   context,
-          //   'Addresses',
-          //   Icons.location_on_outlined,
-          //   () {
-          //     // Navigator.pushNamed(context, AddressScreen.routeName);
-          //   },
-          // ),
+
           listTile(
             context,
             'User Data',
@@ -107,22 +87,6 @@ class MyDrawer extends StatelessWidget {
             height: 1,
             color: MyColors.borderColor,
           ),
-          // listTile(
-          //   context,
-          //   'Settings',
-          //   null,
-          //   () {
-          //     Navigator.pop(context);
-          //   },
-          // ),
-          // listTile(
-          //   context,
-          //   'Terms & Conditions / Privacy',
-          //   null,
-          //   () {
-          //     Navigator.pop(context);
-          //   },
-          // ),
           Builder(builder: (c) {
             return listTile(
               context,
@@ -141,16 +105,8 @@ class MyDrawer extends StatelessWidget {
                       Navigator.pop(ctx);
                     },
                     action2Func: () async {
-                      // IconButton(
-                      //   onPressed: () {
                       logout(context);
-                      //   },
-                      //   icon: Icon(Icons.logout),
-                      // ),
-                      // await ap.userSignOut();
 
-                      // Navigator.pushNamedAndRemoveUntil(ctx,
-                      //     AuthenticationScreen.routeName, (route) => false);
                     },
                   ),
                 );
@@ -160,50 +116,5 @@ class MyDrawer extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  ListTile listTile(
-      BuildContext context, String text, IconData? icon, VoidCallback onTap) {
-    return icon == null
-        ? ListTile(
-            title: Text(
-              text,
-              style: const TextStyle(
-                color: MyColors.textColor,
-                fontSize: 14,
-              ),
-            ),
-            onTap: onTap,
-          )
-        : ListTile(
-            title: Text(
-              text,
-              style: const TextStyle(
-                color: MyColors.textColor,
-                fontSize: 14,
-              ),
-            ),
-            leading: Icon(
-              icon,
-              color: scheme.primary,
-            ),
-            onTap: onTap,
-          );
-  }
-
-  Future<void> logout(BuildContext context) async {
-    try {
-      await FirebaseAuth.instance.signOut();
-      PrefUtils().clearPreferencesData();
-      NavigatorService.pushNamedAndRemoveUntil(
-          AppRoutes.loginPageTabContainerScreen
-
-          //  MaterialPageRoute(
-          //    builder: (context) => loginPageTabContainerScreen(),
-          //  ),
-          );
-    } catch (e) {
-      debugPrint('Error signing out: $e');
-    }
   }
 }

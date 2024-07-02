@@ -1,5 +1,7 @@
 import 'package:dsplus_finance/admin/requests/cubit/requests_cubit.dart';
 import 'package:dsplus_finance/admin/requests/cubit/requests_state.dart';
+import 'package:dsplus_finance/admin/users/cubit/users_cubit.dart';
+import 'package:dsplus_finance/core/utils/logout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,59 +12,91 @@ class AdminRequestsView extends StatelessWidget {
   Widget build(BuildContext context) {
     context.read<AdminRequestsCubit>().fetchMoreData();
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Pending Requests"),
-        centerTitle: true,
-        // backgroundColor: Colors.white,
-        forceMaterialTransparency: true,
-      ),
-      body: BlocBuilder<AdminRequestsCubit, AdminRequestsState>(
+        appBar: AppBar(
+          title: Text("Pending Requests"),
+          centerTitle: true,
+          // backgroundColor: Colors.white,
+          forceMaterialTransparency: true,
+        ),
+        body: BlocBuilder<UsersCubit, UsersState>(
           builder: (context, state) {
-            if (state.status == AdminRequestsStatus.loaded &&
-                state.requests.isEmpty || state.requests.isEmpty && state.status == AdminRequestsStatus.approved || state.requests.isEmpty && state.status == AdminRequestsStatus.rejected) {
-              return const Center(child: Text("No requests found"));
+            if (state.status == UsersStatus.loading) {
+              return const Center(child: CircularProgressIndicator());
             }
-            if (state.status == AdminRequestsStatus.error) {
-              return Center(child: Text("Error loading requests"));
-            }
-            if (state.status == AdminRequestsStatus.loading ) {
-              context.read<AdminRequestsCubit>().fetchMoreData();
-            }
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: NotificationListener<ScrollNotification>(
-                    onNotification: (ScrollNotification scrollInfo) {
-                      if (scrollInfo.metrics.pixels ==
-                          scrollInfo.metrics.maxScrollExtent &&
-                          state.hasMoreData &&
-                          state.status != AdminRequestsStatus.loading) {
-                        context.read<AdminRequestsCubit>().fetchMoreData();
-                      }
-                      return false;
-                    },
-                    child:
-                    ListView.builder(
-                      itemCount: state.requests.length +(state.hasMoreData ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index == state.requests.length) {
-                          return const Padding(
-                            padding: EdgeInsets.all(20.0),
-                            child: Center(child: CircularProgressIndicator()),
+            return (state.currentUserRole == "Admin" ||
+                    state.currentUserRole == "SuperAdmin")
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      BlocBuilder<AdminRequestsCubit, AdminRequestsState>(
+                        builder: (context, state) {
+                          if (state.status == AdminRequestsStatus.loaded &&
+                                  state.requests.isEmpty ||
+                              state.requests.isEmpty &&
+                                  state.status ==
+                                      AdminRequestsStatus.approved ||
+                              state.requests.isEmpty &&
+                                  state.status ==
+                                      AdminRequestsStatus.rejected) {
+                            return const Center(
+                                child: Text("No requests found"));
+                          }
+                          if (state.status == AdminRequestsStatus.error) {
+                            return Center(
+                                child: Text("Error loading requests"));
+                          }
+                          if (state.status == AdminRequestsStatus.loading) {
+                            context.read<AdminRequestsCubit>().fetchMoreData();
+                          }
+                          return Expanded(
+                            child: NotificationListener<ScrollNotification>(
+                              onNotification: (ScrollNotification scrollInfo) {
+                                if (scrollInfo.metrics.pixels ==
+                                        scrollInfo.metrics.maxScrollExtent &&
+                                    state.hasMoreData &&
+                                    state.status !=
+                                        AdminRequestsStatus.loading) {
+                                  context
+                                      .read<AdminRequestsCubit>()
+                                      .fetchMoreData();
+                                }
+                                return false;
+                              },
+                              child: ListView.builder(
+                                itemCount: state.requests.length +
+                                    (state.hasMoreData ? 1 : 0),
+                                itemBuilder: (context, index) {
+                                  if (index == state.requests.length) {
+                                    return const Padding(
+                                      padding: EdgeInsets.all(20.0),
+                                      child: Center(
+                                          child: CircularProgressIndicator()),
+                                    );
+                                  }
+                                  return buildRequestCard(
+                                      context, state.requests[index]);
+                                },
+                              ),
+                            ),
                           );
-                        }
-                        return buildRequestCard(context, state.requests[index]);
-                      },
+                        },
+                      ),
+                    ],
+                  )
+                : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("You are not authorized to view this page"),
+                        ElevatedButton(
+                          onPressed: () => logout(context),
+                          child: const Text("Logout"),
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-              ],
-            );
-          }
-
-      ),
-    );
+                  );
+          },
+        ));
   }
 
   Widget buildRequestCard(BuildContext context, dynamic request) {
@@ -99,61 +133,61 @@ class AdminRequestsView extends StatelessWidget {
               : Container(),
           (request.type == "اذن صرف")
               ? Scrollbar(
-            radius: Radius.circular(10),
-            thickness: 5,
-            controller: _scrollController,
-            thumbVisibility: true,
-            child: SizedBox(
-              height: 100,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FullScreenImageList(
-                        imageUrlList: request.attachments.cast<String>(),
-                      ),
-                    ),
-                  );
-                },
-                child: ListView(
+                  radius: Radius.circular(10),
+                  thickness: 5,
                   controller: _scrollController,
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    for (var attachment
-                    in request.attachments)
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 5,
-                                offset: Offset(0, 5),
-                              ),
-                            ],
-                            border: Border.all(color: Colors.grey, width: 1),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              attachment,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
+                  thumbVisibility: true,
+                  child: SizedBox(
+                    height: 100,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FullScreenImageList(
+                              imageUrlList: request.attachments.cast<String>(),
                             ),
                           ),
-                        ),
+                        );
+                      },
+                      child: ListView(
+                        controller: _scrollController,
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          for (var attachment in request.attachments)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 5,
+                                      offset: Offset(0, 5),
+                                    ),
+                                  ],
+                                  border:
+                                      Border.all(color: Colors.grey, width: 1),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    attachment,
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
-                  ],
-                ),
-              ),
-            ),
-          )
+                    ),
+                  ),
+                )
               : Container(),
           SizedBox(height: 10),
           SizedBox(height: 10),
@@ -185,8 +219,7 @@ class AdminRequestsView extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: () async {
-            await
-            cubit.approveBudget(budgetId);
+            await cubit.approveBudget(budgetId);
             await cubit.fetchMoreData();
           },
           style: ElevatedButton.styleFrom(
